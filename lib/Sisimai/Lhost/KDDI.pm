@@ -26,7 +26,7 @@ sub inquire {
 
     state $indicators = __PACKAGE__->INDICATORS;
     state $boundaries = ['Content-Type: message/rfc822'];
-    state $markingsof = { 'message' => ['Your mail sent on:', 'Your mail attempted to be delivered on:'] };
+    state $startingof = { 'message' => ['Your mail sent on:', 'Your mail attempted to be delivered on:'] };
     state $messagesof = {
         'mailboxfull' => ['As their mailbox is full'],
         'norelaying'  => ['Due to the following SMTP relay error'],
@@ -44,7 +44,7 @@ sub inquire {
         # line of the beginning of the original message.
         unless( $readcursor ) {
             # Beginning of the bounce message or message/delivery-status part
-            $readcursor |= $indicators->{'deliverystatus'} if grep { index($e, $_) == 0 } $markingsof->{'message'}->@*;
+            $readcursor |= $indicators->{'deliverystatus'} if grep { index($e, $_) == 0 } $startingof->{'message'}->@*;
         }
         next unless $readcursor & $indicators->{'deliverystatus'};
         next unless length $e;

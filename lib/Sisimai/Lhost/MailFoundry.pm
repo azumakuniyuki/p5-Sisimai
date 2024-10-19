@@ -60,20 +60,12 @@ sub inquire {
             $recipients++;
 
         } else {
-            # Error message
-            if( $e eq $startingof->{'error'}->[0] ) {
-                # Delivery failed for the following reason:
-                $v->{'diagnosis'} = $e;
+            # Delivery failed for the following reason:
+            if( $e eq $startingof->{'error'}->[0] ) { $v->{'diagnosis'} = $e; next }
 
-            } else {
-                # Detect error message
-                next unless length $e;
-                next unless $v->{'diagnosis'};
-                next if index($e, '-') == 0;
-
-                # Server mx22.example.org[192.0.2.222] failed with: 550 <kijitora@example.org> No such user here
-                $v->{'diagnosis'} .= ' '.$e;
-            }
+            next unless $v->{'diagnosis'};
+            next if index($e, '-') == 0;
+            $v->{'diagnosis'} .= ' '.$e;
         }
     }
     return undef unless $recipients;

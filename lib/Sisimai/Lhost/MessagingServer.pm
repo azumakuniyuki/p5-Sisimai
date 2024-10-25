@@ -63,7 +63,7 @@ sub inquire {
         #   Remote system: dns;mx.example.jp (TCP|17.111.174.67|47323|192.0.2.225|25) (6jo.example.jp ESMTP SENDMAIL-VM)
         $v = $dscontents->[-1];
 
-        if( index($e, '  Recipient address: ') == 0 && index($e, '@') > 1 ) {
+        if( Sisimai::String->aligned(\$e, ['  Recipient address: ', '@']) ) {
             #   Recipient address: kijitora@example.jp
             if( $v->{'recipient'} ) {
                 # There are multiple recipient addresses in the message body.
@@ -73,7 +73,7 @@ sub inquire {
             $v->{'recipient'} = Sisimai::Address->s3s4(substr($e, rindex($e, ' ') + 1),);
             $recipients++;
 
-        } elsif( index($e, '  Original address: ') == 0 && index($e, '@') > 1 ) {
+        } elsif( Sisimai::String->aligned(\$e, ['  Original address: ', '@']) ) {
             #   Original address: kijitora@example.jp
             $v->{'recipient'} = Sisimai::Address->s3s4(substr($e, rindex($e, ' ') + 1),);
 

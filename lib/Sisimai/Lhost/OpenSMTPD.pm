@@ -110,7 +110,7 @@ sub inquire {
         #    Below is a copy of the original message:
         $v = $dscontents->[-1];
 
-        if( index($e, '@') > 1 && Sisimai::String->aligned(\$e, ['@', ' ']) ) {
+        if( Sisimai::String->aligned(\$e, ['@', ' ']) ) {
             # kijitora@example.jp: 550 5.2.2 <kijitora@example.jp>... Mailbox Full
             if( $v->{'recipient'} ) {
                 # There are multiple recipient addresses in the message body.

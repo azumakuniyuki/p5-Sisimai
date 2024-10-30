@@ -147,7 +147,7 @@ sub inquire {
         # Giving up on 192.0.2.153.
         $v = $dscontents->[-1];
 
-        if( index($e, '<') == 0 && Sisimai::String->aligned(\$e, ['<', '@', '>', ':']) ) {
+        if( index($e, '<') == 0 && Sisimai::String->aligned(\$e, ['<', '@', '>:']) ) {
             # <kijitora@example.jp>:
             if( $v->{'recipient'} ) {
                 # There are multiple recipient addresses in the message body.
@@ -159,7 +159,6 @@ sub inquire {
 
         } elsif( scalar @$dscontents == $recipients ) {
             # Append error message
-            next unless length $e;
             $v->{'diagnosis'} .= $e.' ';
             $v->{'alterrors'}  = $e if index($e, $startingof->{'error'}->[0]) == 0;
 

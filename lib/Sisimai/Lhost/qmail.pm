@@ -48,21 +48,21 @@ sub inquire {
     state $commandset = {
         # Error text regular expressions which defined in qmail-remote.c
         # qmail-remote.c:225|  if (smtpcode() != 220) quit("ZConnected to "," but greeting failed");
-        'conn' => [' but greeting failed.'],
+        'CONN' => [' but greeting failed.'],
         # qmail-remote.c:231|  if (smtpcode() != 250) quit("ZConnected to "," but my name was rejected");
-        'ehlo' => [' but my name was rejected.'],
+        'EHLO' => [' but my name was rejected.'],
         # qmail-remote.c:238|  if (code >= 500) quit("DConnected to "," but sender was rejected");
         # reason = rejected
-        'mail' => [' but sender was rejected.'],
+        'MAIL' => [' but sender was rejected.'],
         # qmail-remote.c:249|  out("h"); outhost(); out(" does not like recipient.\n");
         # qmail-remote.c:253|  out("s"); outhost(); out(" does not like recipient.\n");
         # reason = userunknown
-        'rcpt' => [' does not like recipient.'],
+        'RCPT' => [' does not like recipient.'],
         # qmail-remote.c:265|  if (code >= 500) quit("D"," failed on DATA command");
         # qmail-remote.c:266|  if (code >= 400) quit("Z"," failed on DATA command");
         # qmail-remote.c:271|  if (code >= 500) quit("D"," failed after I sent the message");
         # qmail-remote.c:272|  if (code >= 400) quit("Z"," failed after I sent the message");
-        'data' => [' failed on DATA command', ' failed after I sent the message'],
+        'DATA' => [' failed on DATA command', ' failed after I sent the message'],
     };
 
     # qmail-send.c:922| ... (&dline[c],"I'm not going to try again; this message has been in the queue too long.\n")) nomem();
@@ -179,19 +179,17 @@ sub inquire {
     for my $e ( @$dscontents ) {
         $e->{'diagnosis'} = Sisimai::String->sweep($e->{'diagnosis'});
 
-        if( ! $e->{'command'} ) {
-            # Get the SMTP command name for the session
-            SMTP: for my $r ( keys %$commandset ) {
-                # Verify each regular expression of SMTP commands
-                next unless grep { index($e->{'diagnosis'}, $_) > 0 } $commandset->{ $r }->@*;
-                $e->{'command'} = uc $r;
-                last;
-            }
+        # Get the SMTP command name for the session
+        SMTP: for my $r ( keys %$commandset ) {
+            # Verify each regular expression of SMTP commands
+            next unless grep { index($e->{'diagnosis'}, $_) > 0 } $commandset->{ $r }->@*;
+            $e->{'command'} = $r;
+            last;
+        }
 
-            if( index($e->{'diagnosis'}, 'Sorry, no SMTP connection got far enough; most progress was ') > -1 ) {
-                # Get the last SMTP command:from the error message
-                $e->{'command'} ||= Sisimai::SMTP::Command->find($e->{'diagnosis'}) || '';
-            }
+        if( index($e->{'diagnosis'}, 'Sorry, no SMTP connection got far enough; most progress was ') > -1 ) {
+            # Get the last SMTP command:from the error message
+            $e->{'command'} ||= Sisimai::SMTP::Command->find($e->{'diagnosis'}) || '';
         }
 
         # Detect the reason of bounce

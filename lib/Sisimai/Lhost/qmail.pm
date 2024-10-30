@@ -96,10 +96,7 @@ sub inquire {
     state $messagesof = {
         # qmail-local.c:589|  strerr_die1x(100,"Sorry, no mailbox here by that name. (#5.1.1)");
         # qmail-remote.c:253|  out("s"); outhost(); out(" does not like recipient.\n");
-        'userunknown' => [
-            'no mailbox here by that name',
-            'does not like recipient.',
-        ],
+        'userunknown' => ['no mailbox here by that name'],
         # error_str.c:192|  X(EDQUOT,"disk quota exceeded")
         'mailboxfull' => ['disk quota exceeded'],
         # qmail-qmtpd.c:233| ... result = "Dsorry, that message size exceeds my databytes limit (#5.3.4)";
@@ -204,31 +201,24 @@ sub inquire {
                 $e->{'reason'} = 'onhold';
 
             } else {
-                SESSION: for my $r ( keys %$messagesof ) {
-                    # Verify each regular expression of session errors
-                    if( $e->{'alterrors'} ) {
-                        # Check the value of "alterrors"
-                        next unless grep { index($e->{'alterrors'}, $_) > -1 } $messagesof->{ $r }->@*;
-                        $e->{'reason'} = $r;
-                    }
+                # Check that the error message includes any of message patterns or not
+                FINDREASON: for my $f ( $e->{'alterrors'}, $e->{'diagnosis'} ) {
+                    # Try to detect an error reason
                     last if $e->{'reason'};
-
-                    next unless grep { index($e->{'diagnosis'}, $_) > -1 } $messagesof->{ $r }->@*;
-                    $e->{'reason'} = $r;
-                    last;
-                }
-
-                unless( $e->{'reason'} ) {
-                    LDAP: for my $r ( keys %$failonldap ) {
-                        # Verify each regular expression of LDAP errors
-                        next unless grep { index($e->{'diagnosis'}, $_) > -1 } $failonldap->{ $r }->@*;
+                    next unless $f;
+                    MESG: for my $r ( keys %$messagesof ) {
+                        # The key is a bounce reason name
+                        next unless grep { index($f, $_) > -1 } $messagesof->{ $r }->@*;
                         $e->{'reason'} = $r;
-                        last;
+                        last FINDREASON;
                     }
-                }
-
-                unless( $e->{'reason'} ) {
-                    $e->{'reason'} = 'expired' if index($e->{'diagnosis'}, $hasexpired) > -1;
+                    LDAP: for my $r ( keys %$failonldap ) {
+                        # The key is a bounce reason name
+                        next unless grep { index($f, $_) > -1 } $failonldap->{ $r }->@*;
+                        $e->{'reason'} = $r;
+                        last FINDREASON;
+                    }
+                    $e->{'reason'} = 'expired' if index($f, $hasexpired) > -1;
                 }
             }
         }

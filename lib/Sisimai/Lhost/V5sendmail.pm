@@ -148,7 +148,7 @@ sub inquire {
         next if index($e->{'recipient'}, '@') > 0;
         $p1 = index($e->{'diagnosis'}, '<'); next if $p1 == -1;
         $p2 = index($e->{'diagnosis'}, '>'); next if $p2 == -1;
-        $e->{'recipient'} = Sisimai::Address->s3s4(substr($p1, $p2 - $p1));
+        $e->{'recipient'} = Sisimai::Address->s3s4(substr($e->{'diagnosis'}, $p1, $p2 - $p1));
     }
     return { 'ds' => $dscontents, 'rfc822' => $emailparts->[1] };
 }

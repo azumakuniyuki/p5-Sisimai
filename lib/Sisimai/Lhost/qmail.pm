@@ -48,21 +48,21 @@ sub inquire {
     state $commandset = {
         # Error text regular expressions which defined in qmail-remote.c
         # qmail-remote.c:225|  if (smtpcode() != 220) quit("ZConnected to "," but greeting failed");
-        'conn' => [' but greeting failed.'],
+        'CONN' => [' but greeting failed.'],
         # qmail-remote.c:231|  if (smtpcode() != 250) quit("ZConnected to "," but my name was rejected");
-        'ehlo' => [' but my name was rejected.'],
+        'EHLO' => [' but my name was rejected.'],
         # qmail-remote.c:238|  if (code >= 500) quit("DConnected to "," but sender was rejected");
         # reason = rejected
-        'mail' => [' but sender was rejected.'],
+        'MAIL' => [' but sender was rejected.'],
         # qmail-remote.c:249|  out("h"); outhost(); out(" does not like recipient.\n");
         # qmail-remote.c:253|  out("s"); outhost(); out(" does not like recipient.\n");
         # reason = userunknown
-        'rcpt' => [' does not like recipient.'],
+        'RCPT' => [' does not like recipient.'],
         # qmail-remote.c:265|  if (code >= 500) quit("D"," failed on DATA command");
         # qmail-remote.c:266|  if (code >= 400) quit("Z"," failed on DATA command");
         # qmail-remote.c:271|  if (code >= 500) quit("D"," failed after I sent the message");
         # qmail-remote.c:272|  if (code >= 400) quit("Z"," failed after I sent the message");
-        'data' => [' failed on DATA command', ' failed after I sent the message'],
+        'DATA' => [' failed on DATA command', ' failed after I sent the message'],
     };
 
     # qmail-send.c:922| ... (&dline[c],"I'm not going to try again; this message has been in the queue too long.\n")) nomem();
@@ -71,9 +71,14 @@ sub inquire {
     state $onholdpair = [' does not like recipient.', 'this message has been in the queue too long.'];
     state $failonldap = {
         # qmail-ldap-1.03-20040101.patch:19817 - 19866
-        'suspend'     => ['Mailaddress is administrative?le?y disabled'],   # 5.2.1
-        'userunknown' => ['Sorry, no mailbox here by that name'],           # 5.1.1
         'exceedlimit' => ['The message exeeded the maximum size the user accepts'], # 5.2.3
+        'userunknown' => ['Sorry, no mailbox here by that name'],           # 5.1.1
+        'suspend'     => [ # 5.2.1
+            'Mailaddress is administrativly disabled',
+            'Mailaddress is administrativley disabled',
+            'Mailaddress is administratively disabled',
+            'Mailaddress is administrativeley disabled',
+        ],
         'systemerror' => [
             'Automatic homedir creator crashed',                # 4.3.0
             'Illegal value in LDAP attribute',                  # 5.3.5
@@ -91,10 +96,7 @@ sub inquire {
     state $messagesof = {
         # qmail-local.c:589|  strerr_die1x(100,"Sorry, no mailbox here by that name. (#5.1.1)");
         # qmail-remote.c:253|  out("s"); outhost(); out(" does not like recipient.\n");
-        'userunknown' => [
-            'no mailbox here by that name',
-            'does not like recipient.',
-        ],
+        'userunknown' => ['no mailbox here by that name'],
         # error_str.c:192|  X(EDQUOT,"disk quota exceeded")
         'mailboxfull' => ['disk quota exceeded'],
         # qmail-qmtpd.c:233| ... result = "Dsorry, that message size exceeds my databytes limit (#5.3.4)";
@@ -142,7 +144,7 @@ sub inquire {
         # Giving up on 192.0.2.153.
         $v = $dscontents->[-1];
 
-        if( index($e, '<') == 0 && Sisimai::String->aligned(\$e, ['<', '@', '>', ':']) ) {
+        if( index($e, '<') == 0 && Sisimai::String->aligned(\$e, ['<', '@', '>:']) ) {
             # <kijitora@example.jp>:
             if( $v->{'recipient'} ) {
                 # There are multiple recipient addresses in the message body.
@@ -154,7 +156,6 @@ sub inquire {
 
         } elsif( scalar @$dscontents == $recipients ) {
             # Append error message
-            next unless length $e;
             $v->{'diagnosis'} .= $e.' ';
             $v->{'alterrors'}  = $e if index($e, $startingof->{'error'}->[0]) == 0;
 
@@ -175,19 +176,17 @@ sub inquire {
     for my $e ( @$dscontents ) {
         $e->{'diagnosis'} = Sisimai::String->sweep($e->{'diagnosis'});
 
-        if( ! $e->{'command'} ) {
-            # Get the SMTP command name for the session
-            SMTP: for my $r ( keys %$commandset ) {
-                # Verify each regular expression of SMTP commands
-                next unless grep { index($e->{'diagnosis'}, $_) > 0 } $commandset->{ $r }->@*;
-                $e->{'command'} = uc $r;
-                last;
-            }
+        # Get the SMTP command name for the session
+        SMTP: for my $r ( keys %$commandset ) {
+            # Verify each regular expression of SMTP commands
+            next unless grep { index($e->{'diagnosis'}, $_) > 0 } $commandset->{ $r }->@*;
+            $e->{'command'} = $r;
+            last;
+        }
 
-            if( index($e->{'diagnosis'}, 'Sorry, no SMTP connection got far enough; most progress was ') > -1 ) {
-                # Get the last SMTP command:from the error message
-                $e->{'command'} ||= Sisimai::SMTP::Command->find($e->{'diagnosis'}) || '';
-            }
+        if( index($e->{'diagnosis'}, 'Sorry, no SMTP connection got far enough; most progress was ') > -1 ) {
+            # Get the last SMTP command:from the error message
+            $e->{'command'} ||= Sisimai::SMTP::Command->find($e->{'diagnosis'}) || '';
         }
 
         # Detect the reason of bounce
@@ -202,31 +201,24 @@ sub inquire {
                 $e->{'reason'} = 'onhold';
 
             } else {
-                SESSION: for my $r ( keys %$messagesof ) {
-                    # Verify each regular expression of session errors
-                    if( $e->{'alterrors'} ) {
-                        # Check the value of "alterrors"
-                        next unless grep { index($e->{'alterrors'}, $_) > -1 } $messagesof->{ $r }->@*;
-                        $e->{'reason'} = $r;
-                    }
+                # Check that the error message includes any of message patterns or not
+                FINDREASON: for my $f ( $e->{'alterrors'}, $e->{'diagnosis'} ) {
+                    # Try to detect an error reason
                     last if $e->{'reason'};
-
-                    next unless grep { index($e->{'diagnosis'}, $_) > -1 } $messagesof->{ $r }->@*;
-                    $e->{'reason'} = $r;
-                    last;
-                }
-
-                unless( $e->{'reason'} ) {
-                    LDAP: for my $r ( keys %$failonldap ) {
-                        # Verify each regular expression of LDAP errors
-                        next unless grep { index($e->{'diagnosis'}, $_) > -1 } $failonldap->{ $r }->@*;
+                    next unless $f;
+                    MESG: for my $r ( keys %$messagesof ) {
+                        # The key is a bounce reason name
+                        next unless grep { index($f, $_) > -1 } $messagesof->{ $r }->@*;
                         $e->{'reason'} = $r;
-                        last;
+                        last FINDREASON;
                     }
-                }
-
-                unless( $e->{'reason'} ) {
-                    $e->{'reason'} = 'expired' if index($e->{'diagnosis'}, $hasexpired) > -1;
+                    LDAP: for my $r ( keys %$failonldap ) {
+                        # The key is a bounce reason name
+                        next unless grep { index($f, $_) > -1 } $failonldap->{ $r }->@*;
+                        $e->{'reason'} = $r;
+                        last FINDREASON;
+                    }
+                    $e->{'reason'} = 'expired' if index($f, $hasexpired) > -1;
                 }
             }
         }

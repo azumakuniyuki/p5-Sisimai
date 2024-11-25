@@ -63,19 +63,20 @@ sub inquire {
         #   Remote system: dns;mx.example.jp (TCP|17.111.174.67|47323|192.0.2.225|25) (6jo.example.jp ESMTP SENDMAIL-VM)
         $v = $dscontents->[-1];
 
-        if( index($e, '  Recipient address: ') == 0 && index($e, '@') > 1 ) {
-            #   Recipient address: kijitora@example.jp
-            if( $v->{'recipient'} ) {
+        if( Sisimai::String->aligned(\$e, ['  Recipient address: ', '@', '.']) ||
+            Sisimai::String->aligned(\$e, ['  Original address: ',  '@', '.']) ) {
+            #   Recipient address: @smtp.example.net:kijitora@server
+            #   Original address: kijitora@example.jp
+            my $cv = Sisimai::Address->s3s4(substr($e, rindex($e, ' ') + 1),);
+            next unless Sisimai::Address->is_emailaddress($cv);
+
+            if( $v->{'recipient'} && $cv ne $v->{'recipient'}) {
                 # There are multiple recipient addresses in the message body.
                 push @$dscontents, __PACKAGE__->DELIVERYSTATUS;
                 $v = $dscontents->[-1];
             }
-            $v->{'recipient'} = Sisimai::Address->s3s4(substr($e, rindex($e, ' ') + 1),);
+            $v->{'recipient'} = $cv;
             $recipients++;
-
-        } elsif( index($e, '  Original address: ') == 0 && index($e, '@') > 1 ) {
-            #   Original address: kijitora@example.jp
-            $v->{'recipient'} = Sisimai::Address->s3s4(substr($e, rindex($e, ' ') + 1),);
 
         } elsif( index($e, '  Date: ') == 0 ) {
             #   Date: Fri, 21 Nov 2014 23:34:45 +0900

@@ -68,7 +68,7 @@ sub inquire {
             $issuedcode = substr($e, index($e, '(') + 1,);
             $recipients++;
 
-        } elsif( my $f = Sisimai::RFC1894->match($e) ) {
+        } elsif( Sisimai::RFC1894->match($e) ) {
             # $e matched with any field defined in RFC3464
             my $o = Sisimai::RFC1894->field($e);
             unless( $o ) {

@@ -99,6 +99,7 @@ sub list {
             Reason/SecurityError.pm
             Reason/SpamDetected.pm
             Reason/Speeding.pm
+            Reason/Suppressed.pm
             Reason/Suspend.pm
             Reason/SyntaxError.pm
             Reason/SystemError.pm

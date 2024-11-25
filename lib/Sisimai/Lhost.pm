@@ -22,7 +22,6 @@ sub DELIVERYSTATUS {
         'replycode',   => '',   # SMTP Reply Code
         'diagnosis'    => '',   # The value of Diagnostic-Code header
         'recipient'    => '',   # The value of Final-Recipient header
-        'hardbounce'   => '',   # Hard bounce or not
         'feedbacktype' => '',   # Feedback Type
     };
 }

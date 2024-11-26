@@ -113,6 +113,7 @@ sub list {
         RFC1894.pm
         RFC2045.pm
         RFC3464.pm
+            RFC3464/ThirdParty.pm
         RFC3834.pm
         RFC5322.pm
         RFC5965.pm

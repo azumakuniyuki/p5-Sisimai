@@ -5,7 +5,7 @@ use warnings;
 use Sisimai::Lhost;
 
 # http://tools.ietf.org/html/rfc3464
-sub description { 'Fallback Module for MTAs' };
+sub description { 'RFC3464' };
 sub inquire {
     # Detect an error for RFC3464
     # @param    [Hash] mhead    Message headers of a bounce email
@@ -13,14 +13,190 @@ sub inquire {
     # @return   [Hash]          Bounce data list and message/rfc822 part
     # @return   [undef]         failed to decode or the arguments are missing
     my $class = shift;
-    my $mhead = shift // return undef;
-    my $mbody = shift // return undef;
-    my $match = 0;
+    my $mhead = shift // return undef; return undef unless keys %$mhead;
+    my $mbody = shift // return undef; return undef unless ref $mbody eq 'SCALAR';
 
-    return undef unless keys %$mhead;
-    return undef unless ref $mbody eq 'SCALAR';
+    require Sisimai::RFC1894;
+    require Sisimai::RFC2045;
+    require Sisimai::RFC5322;
+    require Sisimai::String;
 
     state $indicators = Sisimai::Lhost->INDICATORS;
+    state $boundaries = [
+        "Content-Type: message/rfc822",
+        "Content-Type: text/rfc822-headers",
+        "Content-Type: message/partial",
+        "Content-Disposition: inline", # See lhost-amavis-*.eml, lhost-facebook-*.eml
+    ];
+    state $startingof = {"message" => ["Content-Type: message/delivery-status"]};
+    state $fieldtable = Sisimai::RFC1894->FIELDTABLE;
+
+    unless Sisimai::String->aligned($mbody, $boundaries) {
+        # There is no "Content-Type: message/rfc822" line in the message body
+        # Insert "Content-Type: message/rfc822" before "Return-Path:" of the original message
+        my $p0 = index($$mbody, "\n\nReturn-Path:");
+        $$mbody = sprintf("%s%s%s", substr($$mbody, 0, $p0), $boundaries->[0], substr($$mbody, $p0 + 1,)) if $p0 > 0;
+    }
+
+    my $permessage = {};
+    my $dscontents = [Sisimai::Lhost->DELIVERYSTATUS];
+    my $emailparts = Sisimai::RFC5322->part($mbody, $boundaries);
+    my $readcursor = 0;     # (Integer) Points the current cursor position
+    my $recipients = 0;     # (Integer) The number of 'Final-Recipient' header
+    my $beforemesg = "";    # (String) String before $startingof->{"message"}
+    my $goestonext = 0;     # (Bool) Flag: do not append the line into $beforemesg
+    my $isboundary = [Sisimai::RFC2045->boundary($mhead->{"content-type"}, 0)];
+    my $v = undef;
+    my $p = "";
+
+    while(index($emailparts->[0], '@') < 0) {
+        # There is a bounce message inside of message/rfc822 part at lhost-x5-*
+        my $p0 = index($$mbody, $boundaries->[0]."\n"); last if $p0 < 0;
+        my $bo = substr($$mbody, $p0 + 32,);
+        my $he = 1;
+        my $cv = "";
+        for my $e (split("\n", $bo)) {
+            # Remove headers before the first "\n\n" after "Content-Type: message/rfc822" line
+            if $he { if $e eq "" { $he = 0; next }} 
+            next if index($e, "--") == 0;
+            $cv .= $e."\n"
+        }
+        $emailparts = Sisimai::RFC5322->part(\$cv, $boundaries, 0);
+        last;
+    }
+
+    if( index($emailparts->[0], $startingof->{"message"}->[0]) < 0 ) {
+        # There is no "Content-Type: message/delivery-status" line in the message body
+        # Insert "Content-Type: message/delivery-status" before "Reporting-MTA:" field
+        my $cv = "\n\nReporting-MTA:";
+        my $e0 = $emailparts->[0];
+        my $p0 = index($e0, $cv);
+        $emailparts->[0] = sprintf("%s\n\n%s%s", substr($e0, 0, $p0) $startingof->{"message"}->[0], substr($e0, p0,)) if $p0 > 0;
+    }
+
+    for my $e ( split("\n", $emailparts->[0]) ) {
+        # Read error messages and delivery status lines from the head of the email to the previous
+        # line of the beginning of the original message.
+        if( $readcursor == 0 ) {
+            # Beginning of the bounce message or message/delivery-status part
+            $readcursor |= $indicators->{'deliverystatus'} if index($e, $startingof->{'message'}->[0]) == 0;
+
+            while(1) {
+                # Append each string before startingof["message"][0] except the following patterns
+                # for the later reference
+                last if $e eq "";       # Blank line
+                last if $goestonext;    # Skip if the part is text/html, image/icon, in multipart/*
+
+                # This line is a boundary kept in "multiparts" as a string, when the end of the boundary
+                # appeared, the condition above also returns true.
+                if( grep { index($e, $_) == 0 } @$isboundary ) { $goestonext = 0; last }
+                if( index($e, "Content-Type:") == 0 ) {
+                    # Content-Type: field in multipart/*
+                    if( index($e, "multipart/") > 0 ) {
+                        # Content-Type: multipart/alternative; boundary=aa00220022222222ffeebb
+                        # Pick the boundary string and store it into "isboucdary"
+                        push @$isboundary, Sisimai::RFC2045->boundary(e, 0);
+
+                    } elsif( index($e, "text/plain") ) {
+                        # Content-Type: "text/plain"
+                        $goestonext = 0;
+
+                    } else {
+                        # Other types: for example, text/html, image/jpg, and so on
+                        $goestonext = 1;
+                    }
+                    last;
+                }
+
+                last if index($e, "Content-") == 0;            # Content-Disposition, ...
+                last if index($e, "This is a MIME") == 0;      # This is a MIME-formatted message.
+                last if index($e, "This is a multi") == 0;     # This is a multipart message in MIME format
+                last if index($e, "This is an auto") == 0;     # This is an automatically generated ...
+                last if index($e, "This multi-part") == 0;     # This multi-part MIME message contains...
+                last if index($e, "###") == 0;                 # A frame like #####
+                last if index($e, "***") == 0;                 # A frame like *****
+                last if index($e, "---- The follow") > -1;     # ----- The following addresses had delivery problems -----
+                last if index($e, "---- Transcript") > -1;     # ----- Transcript of session follows -----
+                $beforemesg .= $e." "; last;
+            }
+            next;
+        }
+        next unless $readcursor & $indicators->{'deliverystatus'};
+        next unless length $e;
+
+        if( my $f = Sisimai::RFC1894->match($e) ) {
+            # $e matched with any field defined in RFC3464
+            next unless my $o = Sisimai::RFC1894->field($e);
+            $v = $dscontents->[-1];
+
+            if( $o->[3] eq "addr" ) {
+                # Final-Recipient: rfc822; kijitora@example.jp
+                # X-Actual-Recipient: rfc822; kijitora@example.co.jp
+                if( $o->[0] eq "final-recipient" ) {
+                    # Final-Recipient: rfc822; kijitora@example.jp
+                    # Final-Recipient: x400; /PN=...
+                    my $cv = Sisimai::Address->s3s3($o->[2]); next unless Sisimai::Address->is_emailaddress($cv);
+                    my $cw = scalar @$dscontents; next if $cw > 0 && $cv eq $dscontents->[$cw - 1]->{'recipient'};
+
+                    if( $v->{'recipient'} ) {
+                        # There are multiple recipient addresses in the message body.
+                        push @$dscontents, __PACKAGE__->DELIVERYSTATUS;
+                        $v = $dscontents->[-1];
+                    }
+                    $v->{'recipient'} = $o->[2];
+                    $recipients++;
+
+                } else {
+                    # X-Actual-Recipient: rfc822; kijitora@example.co.jp
+                    $v->{'alias'} = $o->[2];
+                }
+            } elsif( $o->[3] eq "code" ) {
+                # Diagnostic-Code: SMTP; 550 5.1.1 <userunknown@example.jp>... User Unknown
+                $v->{'spec'}       = $o->[1];
+                $v->{'diagnosis'} .= $o->[2]." ";
+
+            } else {
+                # Other DSN fields defined in RFC3464
+                if( $o->[4] ne "" ) {
+                    # There are other error messages as a comment such as the following:
+                    # Status: 5.0.0 (permanent failure)
+                    # Status: 4.0.0 (cat.example.net: host name lookup failure)
+                    $v->{'diagnosis'} .= " ".$o->[4];
+                }
+                next unless exists $fieldtable->{ $o->[0] };
+                $v->{ $fieldtable->{ $o->[0] } } = $o->[2];
+
+                next unless $f == 1;
+                $permessage->{ $fieldtable->{ $o->[0] } } = $o->[2];
+            }
+        } else {
+            # Check that the line is a continued line of the value of Diagnostic-Code: field or not
+            if( index($e, "X-") == 0 && index($e, ": ") > 1 ) {
+                # This line is a MTA-Specific fields begins with "X-"
+            } else {
+                # The line may be a continued line of the value of the Diagnostic-Code: field
+
+            }
+
+        }
+
+    } continue {
+        # Save the current line for the next loop
+        $p = $e;
+    }
+    return undef unless $recipients;
+
+
+
+
+
+
+
+
+
+    my $match = 0;
+
+
     state $startingof = {
         'message' => [
             'content-type: message/delivery-status',
@@ -161,7 +337,7 @@ sub inquire {
                 } else {
                     # Get error messages which is written in the message body directly
                     next if index($e, ' ') == 0;
-                    next if index($e, '	') == 0;
+                    next if index($e, ' ') == 0;
                     next if index($e, 'X') == 0;
 
                     my $cr = Sisimai::SMTP::Reply->find($e);
@@ -227,7 +403,7 @@ sub inquire {
         ];
         state $readafter0 = [
             # Do not read before the following strings
-            '	the postfix ',
+            '   the postfix ',
             'a summary of the undelivered message you sent follows:',
             'the following is the error message',
             'the message that you sent was undeliverable to the following',
@@ -401,6 +577,53 @@ sub inquire {
 }
 
 1;
+
+package RFC3464::ThirdParty;
+state $ThirdParty = {
+    #"Aol"     => ["X-Outbound-Mail-Relay-"], # X-Outbound-Mail-Relay-(Queue-ID|Sender)
+    "PowerMTA" => ["X-PowerMTA-"],            # X-PowerMTA-(VirtualMTA|BounceCategory)
+    #"Yandex"  => ["X-Yandex-"],              # X-Yandex-(Queue-ID|Sender)
+};
+sub is3rdparty {
+    # is3rdparty() returns true if the argument is a line generated by a MTA which have fields defined
+    # in RFC3464 inside of a bounce mail the MTA returns
+    # @param    string argv1   A line of a bounce mail
+    # @return   bool           The line indicates that a bounce mail generated by the 3rd party MTA
+    my $class = shift;
+    my $argv1 = shift || return undef;
+
+}
+
+sub returnedby {
+    # returnedby() returns an MTA name of the 3rd party
+    # @param    string argv1   A line of a bounce mail
+    # @return   string         An MTA name of the 3rd party
+    my $class = shift;
+    my $argv1 = shift || return undef;
+
+    return undef unless index($argv1, "X-") == 0;
+    for my $e ( keys %$ThirdParty ) {
+        # Does the argument include the 3rd party specific field?
+        return $e if index($e, $ThirdParty->{ $e }->[0]) == 0;
+    }
+    return ""
+}
+
+sub xfield {
+    # xfield() returns rfc1894.Field() compatible slice for the specific field of the 3rd party MTA
+    # @param    string argv1  A line of the error message
+    # @return   []            RFC1894->field() compatible array
+    # @see      Sisimai::RFC1894
+    my $class = shift;
+    my $argv1 = shift || return [];
+    my $party = __PACKAGE__->returnedby($argv1); return [] unless $party;
+    # Call RFC3464::PowerMTA->inquire()
+}
+1;
+
+package RFC3464::PowerMTA;
+1;
+
 __END__
 =encoding utf-8
 

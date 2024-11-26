@@ -28,6 +28,10 @@ MAKETEST: {
         'Last-Attempt-Date: Sat, 9 Jun 2018 03:06:57 +0900 (JST)',
         'Diagnostic-Code: SMTP; Unknown user neko@nyaan.jp',
     ];
+    my $RFC1894Field3 = [
+        'Status: 5.1.1 (user unknown)',
+        'Reporting-MTA: dns; mr21p30im-asmtp004.me.example.com (tcp-daemon)',
+    ];
     my $IsNotDSNField = [
         'Content-Type: message/delivery-status',
         'Subject: Returned mail: see transcript for details',
@@ -80,6 +84,16 @@ MAKETEST: {
 
         $q = $Package->label($e);
         is $q, $v->[0], '->label returns '.$q;
+    }
+
+    for my $e ( @$RFC1894Field3 ) {
+        is $Package->match($e), 1, '->match('.$e.') returns 1';
+
+        $v = $Package->field($e);
+        isa_ok $v, 'ARRAY', '->field('.$e.') returns Array';
+        is scalar(@$v), 5, '->field('.$e.') returns 5 elements';
+        ok length $v->[4], 'v[4] = '.$v->[4];
+        unlike $v->[4], qr/[()]/, 'v[4] does not include ( and )';
     }
 
     for my $e ( @$IsNotDSNField ) {

@@ -264,12 +264,12 @@ sub inquire {
                     # $e matched with any field defined in RFC3464
                     next unless my $o = Sisimai::RFC1894->field($e);
 
-                    if( $o->[-1] eq 'addr' ) {
+                    if( $o->[3] eq 'addr' ) {
                         # Final-Recipient: rfc822;|/bin/echo "Some pipe output"
                         next unless $o->[0] eq 'final-recipient';
                         $v->{'spec'} ||= rindex($o->[2], '@') > -1 ? 'SMTP' : 'X-UNIX';
 
-                    } elsif( $o->[-1] eq 'code' ) {
+                    } elsif( $o->[3] eq 'code' ) {
                         # Diagnostic-Code: SMTP; 550 5.1.1 <userunknown@example.jp>... User Unknown
                         $v->{'spec'} = uc $o->[1];
                         $v->{'diagnosis'} = $o->[2];

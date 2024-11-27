@@ -107,9 +107,9 @@ sub inquire {
             } elsif( my $f = Sisimai::RFC1894->match($e) ) {
                 # There are some fields defined in RFC3464, try to match
                 next unless my $o = Sisimai::RFC1894->field($e);
-                next if $o->[-1] eq 'addr';
+                next if $o->[3] eq 'addr';
 
-                if( $o->[-1] eq 'code' ) {
+                if( $o->[3] eq 'code' ) {
                     # Diagnostic-Code: SMTP; 550 5.1.1 <userunknown@example.jp>... User Unknown
                     $v->{'spec'}      ||= $o->[1];
                     $v->{'diagnosis'} ||= $o->[2];

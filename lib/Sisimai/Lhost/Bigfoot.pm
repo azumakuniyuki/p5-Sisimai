@@ -54,7 +54,7 @@ sub inquire {
             next unless my $o = Sisimai::RFC1894->field($e);
             $v = $dscontents->[-1];
 
-            if( $o->[-1] eq 'addr' ) {
+            if( $o->[3] eq 'addr' ) {
                 # Final-Recipient: rfc822; kijitora@example.jp
                 # X-Actual-Recipient: rfc822; kijitora@example.co.jp
                 if( $o->[0] eq 'final-recipient' ) {
@@ -71,7 +71,7 @@ sub inquire {
                     # X-Actual-Recipient: rfc822; kijitora@example.co.jp
                     $v->{'alias'} = $o->[2];
                 }
-            } elsif( $o->[-1] eq 'code' ) {
+            } elsif( $o->[3] eq 'code' ) {
                 # Diagnostic-Code: SMTP; 550 5.1.1 <userunknown@example.jp>... User Unknown
                 $v->{'spec'} = $o->[1];
                 $v->{'diagnosis'} = $o->[2];

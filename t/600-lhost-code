@@ -26,6 +26,7 @@ my $moduletest = sub {
     my $lhostindex = Sisimai::Lhost->index; push @$lhostindex, 'ARF', 'RFC3464', 'RFC3834';
     my $isnotlhost = qr/\A(?:ARF|RFC3464|RFC3834)\z/;
     my $methodlist = ['DELIVERYSTATUS', 'INDICATORS', 'description', 'index', 'path'];
+    my $rfc3464use = [qw|Amavis|];
     my $skiptonext = {
         'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],
         'private' => [
@@ -401,6 +402,10 @@ my $moduletest = sub {
                             # Parsed by Sisimai::MDA
                             ok $cv =~ $cr, sprintf("%s %s", $ct, $cr);
                             is scalar @{ [grep { $cv eq $_ } @$lhostindex] }, 0, sprintf("%s %s", $ct, $cv);
+
+                        } elsif( grep { $E eq $_ } @$rfc3464use ) {
+                            # Decoded by Sisimai::RFC3464 since v5.2.0
+                            is $cv, 'RFC3464', sprintf("%s %s", $ct, $cr);
 
                         } elsif( $E eq 'ARF' ) {
                             # Parsed by Sisimai::ARF

@@ -10,7 +10,6 @@ sub list {
             Fact/YAML.pm
         Lhost.pm
             Lhost/Activehunter.pm
-            Lhost/Amavis.pm
             Lhost/AmazonSES.pm
             Lhost/AmazonWorkMail.pm
             Lhost/Aol.pm

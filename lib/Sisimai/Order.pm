@@ -90,7 +90,6 @@ sub make {
             'Sisimai::Lhost::Exchange2003',
         ],
         'undeliverable-mail' => [
-            'Sisimai::Lhost::Amavis',
             'Sisimai::Lhost::MailMarshalSMTP',
             'Sisimai::Lhost::IMailServer',
         ],
@@ -168,7 +167,6 @@ sub another {
         'Sisimai::Lhost::mFILTER',
         'Sisimai::Lhost::SendGrid',
         'Sisimai::Lhost::ReceivingSES',
-        'Sisimai::Lhost::Amavis',
         'Sisimai::Lhost::PowerMTA',
         'Sisimai::Lhost::GoogleGroups',
         'Sisimai::Lhost::Gmail',

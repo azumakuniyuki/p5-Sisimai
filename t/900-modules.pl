@@ -47,7 +47,6 @@ sub list {
             Lhost/Postfix.pm
             Lhost/qmail.pm
             Lhost/Sendmail.pm
-            Lhost/SurfControl.pm
             Lhost/V5sendmail.pm
             Lhost/Verizon.pm
             Lhost/X1.pm

@@ -93,7 +93,6 @@ sub make {
         'undelivered-mail' => [
             'Sisimai::Lhost::Postfix',
             'Sisimai::Lhost::Aol',
-            'Sisimai::Lhost::SendGrid',
             'Sisimai::Lhost::Zoho',
         ],
         'warning' => ['Sisimai::Lhost::Sendmail', 'Sisimai::Lhost::Exim'],
@@ -160,7 +159,6 @@ sub another {
         'Sisimai::Lhost::McAfee',
         'Sisimai::Lhost::V5sendmail',
         'Sisimai::Lhost::mFILTER',
-        'Sisimai::Lhost::SendGrid',
         'Sisimai::Lhost::GoogleGroups',
         'Sisimai::Lhost::Gmail',
         'Sisimai::Lhost::EZweb',

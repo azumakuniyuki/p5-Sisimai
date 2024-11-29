@@ -24,7 +24,6 @@ sub make {
         'complaint-about'  => ['Sisimai::ARF'],
         'delivery-failure' => ['Sisimai::Lhost::Domino', 'Sisimai::Lhost::X2'],
         'delivery-notification' => ['Sisimai::Lhost::MessagingServer'],
-        'delivery-report'  => ['Sisimai::Lhost::PowerMTA'],
         'delivery-status'  => [
             'Sisimai::Lhost::GSuite',
             'Sisimai::Lhost::Outlook',
@@ -164,7 +163,6 @@ sub another {
         'Sisimai::Lhost::mFILTER',
         'Sisimai::Lhost::SendGrid',
         'Sisimai::Lhost::ReceivingSES',
-        'Sisimai::Lhost::PowerMTA',
         'Sisimai::Lhost::GoogleGroups',
         'Sisimai::Lhost::Gmail',
         'Sisimai::Lhost::EZweb',

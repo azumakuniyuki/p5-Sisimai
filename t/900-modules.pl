@@ -46,7 +46,6 @@ sub list {
             Lhost/Outlook.pm
             Lhost/Postfix.pm
             Lhost/qmail.pm
-            Lhost/ReceivingSES.pm
             Lhost/SendGrid.pm
             Lhost/Sendmail.pm
             Lhost/SurfControl.pm

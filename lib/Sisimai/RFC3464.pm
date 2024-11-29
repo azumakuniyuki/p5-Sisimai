@@ -25,6 +25,8 @@ sub inquire {
 
     state $indicators = Sisimai::Lhost->INDICATORS;
     state $boundaries = [
+        # When the new value added, the part of the value should be listed in $delimiters variable
+        # defined at Sisimai::RFC2045->makeFlat() method
         "Content-Type: message/rfc822",
         "Content-Type: text/rfc822-headers",
         "Content-Type: message/partial",
@@ -179,7 +181,7 @@ sub inquire {
                 next unless Sisimai::RFC3464::ThirdParty->is3rdparty($e);
 
                 my $cv = Sisimai::RFC3464::ThirdParty->xfield($e);
-                if( scalar(@$cv) > 0 && Sisimai::RFC1894->match($cv->[0]) == 0 ) {
+                if( scalar(@$cv) > 0 && not exists $fieldtable->{ lc $cv->[0] } ) {
                     # Check the first element is a field defined in RFC1894 or not
                     $v->{'reason'} = substr($cv->[4], index($cv->[4], ":") + 1,) if index($cv->[4], "reason:") == 0;
 

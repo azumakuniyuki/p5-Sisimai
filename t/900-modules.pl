@@ -53,7 +53,6 @@ sub list {
             Lhost/X2.pm
             Lhost/X3.pm
             Lhost/X4.pm
-            Lhost/X5.pm
             Lhost/X6.pm
             Lhost/Yahoo.pm
             Lhost/Zoho.pm

@@ -132,7 +132,6 @@ sub another {
         'Sisimai::Lhost::Verizon',
         'Sisimai::Lhost::ApacheJames',
         'Sisimai::Lhost::X2',
-        'Sisimai::Lhost::X5',
         'Sisimai::Lhost::FML',
     ];
 

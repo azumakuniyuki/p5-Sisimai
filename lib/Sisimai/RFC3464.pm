@@ -55,18 +55,23 @@ sub inquire {
     my $p = "";
 
     while( index($emailparts->[0], '@') < 0 ) {
+        # There is no email address in the first element of emailparts
         # There is a bounce message inside of message/rfc822 part at lhost-x5-*
-        my $p0 = index($$mbody, $boundaries->[0]."\n"); last if $p0 < 0;
-        my $bo = substr($$mbody, $p0 + 32,);
-        my $he = 1;
-        my $cv = "";
-        for my $e (split("\n", $bo)) {
-            # Remove headers before the first "\n\n" after "Content-Type: message/rfc822" line
-            if( $he == 1 && $e eq "" ) { $he = 0; next }
-            next if index($e, "--") == 0;
-            $cv .= $e."\n"
+        my $p0 = -1;    # The index of the boundary string found first
+        my $p1 =  0;    # Offset position of the message body after the boundary string
+        my $ct = "";    # Boundary string found first such as "Content-Type: message/rfc822"
+
+        for my $e ( @$boundaries ) {
+            # Look for a boundary string from the message body
+            $p0 = index($$mbody, $e."\n"); next if $p0 < 0;
+            $p1 = $p1 + length($e) + 2;
+            $ct = $e; last;
         }
-        $emailparts = Sisimai::RFC5322->part(\$cv, $boundaries, 0);
+        last if $p0 < 0;
+
+        my $p2 = index(substr($$mbody, $p1,), "\n\n");
+        my $cv = substr(substr($$mbody, $p1,), $p2 + 2,);
+        $emailparts = Sisimai::RFC5322->part(\$cv, [$ct], 0);
         last;
     }
 
@@ -120,6 +125,7 @@ sub inquire {
                 last if index($e, "This multi-part") == 0;     # This multi-part MIME message contains...
                 last if index($e, "###") == 0;                 # A frame like #####
                 last if index($e, "***") == 0;                 # A frame like *****
+                last if index($e, "--")  == 0;                 # Boundary string
                 last if index($e, "---- The follow") > -1;     # ----- The following addresses had delivery problems -----
                 last if index($e, "---- Transcript") > -1;     # ----- Transcript of session follows -----
                 $beforemesg .= $e." "; last;
@@ -166,7 +172,7 @@ sub inquire {
                     # There are other error messages as a comment such as the following:
                     # Status: 5.0.0 (permanent failure)
                     # Status: 4.0.0 (cat.example.net: host name lookup failure)
-                    $v->{'diagnosis'} .= " ".$o->[4];
+                    $v->{'diagnosis'} .= " ".$o->[4]." ";
                 }
                 next unless exists $fieldtable->{ $o->[0] };
                 $v->{ $fieldtable->{ $o->[0] } } = $o->[2];
@@ -195,6 +201,7 @@ sub inquire {
                 if( index($p, 'Diagnostic-Code:') < 0 ) {
                     # In the case of multiple "message/delivery-status" line
                     next if index($e, "Content-") == 0; # Content-Disposition:, ...
+                    next if index($e, "--")       == 0; # Boundary string
                     $beforemesg .= $e." "; next
                 }
 
@@ -237,14 +244,18 @@ sub inquire {
         $e->{'diagnosis'} = Sisimai::String->sweep($e->{'diagnosis'});
         my $lowercased = lc $e->{'diagnosis'};
 
-        if( index($issuedcode, $lowercased) > -1 ) {
-            # $beforemesg contains the entire strings of $e->{'diagnosis'}
-            $e->{'diagnosis'} = $beforemesg;
+        if( $recipients == 1 ) {
+            # Do not mix the error message of each recipient with "beforemesg" when there is
+            # multiple recipient addresses in the bounce message
+            if( index($issuedcode, $lowercased) > -1 ) {
+                # $beforemesg contains the entire strings of $e->{'diagnosis'}
+                $e->{'diagnosis'} = $beforemesg;
 
-        } else {
-            # The value of $e->{'diagnosis'} is not contained in $beforemesg
-            # There may be an important error message in $beforemesg
-            $e->{'diagnosis'} = Sisimai::String->sweep(sprintf("%s %s", $beforemesg, $e->{'diagnosis'}))
+            } else {
+                # The value of $e->{'diagnosis'} is not contained in $beforemesg
+                # There may be an important error message in $beforemesg
+                $e->{'diagnosis'} = Sisimai::String->sweep(sprintf("%s %s", $beforemesg, $e->{'diagnosis'}))
+            }
         }
         $e->{'command'}   = Sisimai::SMTP::Command->find($e->{'diagnosis'})                   || $alternates->{'command'};
         $e->{'replycode'} = Sisimai::SMTP::Reply->find($e->{'diagnosis'}, $e->{'status'})     || $alternates->{'replycode'};

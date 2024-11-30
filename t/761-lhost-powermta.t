@@ -8,9 +8,9 @@ my $enginename = 'PowerMTA';
 my $enginetest = Sisimai::Lhost::Code->makeinquiry;
 my $isexpected = {
     # INDEX => [['D.S.N.', 'replycode', 'REASON', 'hardbounce'], [...]]
-    '01' => [['5.2.1',   '550', 'userunknown',     1]],
+    '01' => [['5.2.1',   '550', 'suspend',         0]],
     '02' => [['5.0.0',   '554', 'userunknown',     1]],
-    '03' => [['5.2.1',   '550', 'userunknown',     1]],
+    '03' => [['5.2.1',   '550', 'suspend',         0]],
 };
 
 $enginetest->($enginename, $isexpected);

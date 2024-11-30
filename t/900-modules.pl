@@ -56,7 +56,6 @@ sub list {
             Lhost/X5.pm
             Lhost/X6.pm
             Lhost/Yahoo.pm
-            Lhost/Yandex.pm
             Lhost/Zoho.pm
         Mail.pm
             Mail/Mbox.pm

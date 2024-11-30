@@ -119,7 +119,6 @@ sub another {
     # following MTA modules
     state $orderE0 = [
         'Sisimai::Lhost::MailRu',
-        'Sisimai::Lhost::Yandex',
         'Sisimai::Lhost::Exim',
         'Sisimai::Lhost::Sendmail',
         'Sisimai::Lhost::Aol',

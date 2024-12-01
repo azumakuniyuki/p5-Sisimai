@@ -44,7 +44,7 @@ Sisimai::Rhost::Aol - Detect the bounce reason returned from Aol Mail: https://w
 =head1 DESCRIPTION
 
 C<Sisimai::Rhost::Aol> detects the bounce reason from the content of C<Sisimai::Fact> object as an
-argument of C<find()> method when the value of C<rhost> of the object is C<*.email.ua>.
+argument of C<find()> method when the value of C<rhost> of the object is C<*.aol.com>.
 This class is called only C<Sisimai::Fact> class.
 
 =head1 CLASS METHODS

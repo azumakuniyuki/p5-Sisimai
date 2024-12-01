@@ -70,7 +70,7 @@ MAKETEST: {
     }
 
     for my $e ( @$RFC1894Field2 ) {
-        is $Package->match($e), 1, '->match('.$e.') returns 1';
+        is $Package->match($e), 2, '->match('.$e.') returns 1';
 
         $v = $Package->field($e);
         isa_ok $v, 'ARRAY', '->field('.$e.') returns Array';
@@ -87,7 +87,7 @@ MAKETEST: {
     }
 
     for my $e ( @$RFC1894Field3 ) {
-        is $Package->match($e), 1, '->match('.$e.') returns 1';
+        ok $Package->match($e) > 0, '->match('.$e.') returns 1 or 2';
 
         $v = $Package->field($e);
         isa_ok $v, 'ARRAY', '->field('.$e.') returns Array';
@@ -108,5 +108,4 @@ MAKETEST: {
 }
 
 done_testing;
-
 

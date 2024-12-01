@@ -35,8 +35,9 @@ sub match {
     my $class = shift;
     my $argv0 = shift                      || return undef;
     my $label = __PACKAGE__->label($argv0) || return undef;
+    my $match = 0;
 
-    state $fieldnames = {
+    state $fieldnames = [
         # https://tools.ietf.org/html/rfc3464#section-2.2
         #   Some fields of a DSN apply to all of the delivery attempts described by that DSN. At
         #   most, these fields may appear once in any DSN. These fields are used to correlate the
@@ -49,10 +50,12 @@ sub match {
         #   The following fields are not used in Sisimai:
         #     - Original-Envelope-Id
         #     - DSN-Gateway
-        'arrival-date'          => ':',
-        'received-from-mta'     => ';',
-        'reporting-mta'         => ';',
-        'x-original-message-id' => '@',
+        {
+            'arrival-date'          => ':',
+            'received-from-mta'     => ';',
+            'reporting-mta'         => ';',
+            'x-original-message-id' => '@',
+        },
 
         # https://tools.ietf.org/html/rfc3464#section-2.3
         #   A DSN contains information about attempts to deliver a message to one or more recipi-
@@ -66,23 +69,37 @@ sub match {
         #   The following fields are not used in Sisimai:
         #     - Will-Retry-Until
         #     - Final-Log-ID
-        'action'                => 'e',
-        'diagnostic-code'       => ';',
-        'final-recipient'       => ';',
-        'last-attempt-date'     => ':',
-        'original-recipient'    => ';',
-        'remote-mta'            => ';',
-        'status'                => '.',
-        'x-actual-recipient'    => ';',
-    };
+        {
+            'action'                => 'e',
+            'diagnostic-code'       => ';',
+            'final-recipient'       => ';',
+            'last-attempt-date'     => ':',
+            'original-recipient'    => ';',
+            'remote-mta'            => ';',
+            'status'                => '.',
+            'x-actual-recipient'    => ';',
+        },
+    ];
 
-    return 0 unless exists $fieldnames->{ $label };
-    return 0 unless index($argv0, $fieldnames->{ $label }) > 0;
-    return 1;
+    FIELDS0: for my $e ( keys $fieldnames->[0]->%* ) {
+        # Per-Message fields
+        next unless $label eq $e;
+        next unless index($argv0, $fieldnames->[0]->{ $label }) > 1;
+        $match = 1; last;
+    }
+    return $match if $match > 0;
+
+    FIELDS1: for my $e ( keys $fieldnames->[1]->%* ) {
+        # Per-Recipient fields
+        next unless $label eq $e;
+        next unless index($argv0, $fieldnames->[1]->{ $label }) > 1;
+        $match = 2; last;
+    }
+    return $match;
 }
 
 sub label {
-    # Returns a field name as a lqbel from the given string
+    # Returns a field name as a label from the given string
     # @param    [String] argv0 A line including field and value defined in RFC3464
     # @return   [String]       Field name as a label
     # @since v4.25.15
@@ -139,7 +156,7 @@ sub field {
     # - 2: Value
     # - 3: Field Group(addr, code, date, host, stat, text)
     # - 4: Comment
-    my $table = [$label, "", "", $group, ""];
+    my $table = [$label, "", "", $group, ""]; $parts->[1] = Sisimai::String->sweep($parts->[1]);
 
     if( $group eq 'addr' || $group eq 'code' || $group eq 'host' ) {
         # - Final-Recipient: RFC822; kijitora@nyaan.jp

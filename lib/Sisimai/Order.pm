@@ -72,7 +72,6 @@ sub make {
         'postmaster-notify'  => ['Sisimai::Lhost::Sendmail'],
         'returned-mail' => [
             'Sisimai::Lhost::Sendmail',
-            'Sisimai::Lhost::Aol',
             'Sisimai::Lhost::V5sendmail',
             'Sisimai::Lhost::Biglobe',
             'Sisimai::Lhost::X1',
@@ -82,7 +81,6 @@ sub make {
         'undeliverable' => [
             'Sisimai::Lhost::Office365',
             'Sisimai::Lhost::Exchange2007',
-            'Sisimai::Lhost::Aol',
             'Sisimai::Lhost::Exchange2003',
         ],
         'undeliverable-mail' => [
@@ -92,7 +90,6 @@ sub make {
         'undeliverable-message' => ['Sisimai::Lhost::Notes', 'Sisimai::Lhost::Verizon'],
         'undelivered-mail' => [
             'Sisimai::Lhost::Postfix',
-            'Sisimai::Lhost::Aol',
             'Sisimai::Lhost::Zoho',
         ],
         'warning' => ['Sisimai::Lhost::Sendmail', 'Sisimai::Lhost::Exim'],
@@ -121,7 +118,6 @@ sub another {
         'Sisimai::Lhost::MailRu',
         'Sisimai::Lhost::Exim',
         'Sisimai::Lhost::Sendmail',
-        'Sisimai::Lhost::Aol',
         'Sisimai::Lhost::Office365',
         'Sisimai::Lhost::Exchange2007',
         'Sisimai::Lhost::Exchange2003',

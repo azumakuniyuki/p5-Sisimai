@@ -7,6 +7,7 @@ state $RhostClass = {
     'Aol'       => [".mail.aol.com", ".mx.aol.com"],
     'Apple'     => ['.mail.icloud.com', '.apple.com', '.me.com'],
     'Cox'       => ['cox.net'],
+    'Facebook'  => [".facebook.com"],
     'FrancePTT' => ['.laposte.net', '.orange.fr', '.wanadoo.fr'],
     'GoDaddy'   => ['smtp.secureserver.net', 'mailstore1.secureserver.net'],
     'Google'    => ['aspmx.l.google.com', 'gmail-smtp-in.l.google.com'],

@@ -22,7 +22,6 @@ sub list {
             Lhost/Exchange2007.pm
             Lhost/Exim.pm
             Lhost/EZweb.pm
-            Lhost/Facebook.pm
             Lhost/FML.pm
             Lhost/GMX.pm
             Lhost/Gmail.pm
@@ -111,6 +110,7 @@ sub list {
             Rhost/Aol.pm
             Rhost/Apple.pm
             Rhost/Cox.pm
+            Rhost/Facebook.pm
             Rhost/FrancePTT.pm
             Rhost/GoDaddy.pm
             Rhost/Google.pm

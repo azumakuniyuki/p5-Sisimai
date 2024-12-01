@@ -26,7 +26,6 @@ sub list {
             Lhost/GMX.pm
             Lhost/Gmail.pm
             Lhost/GoogleGroups.pm
-            Lhost/GSuite.pm
             Lhost/IMailServer.pm
             Lhost/InterScanMSS.pm
             Lhost/KDDI.pm
@@ -114,6 +113,7 @@ sub list {
             Rhost/FrancePTT.pm
             Rhost/GoDaddy.pm
             Rhost/Google.pm
+            Rhost/GSuite.pm
             Rhost/IUA.pm
             Rhost/KDDI.pm
             Rhost/Microsoft.pm

@@ -12,7 +12,6 @@ sub list {
             Lhost/Activehunter.pm
             Lhost/AmazonSES.pm
             Lhost/AmazonWorkMail.pm
-            Lhost/Aol.pm
             Lhost/ApacheJames.pm
             Lhost/Biglobe.pm
             Lhost/Courier.pm
@@ -109,6 +108,7 @@ sub list {
         RFC5322.pm
         RFC5965.pm
         Rhost.pm
+            Rhost/Aol.pm
             Rhost/Apple.pm
             Rhost/Cox.pm
             Rhost/FrancePTT.pm

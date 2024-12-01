@@ -7,8 +7,8 @@ my $ModulePath = __PACKAGE__->path;
 my $GetRetried = __PACKAGE__->retry;
 my $ClassOrder = [
     [qw/MailboxFull MesgTooBig ExceedLimit Suspend HasMoved NoRelaying AuthFailure UserUnknown
-        Filtered RequirePTR NotCompliantRFC BadReputation Rejected HostUnknown SpamDetected Speeding
-        TooManyConn Blocked/
+        Filtered RequirePTR NotCompliantRFC BadReputation ContentError Rejected HostUnknown
+        SpamDetected Speeding TooManyConn Blocked/
     ],
     [qw/MailboxFull AuthFailure BadReputation Speeding SpamDetected VirusDetected PolicyViolation 
         NoRelaying SystemError NetworkError Suspend ContentError SystemFull NotAccept Expired

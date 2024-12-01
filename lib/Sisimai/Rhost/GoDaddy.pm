@@ -11,7 +11,7 @@ sub find {
     # @see      https://ca.godaddy.com/help/fix-rejected-email-with-a-bounce-error-40685
     # @since v4.22.2
     my $class = shift;
-    my $argvs = shift // return undef;
+    my $argvs = shift // return undef; return "" unless $argvs->{'diagnosticcode'};
 
     state $errorcodes = {
         # Sender bounces

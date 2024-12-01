@@ -12,7 +12,7 @@ sub find {
     #           https://www.postmastery.com/yahoo-postmaster/
     # @since v5.1.0
     my $class = shift;
-    my $argvs = shift // return undef;
+    my $argvs = shift // return undef; return "" unless $argvs->{'diagnosticcode'};
 
     state $messagesof = {
         'authfailure' => [

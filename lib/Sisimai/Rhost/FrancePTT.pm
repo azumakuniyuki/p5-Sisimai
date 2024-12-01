@@ -11,7 +11,7 @@ sub find {
     #           https://smtpfieldmanual.com/provider/orange
     # @since v4.22.3
     my $class = shift;
-    my $argvs = shift // return undef;
+    my $argvs = shift // return undef; return "" unless $argvs->{'diagnosticcode'};
 
     state $errorcodes = {
         # - 550 5.7.1 Service unavailable; client [192.0.2.1] blocked using Spamhaus

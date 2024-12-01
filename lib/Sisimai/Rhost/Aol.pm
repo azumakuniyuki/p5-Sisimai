@@ -9,7 +9,7 @@ sub find {
     # @return   [String]                Detected bounce reason
     # @since v5.2.0
     my $class = shift;
-    my $argvs = shift // return undef;
+    my $argvs = shift // return undef; return "" unless $argvs->{'diagnosticcode'};
 
     state $messagesof = {
         "hostunknown" => ["Host or domain name not found"],

@@ -25,7 +25,6 @@ sub make {
         'delivery-failure' => ['Sisimai::Lhost::Domino', 'Sisimai::Lhost::X2'],
         'delivery-notification' => ['Sisimai::Lhost::MessagingServer'],
         'delivery-status'  => [
-            'Sisimai::Lhost::GSuite',
             'Sisimai::Lhost::Outlook',
             'Sisimai::Lhost::GoogleGroups',
             'Sisimai::Lhost::McAfee',
@@ -133,7 +132,6 @@ sub another {
     # Fallback list: The following MTA/ESP modules is not listed orderE0
     state $orderE1 = [
         'Sisimai::Lhost::Postfix',
-        'Sisimai::Lhost::GSuite',
         'Sisimai::Lhost::Yahoo',
         'Sisimai::Lhost::Outlook',
         'Sisimai::Lhost::GMX',

@@ -41,7 +41,7 @@ sub index {
     # @return   [Array] MTA list with order
     return [qw|
         Activehunter AmazonSES AmazonWorkMail ApacheJames Biglobe Courier
-        Domino DragonFly EZweb EinsUndEins Exchange2003 Exchange2007 Exim FML GMX GSuite GoogleGroups
+        Domino DragonFly EZweb EinsUndEins Exchange2003 Exchange2007 Exim FML GMX GoogleGroups
         Gmail IMailServer InterScanMSS KDDI MXLogic MailFoundry MailMarshalSMTP MailRu McAfee MessageLabs
         MessagingServer Notes Office365 OpenSMTPD Outlook Postfix Sendmail
         V5sendmail Verizon X1 X2 X3 X4 X6 Yahoo Zoho mFILTER qmail

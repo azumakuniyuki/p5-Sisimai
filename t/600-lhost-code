@@ -27,8 +27,8 @@ my $moduletest = sub {
     my $isnotlhost = qr/\A(?:ARF|RFC3464|RFC3834)\z/;
     my $methodlist = ['DELIVERYSTATUS', 'INDICATORS', 'description', 'index', 'path'];
     my $rfc3464use = [qw|
-        Aol Amavis Barracuda Bigfoot Facebook GSuite PowerMTA ReceivingSES SendGrid SurfControl
-        Yandex X5
+        Aol Amavis Barracuda Bigfoot Facebook GSuite MessageLabs PowerMTA ReceivingSES SendGrid
+        SurfControl Yandex X5
     |];
     my $skiptonext = {
         'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],

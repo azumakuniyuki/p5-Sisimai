@@ -33,7 +33,6 @@ sub list {
             Lhost/MailMarshalSMTP.pm
             Lhost/MailRu.pm
             Lhost/McAfee.pm
-            Lhost/MessageLabs.pm
             Lhost/MessagingServer.pm
             Lhost/mFILTER.pm
             Lhost/MXLogic.pm
@@ -116,6 +115,7 @@ sub list {
             Rhost/GSuite.pm
             Rhost/IUA.pm
             Rhost/KDDI.pm
+            Rhost/MessageLabs.pm
             Rhost/Microsoft.pm
             Rhost/Mimecast.pm
             Rhost/NTTDOCOMO.pm

@@ -89,7 +89,7 @@ sub ipv4 {
     my $argv0 = shift || return undef; return [] if length $argv0 < 7;
     my $ipv4a = [];
 
-    for my $e ( '(', ')', '[', ']' ) {
+    for my $e ( '(', ')', '[', ']', ',' ) {
         # Rewrite: "mx.example.jp[192.0.2.1]" => "mx.example.jp 192.0.2.1"
         my $p0 = index($argv0, $e); next if $p0 < 0;
         substr($argv0, $p0, 1, ' ');

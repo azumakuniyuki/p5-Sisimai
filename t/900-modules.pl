@@ -39,7 +39,6 @@ sub list {
             Lhost/Notes.pm
             Lhost/Office365.pm
             Lhost/OpenSMTPD.pm
-            Lhost/Outlook.pm
             Lhost/Postfix.pm
             Lhost/qmail.pm
             Lhost/Sendmail.pm
@@ -119,6 +118,7 @@ sub list {
             Rhost/Microsoft.pm
             Rhost/Mimecast.pm
             Rhost/NTTDOCOMO.pm
+            Rhost/Outlook.pm
             Rhost/Spectrum.pm
             Rhost/Tencent.pm
             Rhost/YahooInc.pm

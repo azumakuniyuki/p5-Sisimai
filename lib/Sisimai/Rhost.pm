@@ -18,6 +18,7 @@ state $RhostClass = {
     "Microsoft"   => [".prod.outlook.com", ".protection.outlook.com"],
     "Mimecast"    => [".mimecast.com"],
     "NTTDOCOMO"   => ["mfsmax.docomo.ne.jp"],
+    "Outlook"     => [".hotmail.com"],
     "Spectrum"    => ["charter.net"],
     "Tencent"     => [".qq.com"],
     "YahooInc"    => [".yahoodns.net"],

@@ -25,7 +25,6 @@ sub make {
         'delivery-failure' => ['Sisimai::Lhost::Domino', 'Sisimai::Lhost::X2'],
         'delivery-notification' => ['Sisimai::Lhost::MessagingServer'],
         'delivery-status'  => [
-            'Sisimai::Lhost::Outlook',
             'Sisimai::Lhost::GoogleGroups',
             'Sisimai::Lhost::McAfee',
             'Sisimai::Lhost::OpenSMTPD',
@@ -132,7 +131,6 @@ sub another {
     state $orderE1 = [
         'Sisimai::Lhost::Postfix',
         'Sisimai::Lhost::Yahoo',
-        'Sisimai::Lhost::Outlook',
         'Sisimai::Lhost::GMX',
         'Sisimai::Lhost::MessagingServer',
         'Sisimai::Lhost::EinsUndEins',

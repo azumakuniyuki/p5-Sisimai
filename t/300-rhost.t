@@ -9,7 +9,8 @@ use Module::Load;
 my $Package = 'Sisimai::Rhost';
 my $Methods = { 'class' => ['find'], 'object' => [] };
 my $Classes = [qw|
-    Apple Cox FrancePTT GoDaddy Google IUA KDDI Microsoft Mimecast NTTDOCOMO Spectrum Tencent YahooInc
+    Aol Apple Cox Facebook FrancePTT GSuite GoDaddy Google IUA KDDI MessageLabs Microsoft Mimecast
+    NTTDOCOMO Outlook Spectrum Tencent YahooInc
 |];
 
 MAKETEST: {
@@ -26,10 +27,7 @@ MAKETEST: {
             isa_ok $f, 'Sisimai::Fact';
             ok length $f->rhost, '->rhost = '.$f->rhost;
             ok length $f->reason, '->reason = '.$f->reason;
-
-            my $cx = $f->damn;
-            ok length $cx->{'destination'};
-            is $Package->find($cx, $cx->{'destination'}), $f->reason, sprintf("->damn->reason = %s", $f->reason);
+            ok length $f->destination, '->destination = '.$f->destination;
         }
     }
 

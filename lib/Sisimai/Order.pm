@@ -31,6 +31,7 @@ sub make {
             'Sisimai::Lhost::AmazonSES',
             'Sisimai::Lhost::AmazonWorkMail',
             'Sisimai::Lhost::Gmail',
+            'Sisimai::Lhost::GoogleWorkspace',
             'Sisimai::Lhost::X3',
         ],
         'dmarc-ietf-dmarc' => ['Sisimai::ARF'],

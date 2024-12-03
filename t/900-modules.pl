@@ -26,6 +26,7 @@ sub list {
             Lhost/GMX.pm
             Lhost/Gmail.pm
             Lhost/GoogleGroups.pm
+            Lhost/GoogleWorkspace.pm
             Lhost/IMailServer.pm
             Lhost/InterScanMSS.pm
             Lhost/KDDI.pm

@@ -402,7 +402,7 @@ my $moduletest = sub {
                     } else {
                         # Sisimai::Lhost
                         if( $E eq 'RFC3464' && $cv !~ /\ARFC3464/ ) {
-                            # Parsed by Sisimai::MDA
+                            # Parsed by Sisimai::LDA
                             ok $cv =~ $cr, sprintf("%s %s", $ct, $cr);
                             is scalar @{ [grep { $cv eq $_ } @$lhostindex] }, 0, sprintf("%s %s", $ct, $cv);
 

@@ -14,6 +14,7 @@ use Sisimai::SMTP::Command;
 use Sisimai::SMTP::Failure;
 use Sisimai::String;
 use Sisimai::Rhost;
+use Sisimai::LDA;
 use Class::Accessor::Lite ('new' => 0, 'rw' => [
     'action',           # [String] The value of Action: header
     'addresser',        # [Sisimai::Address] From address
@@ -356,7 +357,8 @@ sub rise {
             if( $thing->{'reason'} eq '' || exists $retryindex->{ $thing->{'reason'} } ) {
                 # The value of "reason" is empty or is needed to check with other values again
                 my $re = $thing->{'reason'} || 'undefined';
-                $thing->{'reason'} = Sisimai::Rhost->find($thing) || Sisimai::Reason->find($thing) || $re;
+                $thing->{'reason'}   = Sisimai::LDA->find($thing);
+                $thing->{'reason'} ||= Sisimai::Rhost->find($thing) || Sisimai::Reason->find($thing) || $re;
             }
         }
 

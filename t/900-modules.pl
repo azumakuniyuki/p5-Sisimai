@@ -58,7 +58,7 @@ sub list {
             Mail/Memory.pm
             Mail/STDIN.pm
         Message.pm
-        MDA.pm
+        LDA.pm
         Order.pm
         Reason.pm
             Reason/AuthFailure.pm

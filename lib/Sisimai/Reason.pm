@@ -30,6 +30,17 @@ sub retry {
     };
 }
 
+sub is_explicit {
+    # is_explicit() returns 0 when the argument is empty or is "undefined" or is "onhold"
+    # @param    string argv1  Reason name
+    # @return   bool          false: The reaosn is not explicit
+    my $class = shift;
+    my $argv1 = shift || return 0;
+
+    return 0 if $argv1 eq "undefined" || $argv1 eq "onhold" || $argv1 eq "";
+    return 1;
+}
+
 sub index {
     # All the error reason list Sisimai support
     # @return   [Array] Reason list

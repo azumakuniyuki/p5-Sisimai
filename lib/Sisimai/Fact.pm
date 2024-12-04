@@ -357,8 +357,17 @@ sub rise {
             if( $thing->{'reason'} eq '' || exists $retryindex->{ $thing->{'reason'} } ) {
                 # The value of "reason" is empty or is needed to check with other values again
                 my $re = $thing->{'reason'} || 'undefined';
-                $thing->{'reason'}   = Sisimai::LDA->find($thing);
-                $thing->{'reason'} ||= Sisimai::Rhost->find($thing) || Sisimai::Reason->find($thing) || $re;
+                my $cr = "Sisimai::Reason";
+                my $or = Sisimai::LDA->find($thing);    if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last };
+                   $or = Sisimai::Rhost->find($thing);  if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last };
+                   $or = Sisimai::Reason->find($thing); if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last };
+                $thing->{'reason'} = $thing->{'diagnosticcode'} ? "onhold" : $re;
+
+
+
+                   #$thing->{'reason'}   = Sisimai::LDA->find($thing);
+                   #warn 'REA = ['.$thing->{'reason'}.']';
+                   #$thing->{'reason'} ||= Sisimai::Rhost->find($thing) || Sisimai::Reason->find($thing) || $re;
             }
         }
 

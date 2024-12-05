@@ -4,7 +4,7 @@ use lib qw(./lib ./blib/lib);
 use Sisimai::RFC1123;
 
 my $Package = 'Sisimai::RFC1123';
-my $Methods = { 'class'  => ['is_validhostname'], 'object' => [] };
+my $Methods = { 'class'  => ['is_internethost'], 'object' => [] };
 
 use_ok $Package;
 can_ok $Package, @{ $Methods->{'class'} };
@@ -31,12 +31,12 @@ MAKETEST: {
 
     for my $e ( @$hostnames0 ) {
         # Invalid hostnames
-        is $Package->is_validhostname($e), 0, '->is_validhostname('.$e.') = 0';
+        is $Package->is_internethost($e), 0, '->is_internethost('.$e.') = 0';
     }
 
     for my $e ( @$hostnames1 ) {
         # Valid hostnames
-        is $Package->is_validhostname($e), 1, '->is_validhostname('.$e.') = 1';
+        is $Package->is_internethost($e), 1, '->is_internethost('.$e.') = 1';
     }
 }
 

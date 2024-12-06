@@ -853,11 +853,16 @@ sub prefer {
 
     return $statuscode if $zeroindex2->{'error'} > 0;       # An SMTP status code is "X.0.0"
     return $codeinmesg if $statuscode eq '4.4.7';           # "4.4.7" is an ambiguous code
+    return $codeinmesg if $statuscode eq '4.7.0';           # "4.7.0" indicates "too many errors"
     return $codeinmesg if index($statuscode, '5.3.') == 0;  # "5.3.Z" is an error of a system
+    return $codeinmesg if index($statuscode, '.5.1')  > 0;  # "X.5.1" indicates an invalid command
+    return $codeinmesg if index($statuscode, '.5.2')  > 0;  # "X.5.2" indicates a syntax error
+    return $codeinmesg if index($statuscode, '.5.4')  > 0;  # "X.5.4" indicates an invalid command arguments
+    return $codeinmesg if index($statuscode, '.5.5')  > 0;  # "X.5.5" indicates a wrong protocol version
 
     if( $statuscode eq '5.1.1' ) {
         # "5.1.1" is a code of "userunknown"
-        return $statuscode if $zeroindex1->{'error'} > 0;
+        return $statuscode if index($codeinmesg, '5.5.') == 0 || $zeroindex1->{'error'} > 0;
         return $codeinmesg;
 
     } elsif( $statuscode eq '5.1.3' ) {

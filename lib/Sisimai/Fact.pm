@@ -160,7 +160,7 @@ sub rise {
                 for my $re ( reverse @$recv ) {
                     # Check the Received: headers backwards and get a remote hostname
                     my $cv = Sisimai::RFC5322->received($re)->[0];
-                    next unless Sisimai::RFC1123->is_validhostname($cv);
+                    next unless Sisimai::RFC1123->is_internethost($cv);
                     $piece->{'rhost'} = $cv; last;
                 }
             }
@@ -171,7 +171,7 @@ sub rise {
                 for my $le ( @$recv ) {
                     # Check the Received: headers forwards and get a local hostname
                     my $cv = Sisimai::RFC5322->received($le)->[0];
-                    next unless Sisimai::RFC1123->is_validhostname($cv);
+                    next unless Sisimai::RFC1123->is_internethost($cv);
                     $piece->{'lhost'} = $cv; last;
                 }
             }
@@ -358,9 +358,9 @@ sub rise {
                 # The value of "reason" is empty or is needed to check with other values again
                 my $re = $thing->{'reason'} || 'undefined';
                 my $cr = "Sisimai::Reason";
-                my $or = Sisimai::LDA->find($thing);    if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last };
-                   $or = Sisimai::Rhost->find($thing);  if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last };
-                   $or = Sisimai::Reason->find($thing); if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last };
+                my $or = Sisimai::LDA->find($thing);    if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
+                   $or = Sisimai::Rhost->find($thing);  if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
+                   $or = Sisimai::Reason->find($thing); if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
                 $thing->{'reason'} = $thing->{'diagnosticcode'} ? "onhold" : $re;
 
 

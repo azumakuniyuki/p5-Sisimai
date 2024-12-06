@@ -111,7 +111,7 @@ sub inquire {
                 # Other error messages
                 if( index($e, '>>> ') == 0 ) {
                     # >>> DATA (Client Command)
-                    $thecommand = Sisimai::SMTP::Command->find($e);
+                    $thecommand ||= Sisimai::SMTP::Command->find($e);
 
                 } elsif( index($e, '<<< ') == 0 ) {
                     # <<< Response from the SMTP server

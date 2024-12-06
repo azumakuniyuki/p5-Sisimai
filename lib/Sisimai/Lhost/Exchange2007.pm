@@ -37,18 +37,21 @@ sub inquire {
         'Original message headers:',                # en-US
         "tes de message d'origine :",               # fr-FR/En-têtes de message d'origine
         'Intestazioni originali del messaggio:',    # it-CH
+        'Ursprungshuvuden:',                        # sv-SE
     ];
     state $markingsof = {
         'message' => [
             'Diagnostic information for administrators:',           # en-US
             'Informations de diagnostic pour les administrateurs',  # fr-FR
             'Informazioni di diagnostica per gli amministratori',   # it-CH
+            'Diagnostisk information f',                            # sv-SE
         ],
         'error'   => [' RESOLVER.', ' QUEUE.'],
         'rhost'   => [
             'Generating server',        # en-US
             'Serveur de g',             # fr-FR/Serveur de g辿n辿ration
             'Server di generazione',    # it-CH
+            'Genererande server',       # sv-SE
         ],
     };
     state $ndrsubject = {

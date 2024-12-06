@@ -362,12 +362,6 @@ sub rise {
                    $or = Sisimai::Rhost->find($thing);  if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
                    $or = Sisimai::Reason->find($thing); if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
                 $thing->{'reason'} = $thing->{'diagnosticcode'} ? "onhold" : $re;
-
-
-
-                   #$thing->{'reason'}   = Sisimai::LDA->find($thing);
-                   #warn 'REA = ['.$thing->{'reason'}.']';
-                   #$thing->{'reason'} ||= Sisimai::Rhost->find($thing) || Sisimai::Reason->find($thing) || $re;
             }
         }
 

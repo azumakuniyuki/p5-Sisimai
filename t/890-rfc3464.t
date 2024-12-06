@@ -10,7 +10,7 @@ my $isexpected = {
     # INDEX => [['D.S.N.', 'replycode', 'REASON', 'hardbounce'], [...]]
     '01' => [['5.1.1',   '550', 'mailboxfull',     0]],
     '03' => [['5.0.0',   '554', 'policyviolation', 0]],
-    '04' => [['5.5.0',   '554', 'mailererror',     0]],
+    '04' => [['5.5.0',   '554', 'systemerror',     0]],
     '06' => [['5.5.0',   '554', 'userunknown',     1]],
     '07' => [['4.4.0',   '',    'expired',         0]],
     '08' => [['5.7.1',   '550', 'spamdetected',    0]],
@@ -22,7 +22,7 @@ my $isexpected = {
     '29' => [['5.5.0',   '503', 'syntaxerror',     0]],
     '34' => [['4.4.1',   '',    'networkerror',    0]],
     '35' => [['5.0.0',   '550', 'rejected',        0],
-             ['4.0.0',   '',    'expired',         0],
+             ['4.0.0',   '',    'networkerror',    0],
              ['5.0.0',   '550', 'filtered',        0]],
     '36' => [['4.0.0',   ''   , 'expired',         0]],
     '40' => [['4.4.6',   '',    'networkerror',    0]],

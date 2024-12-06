@@ -164,7 +164,7 @@ sub field {
         # - Remote-MTA: DNS; mx.example.jp
         if( index($parts->[1], ";" ) > 0 ) {
             # There is a valid sub type (including ";")
-            my $v = [split(";", $parts->[1])];
+            my $v = [split(";", $parts->[1], 2)];
             $table->[1] = uc Sisimai::String->sweep($v->[0]) if scalar @$v > 0;
             $table->[2] = Sisimai::String->sweep($v->[1])    if scalar @$v > 1;
 

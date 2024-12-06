@@ -419,6 +419,7 @@ sub rise {
             }
             $thing->{'action'}   = 'delayed' if $thing->{'reason'} eq 'expired';
             $thing->{'action'} ||= 'failed'  if $cx->[0] eq '4' || $cx->[0] eq '5';
+            $thing->{'action'} ||= "";
         }
 
         push @$listoffact, bless($thing, __PACKAGE__);

@@ -416,7 +416,13 @@ my $moduletest = sub {
 
                         } else {
                             # Other MTA modules
-                            is $cv, $E, sprintf("%s %s", $ct, $cr);
+                            if( $E eq "AmazonSES" ) {
+                                # lhost-amazonses-* are decoded by Sisimai::RFC3464 except 11-14
+                                like $cv, qr/(?:AmazonSES|RFC3464)/, sprintf("%s %s", $ct, $cr);
+
+                            } else {
+                                is $cv, $E, sprintf("%s %s", $ct, $cr);
+                            }
                         }
                     }
                 }

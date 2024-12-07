@@ -49,6 +49,13 @@ my $moduletest = sub {
         # ARF, RFC3464, ARF3834
         $M = sprintf("Sisimai::%s", $E);
 
+    } elsif( grep { $E eq $_ } @$rfc3464use ) {
+        # Removed Lhost moudles (Sisimai::RFC3464 can decode)
+        $M = "Sisimai::RFC3464";
+        my $c = [caller()]->[1];
+        my $h = $c =~ /-rhost-/ ? 'rhost' : 'lhost';
+        $nameprefix = $h.'-';
+
     } else {
         # Sisimai::Lhost OR Sisimai::Rhost
         my $c = [caller()]->[1];

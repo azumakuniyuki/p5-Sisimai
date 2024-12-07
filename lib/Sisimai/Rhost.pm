@@ -40,14 +40,22 @@ sub find {
     my $rhostmatch = undef;
     my $rhostclass = '';
     for my $e ( keys %$RhostClass ) {
-        # Try to match with each value of RhostClass
+        # Try to match the remote host and the domain part with each value of RhostClass
         $rhostmatch   = 1 if grep { index($remotehost, $_) > -1 } $RhostClass->{ $e }->@*;
         $rhostmatch ||= 1 if grep { index($_, $domainpart) > -1 } $RhostClass->{ $e }->@*;
-        $rhostmatch ||= 1 if grep { index($clienthost, $_) > -1 } $RhostClass->{ $e }->@*;
         next unless $rhostmatch;
 
         $rhostclass = __PACKAGE__.'::'.$e;
         last;
+    }
+    if( $rhostclass eq "" )  {
+        # Neither the remote host nor the destination did not matched with any value of RhostClass
+        for my $e ( keys %$RhostClass ) {
+            # Try to match the client host with each value of RhostClass
+            next unless grep { index($clienthost, $_) > -1 } $RhostClass->{ $e }->@*;
+            $rhostclass = __PACKAGE__."::".$e;
+            last;
+        }
     }
     return undef unless $rhostclass;
 

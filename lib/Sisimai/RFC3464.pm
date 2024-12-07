@@ -64,7 +64,7 @@ sub inquire {
         for my $e ( @$boundaries ) {
             # Look for a boundary string from the message body
             $p0 = index($$mbody, $e."\n"); next if $p0 < 0;
-            $p1 = $p1 + length($e) + 2;
+            $p1 = $p0 + length($e) + 2;
             $ct = $e; last;
         }
         last if $p0 < 0;

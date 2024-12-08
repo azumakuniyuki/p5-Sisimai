@@ -64,10 +64,11 @@ sub is_internethost {
     return 0 if $hostnameok == 0;
 
     my $p1 = rindex($argv0, ".");
-    for my $e ( split("", substr($argv0, $p1 + 1,)) ) {
+    my $cv = substr($argv0, $p1 + 1,); return 0 if length $cv > 63;
+    for my $e ( split("", $cv) ) {
         # The top level domain should not include a number
         my $f = ord $e;
-        if( $f > 47 && $f < 58 )  { $hostnameok = 0; last }
+        if( $f > 47 && $f < 58 ) { $hostnameok = 0; last }
     }
     return $hostnameok;
 }

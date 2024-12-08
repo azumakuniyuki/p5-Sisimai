@@ -257,6 +257,17 @@ my $isexpected = {
     '01288' => [['5.3.0',   '552', 'exceedlimit',     0]],
     '01289' => [['4.0.0',   '',    'notaccept',       0]],
     '01290' => [['4.3.0',   '451', 'onhold',          0]],
+    '01300' => [['5.1.0',   '550', 'userunknown',     1]],
+    '01301' => [['5.0.0',   '',    'spamdetected',    0]],
+    '01302' => [['5.0.0',   '550', 'filtered',        0]],
+    '01303' => [['5.0.0',   '550', 'userunknown',     1]],
+    '01304' => [['4.0.0',   '',    'notaccept',       0]],
+    '01305' => [['5.1.8',   '501', 'rejected',        0]],
+    '01306' => [['4.0.0',   '',    'networkerror',    0]],
+    '01307' => [['5.1.1',   '550', 'userunknown',     1]],
+    '01308' => [['5.0.0',   '',    'policyviolation', 0]],
+    '01309' => [['5.0.0',   '553', 'systemerror',     0]],
+    '01310' => [['4.0.0',   '',    'networkerror',    0]],
 };
 
 plan 'skip_all', sprintf("%s not found", $samplepath) unless -d $samplepath;

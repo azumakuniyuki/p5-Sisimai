@@ -157,11 +157,15 @@ sub rise {
             my $recv = $mesg1->{'header'}->{'received'} || [];
             unless( $piece->{'rhost'} ) {
                 # Try to pick a remote hostname from Received: headers of the bounce message
+                my $ir = Sisimai::RFC1123->find($e->{'diagnosis'});
+                $piece->{'rhost'} = $ir if Sisimai::RFC1123->is_internethost($ir);
+
                 for my $re ( reverse @$recv ) {
                     # Check the Received: headers backwards and get a remote hostname
+                    last if $piece->{'rhost'};
                     my $cv = Sisimai::RFC5322->received($re)->[0];
                     next unless Sisimai::RFC1123->is_internethost($cv);
-                    $piece->{'rhost'} = $cv; last;
+                    $piece->{'rhost'} = $cv;# last;
                 }
             }
             $piece->{'lhost'} = '' if $piece->{'lhost'} eq $piece->{'rhost'};

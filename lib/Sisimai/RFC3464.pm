@@ -84,6 +84,13 @@ sub inquire {
         $emailparts->[0] = sprintf("%s\n\n%s%s", substr($e0, 0, $p0), $startingof->{"message"}->[0], substr($e0, $p0,)) if $p0 > 0;
     }
 
+    if( index($emailparts->[0], "\nFinal-Recipient: <") > 1 ) {
+        # Fix the malformed field "Final-Recipient: <kijitora@example.jp>"
+        my $cv = "\nFinal-Recipient: ";
+        my $p0 = index($emailparts->[0], $cv); substr($emailparts->[0], $p0, length($cv) + 1, $cv."rfc822; ");
+        my $p1 = index($emailparts->[0], ">\n", $p0 + 2); substr($emailparts->[0], $p1, 1, "");
+    }
+
     for my $e ( split("\n", $emailparts->[0]) ) {
         # Read error messages and delivery status lines from the head of the email to the previous
         # line of the beginning of the original message.

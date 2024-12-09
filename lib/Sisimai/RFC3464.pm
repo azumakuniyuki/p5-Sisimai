@@ -226,7 +226,7 @@ sub inquire {
     while( $recipients == 0 ) {
         # There is no valid recipient address, Try to use the alias addaress as a final recipient
         last unless length $dscontents->[0]->{'alias'} > 0;
-        last unless Sisimai::Address->is_emailaddress($dscontents->[0]->{'aliaas'});
+        last unless Sisimai::Address->is_emailaddress($dscontents->[0]->{'alias'});
         $dscontents->[0]->{'recipient'} = $dscontents->[0]->{'alias'};
         $recipients++;
     }

@@ -419,8 +419,9 @@ sub rise {
                     $thing->{'action'} = $ox->[2];
                 }
             }
-            $thing->{'action'}   = 'delayed' if $thing->{'reason'} eq 'expired';
-            $thing->{'action'} ||= 'failed'  if $cx->[0] eq '4' || $cx->[0] eq '5';
+            $thing->{'action'}   = 'delivered' if $thing->{'reason'} eq 'delivered';
+            $thing->{'action'} ||= 'delayed'   if $thing->{'reason'} eq 'expired';
+            $thing->{'action'} ||= 'failed'    if $cx->[0] eq '4' || $cx->[0] eq '5';
             $thing->{'action'} ||= "";
         }
 

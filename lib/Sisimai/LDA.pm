@@ -38,7 +38,7 @@ state $MessagesOf = {
         ],
     },
     "procmail" => {
-        "mailboxfull" => ["quota exceeded while writing"],
+        "mailboxfull" => ["quota exceeded while writing", "user over quota"],
         "systemerror" => ["service unavailable"],
         "systemfull"  => ["no space left to finish writing"],
     },

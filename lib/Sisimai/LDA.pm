@@ -39,7 +39,6 @@ state $MessagesOf = {
     },
     "procmail" => {
         "mailboxfull" => ["quota exceeded while writing"],
-        "mailererror" => ["couldn't "],
         "systemerror" => ["service unavailable"],
         "systemfull"  => ["no space left to finish writing"],
     },
@@ -89,6 +88,8 @@ sub find {
         next unless grep { index($issuedcode, $_) > -1 } $MessagesOf->{ $deliversby }->{ $e }->@*;
         $reasontext = $e; last;
     }
+
+    $reasontext ||= "mailererror"; # procmail: Couldn't create "/var/mail/tmp.nekochan.22"
     return $reasontext;
 }
 

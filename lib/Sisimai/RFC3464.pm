@@ -161,7 +161,7 @@ sub inquire {
                         push @$dscontents, Sisimai::Lhost->DELIVERYSTATUS;
                         $v = $dscontents->[-1];
                     }
-                    $v->{'recipient'} = $o->[2];
+                    $v->{'recipient'} = $cv;
                     $recipients++;
 
                 } else {

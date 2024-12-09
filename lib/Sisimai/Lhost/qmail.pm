@@ -33,7 +33,15 @@ sub inquire {
     require Sisimai::SMTP::Status;
     require Sisimai::SMTP::Command;
     state $indicators = __PACKAGE__->INDICATORS;
-    state $boundaries = ['--- Below this line is a copy of the message.'];
+    state $boundaries = [
+        # qmail-send.c:qmail_puts(&qqt,*sender.s ? "--- Below this line is a copy of the message.\n\n" :...
+        "--- Below this line is a copy of the message.",     # qmail-1.03
+        "--- Below this line is a copy of the mail header.",
+        "--- Below the next line is a copy of the message.", # The followings are the qmail clone
+        "--- Mensaje original adjunto.",
+        "Content-Type: message/rfc822",
+        "Original message follows.",
+    ];
     state $startingof = {
         #  qmail-remote.c:248|    if (code >= 500) {
         #  qmail-remote.c:249|      out("h"); outhost(); out(" does not like recipient.\n");

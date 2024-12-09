@@ -38,11 +38,10 @@ sub true {
     my $class = shift;
     my $argvs = shift // return undef;
 
-    return 1 if $argvs->{'reason'} eq 'contenterror';
-    return 1 if (Sisimai::SMTP::Status->name($argvs->{'deliverystatus'}) || '') eq 'contenterror';
-
     require Sisimai::Reason::SpamDetected;
+    return 1 if $argvs->{'reason'} eq 'contenterror';
     return 0 if Sisimai::Reason::SpamDetected->true($argvs);
+    return 1 if (Sisimai::SMTP::Status->name($argvs->{'deliverystatus'}) || '') eq 'contenterror';
     return __PACKAGE__->match(lc $argvs->{'diagnosticcode'});
 }
 

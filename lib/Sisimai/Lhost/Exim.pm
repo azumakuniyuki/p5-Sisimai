@@ -15,7 +15,6 @@ sub inquire {
     my $class = shift;
     my $mhead = shift // return undef;
     my $mbody = shift // return undef;
-    return undef if index($mhead->{'from'}, '.mail.ru') > 0;
 
     # Message-Id: <E1P1YNN-0003AD-Ga@example.org>
     # X-Failed-Recipients: kijitora@example.ed.jp

@@ -32,7 +32,6 @@ sub list {
             Lhost/KDDI.pm
             Lhost/MailFoundry.pm
             Lhost/MailMarshalSMTP.pm
-            Lhost/MailRu.pm
             Lhost/McAfee.pm
             Lhost/MessagingServer.pm
             Lhost/mFILTER.pm

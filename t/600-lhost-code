@@ -26,10 +26,10 @@ my $moduletest = sub {
     my $lhostindex = Sisimai::Lhost->index; push @$lhostindex, 'ARF', 'RFC3464', 'RFC3834';
     my $isnotlhost = qr/\A(?:ARF|RFC3464|RFC3834)\z/;
     my $methodlist = ['DELIVERYSTATUS', 'INDICATORS', 'description', 'index', 'path'];
-    my $rfc3464use = [qw|
-        Aol Amavis Barracuda Bigfoot Facebook GSuite MessageLabs Outlook PowerMTA ReceivingSES
-        SendGrid SurfControl Yandex X5
-    |];
+    my $alternates = {
+        'RFC3464' => [qw|Aol Amavis Barracuda Bigfoot Facebook GSuite MessageLabs Outlook PowerMTA ReceivingSES SendGrid SurfControl Yandex X5|],
+        'Exim'    => [qw|MailRu|],
+    };
     my $skiptonext = {
         'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],
         'private' => [
@@ -49,7 +49,7 @@ my $moduletest = sub {
         # ARF, RFC3464, ARF3834
         $M = sprintf("Sisimai::%s", $E);
 
-    } elsif( grep { $E eq $_ } @$rfc3464use ) {
+    } elsif( grep { $E eq $_ } $alternates->{'RFC3464'}->@* ) {
         # Removed Lhost moudles (Sisimai::RFC3464 can decode)
         $M = "Sisimai::RFC3464";
         my $c = [caller()]->[1];
@@ -413,9 +413,13 @@ my $moduletest = sub {
                             ok $cv =~ $cr, sprintf("%s %s", $ct, $cr);
                             is scalar @{ [grep { $cv eq $_ } @$lhostindex] }, 0, sprintf("%s %s", $ct, $cv);
 
-                        } elsif( grep { $E eq $_ } @$rfc3464use ) {
+                        } elsif( grep { $E eq $_ } $alternates->{'RFC3464'}->@* ) {
                             # Decoded by Sisimai::RFC3464 since v5.2.0
                             is $cv, 'RFC3464', sprintf("%s %s", $ct, $cr);
+
+                        } elsif( grep { $E eq $_ } $alternates->{'Exim'}->@* ) {
+                            # Decoded by Sisimai::Lhost::Exim since v5.2.0
+                            is $cv, 'Exim', sprintf("%s %s", $ct, $cr);
 
                         } elsif( $E eq 'ARF' ) {
                             # Parsed by Sisimai::ARF

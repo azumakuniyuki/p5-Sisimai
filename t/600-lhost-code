@@ -29,6 +29,7 @@ my $moduletest = sub {
     my $alternates = {
         'RFC3464' => [qw|Aol Amavis Barracuda Bigfoot Facebook GSuite MessageLabs Outlook PowerMTA ReceivingSES SendGrid SurfControl Yandex X5|],
         'Exim'    => [qw|MailRu MXLogic|],
+        'qmail'   => [qw|X4|],
     };
     my $skiptonext = {
         'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],
@@ -49,26 +50,26 @@ my $moduletest = sub {
         # ARF, RFC3464, ARF3834
         $M = sprintf("Sisimai::%s", $E);
 
-    } elsif( grep { $E eq $_ } $alternates->{'RFC3464'}->@* ) {
-        # Removed Lhost moudles (Sisimai::RFC3464 can decode)
-        $M = "Sisimai::RFC3464";
-        my $c = [caller()]->[1];
-        my $h = $c =~ /-rhost-/ ? 'rhost' : 'lhost';
-        $nameprefix = $h.'-';
-
-    } elsif( grep { $E eq $_ } $alternates->{'Exim'}->@* ) {
-        # Removed Lhost moudles (Sisimai::RFC3464 can decode)
-        $M = "Sisimai::Lhost::Exim";
-        my $c = [caller()]->[1];
-        my $h = $c =~ /-rhost-/ ? 'rhost' : 'lhost';
-        $nameprefix = $h.'-';
-
     } else {
-        # Sisimai::Lhost OR Sisimai::Rhost
-        my $c = [caller()]->[1];
-        my $h = $c =~ /-rhost-/ ? 'rhost' : 'lhost';
-        $M = sprintf("Sisimai::%s::%s", ucfirst $h, $E);
-        $nameprefix = $h.'-';
+        my $calledfrom = [caller()]->[1];
+        my $kindofhost = $calledfrom =~ /-rhost-/ ? 'rhost' : 'lhost';
+        if( grep { $E eq $_ } $alternates->{'RFC3464'}->@* ) {
+            # Removed Lhost moudles (Sisimai::RFC3464 can decode)
+            $M = "Sisimai::RFC3464";
+
+        } elsif( grep { $E eq $_ } $alternates->{'Exim'}->@* ) {
+            # Removed Lhost moudles (Sisimai::Lhost::Exim can decode)
+            $M = "Sisimai::Lhost::Exim";
+
+        } elsif( grep { $E eq $_ } $alternates->{'qmail'}->@* ) {
+            # Removed Lhost moudles (Sisimai::Lhost::qmail can decode)
+            $M = "Sisimai::Lhost::qmail";
+
+        } else {
+            # Sisimai::Lhost OR Sisimai::Rhost
+            $M = sprintf("Sisimai::%s::%s", ucfirst $kindofhost, $E);
+        }
+        $nameprefix = $kindofhost.'-';
     }
     my $samplepath = $privateset ? sprintf("set-of-emails/private/%s%s", $nameprefix, lc $E) : 'set-of-emails/maildir/bsd';
 
@@ -427,6 +428,10 @@ my $moduletest = sub {
                         } elsif( grep { $E eq $_ } $alternates->{'Exim'}->@* ) {
                             # Decoded by Sisimai::Lhost::Exim since v5.2.0
                             is $cv, 'Exim', sprintf("%s %s", $ct, $cr);
+
+                        } elsif( grep { $E eq $_ } $alternates->{'qmail'}->@* ) {
+                            # Decoded by Sisimai::Lhost::qmail since v5.2.0
+                            is $cv, 'qmail', sprintf("%s %s", $ct, $cr);
 
                         } elsif( $E eq 'ARF' ) {
                             # Parsed by Sisimai::ARF

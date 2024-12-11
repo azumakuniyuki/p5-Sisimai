@@ -35,7 +35,6 @@ sub list {
             Lhost/McAfee.pm
             Lhost/MessagingServer.pm
             Lhost/mFILTER.pm
-            Lhost/MXLogic.pm
             Lhost/Notes.pm
             Lhost/Office365.pm
             Lhost/OpenSMTPD.pm

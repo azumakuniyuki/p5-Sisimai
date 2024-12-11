@@ -28,7 +28,7 @@ my $moduletest = sub {
     my $methodlist = ['DELIVERYSTATUS', 'INDICATORS', 'description', 'index', 'path'];
     my $alternates = {
         'RFC3464' => [qw|Aol Amavis Barracuda Bigfoot Facebook GSuite MessageLabs Outlook PowerMTA ReceivingSES SendGrid SurfControl Yandex X5|],
-        'Exim'    => [qw|MailRu|],
+        'Exim'    => [qw|MailRu MXLogic|],
     };
     my $skiptonext = {
         'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],

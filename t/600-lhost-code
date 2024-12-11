@@ -56,6 +56,13 @@ my $moduletest = sub {
         my $h = $c =~ /-rhost-/ ? 'rhost' : 'lhost';
         $nameprefix = $h.'-';
 
+    } elsif( grep { $E eq $_ } $alternates->{'Exim'}->@* ) {
+        # Removed Lhost moudles (Sisimai::RFC3464 can decode)
+        $M = "Sisimai::Lhost::Exim";
+        my $c = [caller()]->[1];
+        my $h = $c =~ /-rhost-/ ? 'rhost' : 'lhost';
+        $nameprefix = $h.'-';
+
     } else {
         # Sisimai::Lhost OR Sisimai::Rhost
         my $c = [caller()]->[1];

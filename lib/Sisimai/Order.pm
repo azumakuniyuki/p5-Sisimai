@@ -39,7 +39,6 @@ sub make {
         'failed-delivery'  => ['Sisimai::Lhost::X2'],
         'failure-delivery' => ['Sisimai::Lhost::X2'],
         'failure-notice'   => [
-            'Sisimai::Lhost::Yahoo',
             'Sisimai::Lhost::qmail',
             'Sisimai::Lhost::mFILTER',
             'Sisimai::Lhost::Activehunter',
@@ -125,7 +124,6 @@ sub another {
     # Fallback list: The following MTA/ESP modules is not listed orderE0
     state $orderE1 = [
         'Sisimai::Lhost::Postfix',
-        'Sisimai::Lhost::Yahoo',
         'Sisimai::Lhost::GMX',
         'Sisimai::Lhost::MessagingServer',
         'Sisimai::Lhost::EinsUndEins',

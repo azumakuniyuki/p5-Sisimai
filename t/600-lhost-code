@@ -29,7 +29,7 @@ my $moduletest = sub {
     my $alternates = {
         'RFC3464' => [qw|Aol Amavis Barracuda Bigfoot Facebook GSuite MessageLabs Outlook PowerMTA ReceivingSES SendGrid SurfControl Yandex X5|],
         'Exim'    => [qw|MailRu MXLogic|],
-        'qmail'   => [qw|X4|],
+        'qmail'   => [qw|X4 Yahoo|],
     };
     my $skiptonext = {
         'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],

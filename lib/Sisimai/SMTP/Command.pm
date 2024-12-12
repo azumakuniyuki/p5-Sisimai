@@ -52,7 +52,7 @@ sub find {
 
                 last if $ca > 47 && $ca <  58 || $cz > 47 && $cz <  58; # 0-9
                 last if $ca > 63 && $ca <  91 || $cz > 63 && $cz <  91; # @-Z
-                last if $ca > 93 && $ca < 123 || $cz > 93 && $cz < 123; # ^-z
+                last if $ca > 96 && $ca < 123 || $cz > 96 && $cz < 123; # `-z
                 $cx = 0; last;
             }
             next if $cx == 1;

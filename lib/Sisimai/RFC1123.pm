@@ -74,7 +74,7 @@ sub is_internethost {
 }
 
 sub find {
-    # Find() returns a valid internet hostname found from the argument
+    # find() returns a valid internet hostname found from the argument
     # @param    string argv1  String including hostnames
     # @return   string        A valid internet hostname found in the argument
     # @since v5.2.0

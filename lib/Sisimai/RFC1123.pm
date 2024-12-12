@@ -140,7 +140,7 @@ sub find {
         next if __PACKAGE__->is_internethost($e) == 0;
         push @$foundtoken, $e;
     }
-    return "" if scalar @$foundtoken == 0;
+    return ""               if scalar @$foundtoken == 0;
     return $foundtoken->[0] if scalar @$foundtoken == 1;
 
     for my $e ( @$foundtoken ) {

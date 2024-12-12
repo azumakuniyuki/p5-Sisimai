@@ -31,6 +31,8 @@ sub inquire {
     state $boundaries = ['Content-Type: message/rfc822'];
     state $startingof = { 'message' => ['Your message'] };
     state $messagesof = {
+        'filtered'    => ['Cannot route mail to user'],
+        'systemerror' => ['Several matches found in Domino Directory'],
         'userunknown' => [
             'not listed in Domino Directory',
             'not listed in public Name & Address Book',
@@ -38,8 +40,6 @@ sub inquire {
             "non répertorié dans l'annuaire Domino",
             'Domino ディレクトリには見つかりません',
         ],
-        'filtered'    => ['Cannot route mail to user'],
-        'systemerror' => ['Several matches found in Domino Directory'],
     };
 
     my $fieldtable = Sisimai::RFC1894->FIELDTABLE;

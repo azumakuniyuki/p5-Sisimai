@@ -38,52 +38,38 @@ sub make {
         'email-feedback'   => ['Sisimai::ARF'],
         'failed-delivery'  => ['Sisimai::Lhost::X2'],
         'failure-delivery' => ['Sisimai::Lhost::X2'],
-        'failure-notice'   => [
-            'Sisimai::Lhost::qmail',
-            'Sisimai::Lhost::mFILTER',
-            'Sisimai::Lhost::Activehunter',
-        ],
-        'loop-alert'    => ['Sisimai::Lhost::FML'],
-        'mail-could'    => ['Sisimai::Lhost::InterScanMSS'],
-        'mail-delivery' => [
+        'failure-notice'   => ['Sisimai::Lhost::qmail', 'Sisimai::Lhost::mFILTER', 'Sisimai::Lhost::Activehunter'],
+        'loop-alert'       => ['Sisimai::Lhost::FML'],
+        'mail-could'       => ['Sisimai::Lhost::InterScanMSS'],
+        'mail-delivery'    => [
             'Sisimai::Lhost::Exim',
             'Sisimai::Lhost::DragonFly',
             'Sisimai::Lhost::GMX',
             'Sisimai::Lhost::EinsUndEins',
             'Sisimai::Lhost::Zoho',
         ],
-        'mail-failure' => ['Sisimai::Lhost::Exim'],
-        'mail-system'  => ['Sisimai::Lhost::EZweb'],
-        'message-delivery' => ['Sisimai::Lhost::MailFoundry'],
-        'message-frozen'   => ['Sisimai::Lhost::Exim'],
+        'mail-failure'      => ['Sisimai::Lhost::Exim'],
+        'mail-system'       => ['Sisimai::Lhost::EZweb'],
+        'message-delivery'  => ['Sisimai::Lhost::MailFoundry'],
+        'message-frozen'    => ['Sisimai::Lhost::Exim'],
         'não-entregue'     => ['Sisimai::Lhost::Office365'],
-        'non-recapitabile' => ['Sisimai::Lhost::Exchange2007'],
-        'non-remis' => ['Sisimai::Lhost::Exchange2007'],
-        'notice'    => ['Sisimai::Lhost::Courier'],
-        'onbestelbaar'       => ['Sisimai::Lhost::Office365'],
-        'postmaster-notify'  => ['Sisimai::Lhost::Sendmail'],
-        'returned-mail' => [
+        'non-recapitabile'  => ['Sisimai::Lhost::Exchange2007'],
+        'non-remis'         => ['Sisimai::Lhost::Exchange2007'],
+        'notice'            => ['Sisimai::Lhost::Courier'],
+        'onbestelbaar'      => ['Sisimai::Lhost::Office365'],
+        'postmaster-notify' => ['Sisimai::Lhost::Sendmail'],
+        'returned-mail'     => [
             'Sisimai::Lhost::Sendmail',
             'Sisimai::Lhost::V5sendmail',
             'Sisimai::Lhost::Biglobe',
             'Sisimai::Lhost::X1',
         ],
-        'there-was'  => ['Sisimai::Lhost::X6'],
-        'undeliverable' => [
-            'Sisimai::Lhost::Office365',
-            'Sisimai::Lhost::Exchange2007',
-            'Sisimai::Lhost::Exchange2003',
-        ],
-        'undeliverable-mail' => [
-            'Sisimai::Lhost::MailMarshalSMTP',
-            'Sisimai::Lhost::IMailServer',
-        ],
+        'there-was'     => ['Sisimai::Lhost::X6'],
+        'undeliverable' => ['Sisimai::Lhost::Office365', 'Sisimai::Lhost::Exchange2007', 'Sisimai::Lhost::Exchange2003'],
+        'undeliverable-mail'    => ['Sisimai::Lhost::MailMarshalSMTP', 'Sisimai::Lhost::IMailServer'],
         'undeliverable-message' => ['Sisimai::Lhost::Notes', 'Sisimai::Lhost::Verizon'],
-        'undelivered-mail' => [
-            'Sisimai::Lhost::Postfix',
-            'Sisimai::Lhost::Zoho',
-        ],
-        'warning' => ['Sisimai::Lhost::Sendmail', 'Sisimai::Lhost::Exim'],
+        'undelivered-mail'      => ['Sisimai::Lhost::Postfix', 'Sisimai::Lhost::Zoho'],
+        'warning'               => ['Sisimai::Lhost::Sendmail', 'Sisimai::Lhost::Exim'],
     };
 
     if( rindex($words[0], ':') > 0 ) {
@@ -148,7 +134,6 @@ sub another {
         'Sisimai::Lhost::X3',
         'Sisimai::Lhost::X6',
     ];
-
     return [@$orderE0, @$orderE1];
 };
 

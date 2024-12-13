@@ -11,7 +11,6 @@ sub list {
         Lhost.pm
             Lhost/Activehunter.pm
             Lhost/AmazonSES.pm
-            Lhost/AmazonWorkMail.pm
             Lhost/ApacheJames.pm
             Lhost/Biglobe.pm
             Lhost/Courier.pm

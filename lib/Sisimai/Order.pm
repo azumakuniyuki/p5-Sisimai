@@ -27,7 +27,6 @@ sub make {
         'delivery-status'  => [
             'Sisimai::Lhost::OpenSMTPD',
             'Sisimai::Lhost::AmazonSES',
-            'Sisimai::Lhost::AmazonWorkMail',
             'Sisimai::Lhost::GoogleWorkspace',
             'Sisimai::Lhost::Gmail',
             'Sisimai::Lhost::GoogleGroups',
@@ -96,7 +95,6 @@ sub another {
         'Sisimai::Lhost::Office365',
         'Sisimai::Lhost::Exchange2007',
         'Sisimai::Lhost::Exchange2003',
-        'Sisimai::Lhost::AmazonWorkMail',
         'Sisimai::Lhost::AmazonSES',
         'Sisimai::Lhost::InterScanMSS',
         'Sisimai::Lhost::KDDI',

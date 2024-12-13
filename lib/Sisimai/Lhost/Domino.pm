@@ -78,6 +78,7 @@ sub inquire {
         $v = $dscontents->[-1];
         if( $e eq 'was not delivered to:' ) {
             # was not delivered to:
+            #   kijitora@example.net
             if( $v->{'recipient'} ) {
                 # There are multiple recipient addresses in the message body.
                 push @$dscontents, __PACKAGE__->DELIVERYSTATUS;
@@ -93,6 +94,7 @@ sub inquire {
 
         } elsif( $e eq 'because:' ) {
             # because:
+            #   User some.name (kijitora@example.net) not listed in Domino Directory
             $v->{'diagnosis'} = $e;
 
         } else {
@@ -104,9 +106,10 @@ sub inquire {
                 #   Subject: Nyaa
                 $subjecttxt = substr($e, 11,); 
 
-            } elsif( my $f = Sisimai::RFC1894->match($e) ) {
+            } else {
                 # There are some fields defined in RFC3464, try to match
-                next unless my $o = Sisimai::RFC1894->field($e);
+                my $f = Sisimai::RFC1894->match($e); next if $f < 1;
+                my $o = Sisimai::RFC1894->field($e); next unless $o;
                 next if $o->[3] eq 'addr';
 
                 if( $o->[3] eq 'code' ) {

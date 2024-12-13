@@ -27,7 +27,10 @@ my $moduletest = sub {
     my $isnotlhost = qr/\A(?:ARF|RFC3464|RFC3834)\z/;
     my $methodlist = ['DELIVERYSTATUS', 'INDICATORS', 'description', 'index', 'path'];
     my $alternates = {
-        'RFC3464' => [qw|Aol Amavis Barracuda Bigfoot Facebook GSuite MessageLabs Outlook PowerMTA ReceivingSES SendGrid SurfControl Yandex X5|],
+        'RFC3464' => [qw|
+            Aol Amavis Barracuda Bigfoot Facebook GSuite McAfee MessageLabs Outlook PowerMTA ReceivingSES
+            SendGrid SurfControl Yandex X5
+        |],
         'Exim'    => [qw|MailRu MXLogic|],
         'qmail'   => [qw|X4 Yahoo|],
     };

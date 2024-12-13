@@ -84,10 +84,13 @@ sub inquire {
         $emailparts->[0] = sprintf("%s\n\n%s%s", substr($e0, 0, $p0), $startingof->{"message"}->[0], substr($e0, $p0,)) if $p0 > 0;
     }
 
-    if( index($emailparts->[0], "\nFinal-Recipient: <") > 1 ) {
+    for my $e ("Final-Recipient", "Original-Recipient") {
         # Fix the malformed field "Final-Recipient: <kijitora@example.jp>"
-        my $cv = "\nFinal-Recipient: ";
-        my $p0 = index($emailparts->[0], $cv); substr($emailparts->[0], $p0, length($cv) + 1, $cv."rfc822; ");
+        my $cv = "\n".$e.": ";
+        my $cx = $cv."<";
+        my $p0 = index($emailparts->[0], $cx); next if $p0 < 0;
+
+        substr($emailparts->[0], $p0, length($cv) + 1, $cv."rfc822; ");
         my $p1 = index($emailparts->[0], ">\n", $p0 + 2); substr($emailparts->[0], $p1, 1, "");
     }
 
@@ -133,8 +136,8 @@ sub inquire {
                 last if index($e, "###") == 0;                 # A frame like #####
                 last if index($e, "***") == 0;                 # A frame like *****
                 last if index($e, "--")  == 0;                 # Boundary string
-                last if index($e, "---- The follow") > -1;     # ----- The following addresses had delivery problems -----
-                last if index($e, "---- Transcript") > -1;     # ----- Transcript of session follows -----
+                last if index($e, "--- The follow") > -1;      # ----- The following addresses had delivery problems -----
+                last if index($e, "--- Transcript") > -1;      # ----- Transcript of session follows -----
                 $beforemesg .= $e." "; last;
             }
             next;

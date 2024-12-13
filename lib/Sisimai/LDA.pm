@@ -21,9 +21,9 @@ state $MessagesOf = {
     "dovecot" => {
         # dovecot/src/deliver/mail-send.c:94
         "mailboxfull" => [
+            "not enough disk space",
             "quota exceeded",   # Dovecot 1.2 dovecot/src/plugins/quota/quota.c
             "quota exceeded (mailbox for user is full)",    # dovecot/src/plugins/quota/quota.c
-            "not enough disk space",
         ],
         "userunknown" => ["mailbox doesn't exist: "],
     },
@@ -31,10 +31,10 @@ state $MessagesOf = {
         "mailboxfull" => ["disc quota exceeded", "mailbox full or quota exceeded"],
         "systemerror" => ["temporary file write error"],
         "userunknown" => [
-            ": unknown user:",
-            ": user unknown",
             ": invalid mailbox path",
+            ": unknown user:",
             ": user missing home directory",
+            ": user unknown",
         ],
     },
     "procmail" => {

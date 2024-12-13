@@ -15,13 +15,13 @@ state $Fields1894 = Sisimai::RFC1894->FIELDINDEX;
 state $Fields5322 = Sisimai::RFC5322->FIELDINDEX;
 state $Fields5965 = Sisimai::RFC5965->FIELDINDEX;
 state $FieldTable = { map { lc $_ => $_ } ($Fields1894->@*, $Fields5322->@*, $Fields5965->@*) };
+state $Boundaries = ["Content-Type: message/rfc822", "Content-Type: text/rfc822-headers"];
 state $ReplacesAs = {
     "Content-Type" => [
         ["message/xdelivery-status",         "message/delivery-status"],
         ["message/disposition-notification", "message/delivery-status"],
     ],
 };
-state $Boundaries = ['Content-Type: message/rfc822', 'Content-Type: text/rfc822-headers'];
 
 my $TryOnFirst = [];
 

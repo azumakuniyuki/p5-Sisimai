@@ -98,7 +98,6 @@ sub match {
         ['veuillez essayer plus tard. service refused, please try later. ', '510'],
         ["your access ip", " has been rejected"],
         ["your sender's ip address is listed at ", '.abuseat.org'],
-
     ];
     return 1 if grep { rindex($argv1, $_) > -1 } @$index;
     return 1 if grep { Sisimai::String->aligned(\$argv1, $_) } @$pairs;

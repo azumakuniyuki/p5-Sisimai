@@ -21,20 +21,17 @@ MAKETEST: {
         "lhost-qmail-10"   => "suspend",
     };
     for my $e ( keys %$EmailFiles ) {
-        my $emailfn = sprintf("./set-of-emails/maildir/bsd/%s.eml", $e);
-        my $mailbox = Sisimai::Mail->new($emailfn);
-        my $message = undef;
-        my $factobj = {};
+        my $mailbox = Sisimai::Mail->new(sprintf("./set-of-emails/maildir/bsd/%s.eml", $e));
         my $counter = 0;
 
         while( my $r = $mailbox->data->read ) {
-            $message = Sisimai::Message->rise({ 'data' => $r });
+            my $message = Sisimai::Message->rise({ 'data' => $r });
             $counter++;
             isa_ok $message, "HASH";
             isa_ok $message->{"ds"}, "ARRAY";
 
             for my $f ( $message->{'ds'}->@* ) {
-                $factobj = {
+                my $factobj = {
                     "diagnosticcode" => $f->{'diagnosis'} || "",
                     "smtpcommand"    => $f->{'command'}   || "",
                 };

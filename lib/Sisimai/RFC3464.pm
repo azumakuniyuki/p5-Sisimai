@@ -8,7 +8,7 @@ use Sisimai::RFC3464::ThirdParty;
 # http://tools.ietf.org/html/rfc3464
 sub description { 'RFC3464' };
 sub inquire {
-    # Detect an error for RFC3464
+    # Decode a bounce mail which have fields defined in RFC3464
     # @param    [Hash] mhead    Message headers of a bounce email
     # @param    [String] mbody  Message body of a bounce email
     # @return   [Hash]          Bounce data list and message/rfc822 part
@@ -69,8 +69,9 @@ sub inquire {
         }
         last if $p0 < 0;
 
-        my $p2 = index(substr($$mbody, $p1,), "\n\n");
-        my $cv = substr(substr($$mbody, $p1,), $p2 + 2,);
+        my $cx = substr($$mbody, $p1,);
+        my $p2 = index($cx,, "\n\n");
+        my $cv = substr($cx, $p2 + 2,);
         $emailparts = Sisimai::RFC5322->part(\$cv, [$ct], 0);
         last;
     }

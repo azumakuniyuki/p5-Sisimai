@@ -168,7 +168,7 @@ sub rise {
                         last if $piece->{'rhost'};
                         my $cv = Sisimai::RFC5322->received($re)->[0];
                         next unless Sisimai::RFC1123->is_internethost($cv);
-                        $piece->{'rhost'} = $cv;# last;
+                        $piece->{'rhost'} = $cv;
                     }
                 }
             }

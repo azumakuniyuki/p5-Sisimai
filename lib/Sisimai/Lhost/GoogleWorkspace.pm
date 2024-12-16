@@ -37,7 +37,6 @@ sub inquire {
     my $entiremesg = "";
     my $readcursor = 0;     # (Integer) Points the current cursor position
     my $recipients = 0;
-    my $v          = undef;
 
     for my $e ( split("\n", $emailparts->[0]) ) {
         # Read error messages and delivery status lines from the head of the email to the previous

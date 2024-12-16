@@ -105,12 +105,10 @@ sub inquire {
     }
     return undef unless $proceedsto;
 
-    require JSON;
-    my $jsonstring = $sespayload;
-    my $jsonobject = undef;
-
     # Load as JSON string and decode
-    eval { my $jp = JSON->new; $jsonobject = $jp->decode($jsonstring) };
+    require JSON;
+    my $jsonobject = undef;
+    eval { $jsonobject = JSON->new->decode($sespayload) };
     if( $@ ) {
         # Something wrong in decoding JSON
         warn sprintf(" ***warning: Failed to decode JSON: %s", $@);

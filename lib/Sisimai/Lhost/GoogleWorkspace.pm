@@ -68,7 +68,7 @@ sub inquire {
         # Content-Type: message/rfc822 field
         my $p0 = index($emailparts->[1], "\nTo:"); last if $p0 < 0;
         my $p1 = index($emailparts->[1], "\n", $p0 + 2);
-        my $cv = Sisimai::Address->s3s4(substr($emailparts->[1], $p0 + 4, $p1 - $p0)); last unless $cv;
+        my $cv = Sisimai::Address->s3s4(substr($emailparts->[1], $p0 + 4, $p1 - $p0));
         $dscontents->[0]->{'recipient'} = $cv;
         $recipients++;
     }

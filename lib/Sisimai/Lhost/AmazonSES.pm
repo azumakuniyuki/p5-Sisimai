@@ -78,7 +78,6 @@ sub inquire {
         # --
         # If you wish to stop receiving notifications from this topic, please click or visit the link below to unsubscribe:
         # https://sns.us-west-2.amazonaws.com/unsubscribe.html?SubscriptionArn=arn:aws:sns:us-west-2:1...
-        my $nt = "notificationType";
         my $p1 = index($$mbody, "\n\n--\n");
         $sespayload =  substr($$mbody, 0, $p1) if $p1 > 0;
         $sespayload =~ s/!\n //g;

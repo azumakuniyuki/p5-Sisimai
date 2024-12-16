@@ -109,20 +109,8 @@ sub inquire {
     my $jsonstring = $sespayload;
     my $jsonobject = undef;
 
-    eval {
-        # Load as JSON string and decode
-        my $jp = JSON->new;
-        my $jo = $jp->decode($jsonstring);
-
-        if( exists $jo->{'Message'} ) {
-            # 'Message' => '{"notificationType":"Bounce",...
-            $jsonobject = $jp->decode($jo->{'Message'});
-
-        } else {
-            # 'mail' => { 'sourceArn' => '...',... }, 'bounce' => {...},
-            $jsonobject = $jo;
-        }
-    };
+    # Load as JSON string and decode
+    eval { my $jp = JSON->new; $jsonobject = $jp->decode($jsonstring) };
     if( $@ ) {
         # Something wrong in decoding JSON
         warn sprintf(" ***warning: Failed to decode JSON: %s", $@);

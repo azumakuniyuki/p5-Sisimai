@@ -76,7 +76,7 @@ sub inquire {
 
     $dscontents->[0]->{'diagnosis'} = $entiremesg;
     for my $e ( @$dscontents ) {
-        # Set default values if each value is empty.
+        # Tidy up the error message in e.Diagnosis, Try to detect the bounce reason.
         $e->{'diagnosis'} = Sisimai::String->sweep($e->{'diagnosis'});
 
         for my $r ( keys %$messagesof ) {

@@ -418,7 +418,7 @@ sub inquire {
             delete $e->{'alterrors'};
         }
         $e->{'diagnosis'} = Sisimai::String->sweep($e->{'diagnosis'}); $p1 = index($e->{'diagnosis'}, '__');
-        $e->{'diagnosis'} = substr($e->{'diagnosis'}, 0, $p1)       if $p1 > 1;
+        $e->{'diagnosis'} = substr($e->{'diagnosis'}, 0, $p1) if $p1 > 1;
 
         unless( $e->{'rhost'} ) {
             # Get the remote host name

@@ -26,10 +26,10 @@ sub make {
         'delivery-notification' => ['Sisimai::Lhost::MessagingServer'],
         'delivery-status'  => [
             'Sisimai::Lhost::OpenSMTPD',
-            'Sisimai::Lhost::AmazonSES',
             'Sisimai::Lhost::GoogleWorkspace',
             'Sisimai::Lhost::Gmail',
             'Sisimai::Lhost::GoogleGroups',
+            'Sisimai::Lhost::AmazonSES',
             'Sisimai::Lhost::X3',
         ],
         'dmarc-ietf-dmarc' => ['Sisimai::ARF'],

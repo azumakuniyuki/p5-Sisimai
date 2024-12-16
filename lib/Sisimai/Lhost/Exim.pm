@@ -285,8 +285,6 @@ sub inquire {
                 $v->{'alias'} = Sisimai::Address->s3s4($f);
             }
         } else {
-            next unless length $e;
-
             if( grep { index($e, $_) > -1 } $startingof->{'frozen'}->@* ) {
                 # Message *** has been frozen by the system filter.
                 # Message *** was frozen on arrival by ACL.

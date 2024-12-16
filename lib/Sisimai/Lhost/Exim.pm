@@ -449,9 +449,9 @@ sub inquire {
                 $e->{'reason'} = 'onhold';
 
             } else {
-                # Verify each regular expression of session errors
+                # Try to match the error message with each message pattern
                 SESSION: for my $r ( keys %$messagesof ) {
-                    # Check each regular expression
+                    # Check each message pattern
                     next unless grep { index($e->{'diagnosis'}, $_) > -1 } $messagesof->{ $r }->@*;
                     $e->{'reason'} = $r;
                     last;

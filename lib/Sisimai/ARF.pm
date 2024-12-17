@@ -224,13 +224,13 @@ sub inquire {
     }
     return undef if $recipients == 0;
 
-    $anotherone = Sisimai::String->sweep($anotherone);
+    $anotherone = ": ".Sisimai::String->sweep($anotherone) if $anotherone ne "";
     substr($anotherone, -1, 1, "") if substr($anotherone, -1, 1) eq ",";
 
     my $j = -1; for my $e ( @$dscontents ) {
         # Tidy up the error message in e.Diagnosis, Try to detect the bounce reason.
         $j++;
-        $e->{"diagnosis"} = Sisimai::String->sweep($e->{"diagnosis"}.": ".$anotherone);
+        $e->{"diagnosis"} = Sisimai::String->sweep($e->{"diagnosis"}.$anotherone);
         $e->{"reason"}    = "feedback";
         $e->{"rhost"}     = $remotehost;
         $e->{"lhost"}     = $reportedby;

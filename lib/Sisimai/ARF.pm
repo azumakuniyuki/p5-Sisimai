@@ -200,8 +200,8 @@ sub inquire {
         # There is no recipient address in the message
         if( exists $mhead->{"x-apple-unsubscribe"} ) {
             # X-Apple-Unsubscribe: true
-            break unless $mhead->{"x-apple-unsubscribe"} eq "true";
-            break unless index($mhead->{"from"}, "@") > 1;
+            last unless $mhead->{"x-apple-unsubscribe"} eq "true";
+            last unless index($mhead->{"from"}, "@") > 1;
             $dscontents->[0]->{"recipient"}    = $mhead->{"from"};
             $dscontents->[0]->{"diagnosis"}    = Sisimai::String->sweep($emailparts->[0]);
             $dscontents->[0]->{"feedbacktype"} = "opt-out";

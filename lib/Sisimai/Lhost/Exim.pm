@@ -378,6 +378,7 @@ sub inquire {
 
     for my $e ( @$dscontents ) {
         # Check the error message, the rhost, the lhost, and the smtp command.
+        $e->{"alterrors"} ||= "";
         if( ! $e->{'diagnosis'} && length($boundary00) > 0 ) {
             # Empty Diagnostic-Code: or error message
             # --NNNNNNNNNN-eximdsn-MMMMMMMMMM
@@ -394,14 +395,10 @@ sub inquire {
             # Status: 5.0.0
             $e->{'diagnosis'} = $dscontents->[0]->{'diagnosis'} || '';
             $e->{'spec'}    ||= $dscontents->[0]->{'spec'};
-
-            if( $dscontents->[0]->{'alterrors'} ) {
-                # The value of "alterrors" is also copied
-                $e->{'alterrors'} = $dscontents->[0]->{'alterrors'};
-            }
+            $e->{'alterrors'} = $dscontents->[0]->{'alterrors'} if $dscontents->[0]->{'alterrors'};
         }
 
-        if( exists $e->{'alterrors'} && $e->{'alterrors'} ) {
+        if( $e->{'alterrors'} ) {
             # Copy alternative error message
             $e->{'diagnosis'} ||= $e->{'alterrors'};
 

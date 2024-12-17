@@ -436,10 +436,6 @@ my $moduletest = sub {
                             # Decoded by Sisimai::Lhost::qmail since v5.2.0
                             is $cv, 'qmail', sprintf("%s %s", $ct, $cr);
 
-                        } elsif( $E eq 'ARF' ) {
-                            # Parsed by Sisimai::ARF
-                            is $cv, 'Feedback-Loop', sprintf("%s %s", $ct, $cr);
-
                         } else {
                             # Other MTA modules
                             if( $E eq "AmazonSES" ) {

@@ -317,7 +317,7 @@ sub rise {
             my $ar = Sisimai::Address->new({'address' => $piece->{'recipient'}}) || next RISEOF;
             my @ea = (qw|
                 action deliverystatus diagnosticcode diagnostictype feedbacktype lhost listid
-                messageid origin reason replycode rhost smtpagent smtpcommand subject 
+                messageid origin reason replycode rhost smtpagent smtpcommand subject
             |);
 
             $thing = {

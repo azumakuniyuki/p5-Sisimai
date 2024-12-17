@@ -398,6 +398,7 @@ sub sift {
             # Feedback Loop message
             require Sisimai::ARF;
             $havesifted = Sisimai::ARF->inquire($mailheader, $bodystring);
+            $modulename = "ARF";
             last(DECODER) if $havesifted;
         }
 

@@ -13,26 +13,30 @@ sub is_arf {
     #                           0: is not Feedback loop
     my $class = shift;
     my $heads = shift || return 0;
-    my $match = 0;
+    my $abuse = ['staff@hotmail.com', 'complaints@email-abuse.amazonses.com'];
+    my $ctype = $heads->{"content-type"};
 
     # Content-Type: multipart/report; report-type=feedback-report; ...
-    return 1 if Sisimai::String->aligned(\$heads->{'content-type'}, ['report-type=', 'feedback-report']);
+    return 1 if Sisimai::String->aligned(\$ctype, ["report-type=", "feedback-report"]);
 
-    if( index($heads->{'content-type'}, 'multipart/mixed') > -1 ) {
+    if( index($ctype, "multipart/mixed") > -1 ) {
         # Microsoft (Hotmail, MSN, Live, Outlook) uses its own report format.
         # Amazon SES Complaints bounces
-        if( index($heads->{'subject'}, 'complaint about message from ') > -1 ) {
+        if( index($heads->{"subject"}, "complaint about message from ") > -1 ) {
             # From: staff@hotmail.com
             # From: complaints@email-abuse.amazonses.com
             # Subject: complaint about message from 192.0.2.1
-            my $rf = ['staff@hotmail.com', 'complaints@email-abuse.amazonses.com'];
-            my $cv = Sisimai::Address->s3s4($heads->{'from'});
-            $match = 1 if grep { index($cv, $_) > -1 } @$rf;
+            return 1 if grep { index($heads->{"from"}, $_) > -1 } @$abuse;
         }
     }
-    $match = 1 if ($heads->{'x-apple-unsubscribe'} // '') eq 'true'; # X-Apple-Unsubscribe: true
 
-    return $match;
+    APPLE: while(1) {
+        # X-Apple-Unsubscribe: true
+        last unless exists $heads->{"x-apple-unsubscribe"};
+        return 1 if $heads->{"x-apple-unsubscribe"} eq "true";
+        last APPLE;
+    }
+    return 0;
 }
 
 sub inquire {

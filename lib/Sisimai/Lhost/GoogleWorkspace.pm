@@ -17,6 +17,7 @@ sub inquire {
     my $mbody = shift // return undef;
 
     return undef if     index($$mbody, "\nDiagnostic-Code:") > -1;
+    return undef if     index($$mbody, "\nFinal-Recipient:") > -1;
     return undef unless rindex($mhead->{'from'}, '<mailer-daemon@googlemail.com>') > -1;
     return undef unless index($mhead->{'subject'}, "Delivery Status Notification") > -1;
 
@@ -81,8 +82,7 @@ sub inquire {
         for my $r ( keys %$messagesof ) {
             # Guess an reason of the bounce
             next unless grep { index($e->{'diagnosis'}, $_) > -1 } $messagesof->{ $r }->@*;
-            $e->{'reason'} = $r;
-            last;
+            $e->{'reason'} = $r; last;
         }
     }
     return { 'ds' => $dscontents, 'rfc822' => $emailparts->[1] };

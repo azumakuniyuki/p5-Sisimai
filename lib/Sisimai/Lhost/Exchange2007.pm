@@ -28,10 +28,6 @@ sub inquire {
     $match += 1 if length $mhead->{'content-language'} == 5; # ja-JP
     return undef unless $match > 1;
 
-    # These headers exist only a bounce mail from Office365
-    return undef if $mhead->{'x-ms-exchange-crosstenant-originalarrivaltime'};
-    return undef if $mhead->{'x-ms-exchange-crosstenant-fromentityheader'};
-
     state $indicators = __PACKAGE__->INDICATORS;
     state $boundaries = [
         'Original message headers:',                # en-US
@@ -59,6 +55,7 @@ sub inquire {
         'SMTPSEND.DNS.MxLoopback'       => 'networkerror',  # 554 5.4.4 SMTPSEND.DNS.MxLoopback
         'RESOLVER.ADR.BadPrimary'       => 'systemerror',   # 550 5.2.0 RESOLVER.ADR.BadPrimary
         'RESOLVER.ADR.RecipNotFound'    => 'userunknown',   # 550 5.1.1 RESOLVER.ADR.RecipNotFound
+        'RESOLVER.ADR.RecipientNotFound'=> 'userunknown',   # 550 5.1.1 RESOLVER.ADR.RecipientNotFound
         'RESOLVER.ADR.ExRecipNotFound'  => 'userunknown',   # 550 5.1.1 RESOLVER.ADR.ExRecipNotFound
         'RESOLVER.ADR.RecipLimit'       => 'toomanyconn',   # 550 5.5.3 RESOLVER.ADR.RecipLimit
         'RESOLVER.ADR.InvalidInSmtp'    => 'systemerror',   # 550 5.1.0 RESOLVER.ADR.InvalidInSmtp

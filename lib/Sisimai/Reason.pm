@@ -26,7 +26,7 @@ sub retry {
     # @return   [Hash] Reason list
     return {
         'undefined' => 1, 'onhold' => 1, 'systemerror' => 1, 'securityerror' => 1, 'expired' => 1,
-        'suspend' => 1, 'networkerror' => 1, 'hostunknown' => 1, 'userunknown'=> 1
+        'networkerror' => 1, 'hostunknown' => 1, 'userunknown'=> 1
     };
 }
 

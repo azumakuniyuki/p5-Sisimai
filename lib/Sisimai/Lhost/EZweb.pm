@@ -96,7 +96,8 @@ sub inquire {
                 push @$dscontents, __PACKAGE__->DELIVERYSTATUS;
                 $v = $dscontents->[-1];
             }
-            $v->{'recipient'} = Sisimai::Address->s3s4(substr($e, $p1, $p2 - $p1));
+            $v->{'recipient'}  = Sisimai::Address->s3s4(substr($e, $p1, $p2 - $p1));
+            $v->{"diagnosis"} .= " ".$e;
             $recipients++;
 
         } elsif( my $f = Sisimai::RFC1894->match($e) ) {
@@ -108,9 +109,14 @@ sub inquire {
         } else {
             # The line does not begin with a DSN field defined in RFC3464
             next if Sisimai::String->is_8bit(\$e);
-            if( index($e, ' >>> ') > -1 ) {
+            if( index($e, " >>> ") > -1 ) {
                 #    >>> RCPT TO:<******@ezweb.ne.jp>
                 $v->{"command"} = Sisimai::SMTP::Command->find($e);
+                $v->{"diagnosis"} .= " ".$e;
+
+            } elsif( index($e, " <<< ") > -1 ) {
+                # <<< 550 ...
+                $v->{"diagnosis"} .= " ".$e;
 
             } else {
                 # Check error message
@@ -120,7 +126,7 @@ sub inquire {
                     $v->{"diagnosis"} .= ' '.$e;
                     $isincluded = 1;
                 }
-                $v->{"alterrors"} .= " ".$e if $isincluded == 0;
+                $v->{"diagnosis"} .= " ".$e if $isincluded == 0;
             }
         } # End of error message part
     }
@@ -128,16 +134,8 @@ sub inquire {
 
     for my $e ( @$dscontents ) {
         # Check each value of DeliveryMatter{}, try to detect the bounce reason.
-        if( exists $e->{'alterrors'} && $e->{'alterrors'} ) {
-            # Copy alternative error message
-            $e->{'diagnosis'} ||= $e->{'alterrors'};
-            if( index($e->{'diagnosis'}, '-') == 0 || substr($e->{'diagnosis'}, -2, 2) eq '__' ) {
-                # Override the value of diagnostic code message
-                $e->{'diagnosis'} = $e->{'alterrors'};
-            }
-            delete $e->{'alterrors'};
-        }
         $e->{'diagnosis'} = Sisimai::String->sweep($e->{'diagnosis'});
+        $e->{"command"} ||= Sisimai::SMTP::Command->find($e->{"diagnosis"}) || "";
 
         if( defined $mhead->{'x-spasign'} && $mhead->{'x-spasign'} eq 'NG' ) {
             # Content-Type: text/plain; ..., X-SPASIGN: NG (spamghetti, au by EZweb)
@@ -145,26 +143,20 @@ sub inquire {
             $e->{'reason'} = 'filtered';
 
         } else {
-            if( $e->{'command'} eq 'RCPT' ) {
-                # set "userunknown" when the remote server rejected after RCPT command.
-                $e->{'reason'} = 'userunknown';
-
-            } else {
-                # SMTP command is not RCPT
-                FINDREASON: for my $r ( keys %$messagesof ) {
-                    # Try to match with each session error message
-                    for my $f ( $messagesof->{ $r }->@* ) {
-                        # Check each error message pattern
-                        next unless index($e->{'diagnosis'}, $f) > -1;
-                        $e->{'reason'} = $r;
-                        last FINDREASON;
-                    }
+            # There is no X-SPASIGN header or the value of the header is not "NG"
+            FINDREASON: for my $r ( keys %$messagesof ) {
+                # Try to match with each session error message
+                for my $f ( $messagesof->{ $r }->@* ) {
+                    # Check each error message pattern
+                    next unless index($e->{'diagnosis'}, $f) > -1;
+                    $e->{'reason'} = $r;
+                    last FINDREASON;
                 }
             }
         }
         next if $e->{'reason'};
         next if index($e->{'recipient'}, '@ezweb.ne.jp') > 1 || index($e->{'recipient'}, '@au.com') > 1;
-        $e->{'reason'} = 'userunknown';
+        $e->{"reason"} = "userunknown" if index($e->{"diagnosis"}, "<") == 0;
     }
     return { 'ds' => $dscontents, 'rfc822' => $emailparts->[1] };
 }

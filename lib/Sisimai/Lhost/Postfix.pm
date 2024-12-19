@@ -165,8 +165,7 @@ sub inquire {
                     # Alternative error message and recipient
                     if( index($e, ' (in reply to ') > -1 || index($e, 'command)') > -1 ) {
                         # 5.1.1 <userunknown@example.co.jp>... User Unknown (in reply to RCPT TO
-                        my $q = Sisimai::SMTP::Command->find($e);
-                        push @commandset, $q if $q;
+                        my $cv = Sisimai::SMTP::Command->find($e); push @commandset, $cv if $cv;
                         $anotherset->{'diagnosis'} .= ' '.$e if $anotherset->{'diagnosis'};
 
                     } elsif( Sisimai::String->aligned(\$e, ['<', '@', '>', '(expanded from <', '):']) ) {

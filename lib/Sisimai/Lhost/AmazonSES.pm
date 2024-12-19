@@ -199,10 +199,8 @@ sub inquire {
     }
     return undef unless $recipients;
 
-    for my $e ( @$dscontents ) {
-        # Time::Piece->strptime() cannot parse "2016-11-25T01:49:01.000Z" format
-        s|-|/|g, s/T/ /, s/[.]\d{3}Z$// for $e->{'date'};
-    }
+    # Time::Piece->strptime() cannot parse "2016-11-25T01:49:01.000Z" format
+    for my $e ( @$dscontents ) { s/T/ /, s/[.]\d{3}Z$// for $e->{'date'} }
 
     # Generate pseudo email headers as the original message
     my $cv = "";

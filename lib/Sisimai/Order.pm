@@ -50,11 +50,9 @@ sub make {
         'mail-system'       => ['Sisimai::Lhost::EZweb'],
         'message-delivery'  => ['Sisimai::Lhost::MailFoundry'],
         'message-frozen'    => ['Sisimai::Lhost::Exim'],
-        'não-entregue'     => ['Sisimai::Lhost::Office365'],
         'non-recapitabile'  => ['Sisimai::Lhost::Exchange2007'],
         'non-remis'         => ['Sisimai::Lhost::Exchange2007'],
         'notice'            => ['Sisimai::Lhost::Courier'],
-        'onbestelbaar'      => ['Sisimai::Lhost::Office365'],
         'postmaster-notify' => ['Sisimai::Lhost::Sendmail'],
         'returned-mail'     => [
             'Sisimai::Lhost::Sendmail',
@@ -63,7 +61,7 @@ sub make {
             'Sisimai::Lhost::X1',
         ],
         'there-was'     => ['Sisimai::Lhost::X6'],
-        'undeliverable' => ['Sisimai::Lhost::Office365', 'Sisimai::Lhost::Exchange2007', 'Sisimai::Lhost::Exchange2003'],
+        'undeliverable' => ['Sisimai::Lhost::Exchange2007', 'Sisimai::Lhost::Exchange2003'],
         'undeliverable-mail'    => ['Sisimai::Lhost::MailMarshalSMTP', 'Sisimai::Lhost::IMailServer'],
         'undeliverable-message' => ['Sisimai::Lhost::Notes', 'Sisimai::Lhost::Verizon'],
         'undelivered-mail'      => ['Sisimai::Lhost::Postfix', 'Sisimai::Lhost::Zoho'],
@@ -92,7 +90,6 @@ sub another {
     state $orderE0 = [
         'Sisimai::Lhost::Exim',
         'Sisimai::Lhost::Sendmail',
-        'Sisimai::Lhost::Office365',
         'Sisimai::Lhost::Exchange2007',
         'Sisimai::Lhost::Exchange2003',
         'Sisimai::Lhost::AmazonSES',

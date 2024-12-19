@@ -15,7 +15,7 @@ state $RhostClass = {
     "IUA"         => [".email.ua"],
     "KDDI"        => [".ezweb.ne.jp", "msmx.au.com"],
     "MessageLabs" => [".messagelabs.com"],
-    "Microsoft"   => [".prod.outlook.com", ".protection.outlook.com"],
+    "Microsoft"   => [".prod.outlook.com", ".protection.outlook.com", ".onmicrosoft.com", ".exchangelabs.com",],
     "Mimecast"    => [".mimecast.com"],
     "NTTDOCOMO"   => ["mfsmax.docomo.ne.jp"],
     "Outlook"     => [".hotmail.com"],
@@ -32,30 +32,36 @@ sub find {
     my $argvs = shift || return undef;
     return undef unless length $argvs->{'diagnosticcode'};
 
+    my $rhostclass = '';
     my $clienthost = lc $argvs->{'lhost'}       || '';
     my $remotehost = lc $argvs->{'rhost'}       || '';
     my $domainpart = lc $argvs->{'destination'} || '';
     return undef unless length $remotehost.$domainpart;
 
-    my $rhostmatch = undef;
-    my $rhostclass = '';
-    for my $e ( keys %$RhostClass ) {
-        # Try to match the remote host and the domain part with each value of RhostClass
-        $rhostmatch   = 1 if grep { index($remotehost, $_) > -1 } $RhostClass->{ $e }->@*;
-        $rhostmatch ||= 1 if grep { index($_, $domainpart) > -1 } $RhostClass->{ $e }->@*;
-        next unless $rhostmatch;
+    FINDRHOST: while( $rhostclass eq "" ) {
+        # Try to match the hostname patterns with the following order:
+        # 1. destination: The domain part of the recipient address
+        # 2. rhost: remote hostname
+        # 3. lhost: local MTA hostname
+        for my $e ( keys %$RhostClass ) {
+            # Try to match the domain part with each value of RhostClass
+            next unless grep { index($_, $domainpart) > -1 } $RhostClass->{ $e }->@*;
+            $rhostclass = __PACKAGE__.'::'.$e; last FINDRHOST;
+        }
 
-        $rhostclass = __PACKAGE__.'::'.$e;
-        last;
-    }
-    if( $rhostclass eq "" )  {
+        for my $e ( keys %$RhostClass ) {
+            # Try to match the remote host with each value of RhostClass
+            next unless grep { index($remotehost, $_) > -1 } $RhostClass->{ $e }->@*;
+            $rhostclass = __PACKAGE__.'::'.$e; last FINDRHOST;
+        }
+
         # Neither the remote host nor the destination did not matched with any value of RhostClass
         for my $e ( keys %$RhostClass ) {
             # Try to match the client host with each value of RhostClass
             next unless grep { index($clienthost, $_) > -1 } $RhostClass->{ $e }->@*;
-            $rhostclass = __PACKAGE__."::".$e;
-            last;
+            $rhostclass = __PACKAGE__."::".$e; last FINDRHOST;
         }
+        last;
     }
     return undef unless $rhostclass;
 

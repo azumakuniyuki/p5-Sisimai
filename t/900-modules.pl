@@ -34,7 +34,6 @@ sub list {
             Lhost/MessagingServer.pm
             Lhost/mFILTER.pm
             Lhost/Notes.pm
-            Lhost/Office365.pm
             Lhost/OpenSMTPD.pm
             Lhost/Postfix.pm
             Lhost/qmail.pm

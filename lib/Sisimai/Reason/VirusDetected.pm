@@ -36,13 +36,13 @@ sub true {
     my $class = shift;
     my $argvs = shift // return undef;
 
-    # The value of "reason" isn't "virusdetected" when the value of "smtpcommand" is an SMTP com-
-    # mand to be sent before the SMTP DATA command because all the MTAs read the headers and the
-    # entire message body after the DATA command.
+    # The value of "reason" isn't "virusdetected" when the value of "command" is an SMTP command to
+    # be sent before the SMTP DATA command because all the MTAs read the headers and the entire
+    # message body after the DATA command.
     return 1 if $argvs->{'reason'} eq 'virusdetected';
-    return 0 if $argvs->{'smtpcommand'} eq 'CONN' || $argvs->{'smtpcommand'} eq 'EHLO'
-             || $argvs->{'smtpcommand'} eq 'HELO' || $argvs->{'smtpcommand'} eq 'MAIL'
-             || $argvs->{'smtpcommand'} eq 'RCPT';
+    return 0 if $argvs->{'command'} eq 'CONN' || $argvs->{'command'} eq 'EHLO'
+             || $argvs->{'command'} eq 'HELO' || $argvs->{'command'} eq 'MAIL'
+             || $argvs->{'command'} eq 'RCPT';
     return __PACKAGE__->match(lc $argvs->{'diagnosticcode'});
 }
 

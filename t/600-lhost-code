@@ -458,10 +458,10 @@ my $moduletest = sub {
                     }
                 }
 
-                SMTPCOMMAND: {
-                    $cv = $rr->smtpcommand;
+                COMMAND: {
+                    $cv = $rr->command;
                     $cr = qr/\A(?:CONN|HELO|EHLO|MAIL|RCPT|DATA|QUIT)\z/;
-                    $ct = sprintf("[%s-%02d] ->smtpcommand =", $e, $errorindex);
+                    $ct = sprintf("[%s-%02d] ->command =", $e, $errorindex);
 
                     ok defined $cv, sprintf("%s %s", $ct, $cv);
                     ok $cv =~ $cr,  sprintf("%s %s", $ct, $cr) if length $cv;

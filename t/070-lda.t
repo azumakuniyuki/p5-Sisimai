@@ -33,7 +33,7 @@ MAKETEST: {
             for my $f ( $message->{'ds'}->@* ) {
                 my $factobj = {
                     "diagnosticcode" => $f->{'diagnosis'} || "",
-                    "smtpcommand"    => $f->{'command'}   || "",
+                    "command"        => $f->{'command'}   || "",
                 };
                 my $v = Sisimai::LDA->find($factobj);
                 is $v, $EmailFiles->{ $e }, sprintf("%s [%02d] Sisimai::LDA->find() = %s", $e, $counter, $v);

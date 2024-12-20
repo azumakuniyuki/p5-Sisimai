@@ -171,7 +171,7 @@ sub anotherone {
 
         } else {
             # Check the value of SMTP command
-            my $thecommand = $argvs->{'smtpcommand'} // '';
+            my $thecommand = $argvs->{'command'} // '';
             if( $thecommand eq 'EHLO' || $thecommand eq 'HELO' ) {
                 # Rejected at connection or after EHLO|HELO
                 $reasontext = 'blocked';

@@ -59,7 +59,7 @@ for my $e ( keys %$ReasonChildren ) {
 
         $cv->{'reason'} = 'undefined';
         $cv->{'diagnosticcode'} = $ReasonChildren->{ $e }->[0];
-        $cv->{'smtpcommand'} = $e =~ /\A(?:Rejected|NotAccept)/ ? 'MAIL' : $ss->smtpcommand;
+        $cv->{'command'} = $e =~ /\A(?:Rejected|NotAccept)/ ? 'MAIL' : $ss->command;
         is $r->true($cv), 1, $e.'->true('.$cv->{'diagnosticcode'}.') = 1';
     }
 

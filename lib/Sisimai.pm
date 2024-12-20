@@ -73,6 +73,7 @@ sub dump {
 
         # Backward compatibility until v5.5.0
         $e->{"smtpagent"} = $e->{"decodedby"};
+        $e->{"smtpcommand"} = $e->{"command"};
     }
 
     require Module::Load;

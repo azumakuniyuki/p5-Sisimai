@@ -179,6 +179,16 @@ sub find {
             #   SMTP error messages and review RFC 3207 specifications.
             ['530', '5.7.0', 'must issue a starttls command first'],
             ['454', '5.5.1', 'starttls may not be repeated'],
+
+            # - 421 4.7.0 TLS required for RCPT domain, closing connection. For more information,
+            #   go to Email encryption in transit. https://support.google.com/mail/answer/6330403
+            ['421', '4.7.0', 'tls required for rcpt domain'],
+
+            # - 421 4.7.29 Your email has been rate limited because this message wasn't sent over a
+            #   TLS connection. Gmail requires all bulk email senders to use TLS/SSL for SMTP conn-
+            #   ections.
+            ['421', '4.7.29', 'senders to use tls/ssl for smtp'],
+            ['550', '5.7.29', 'senders to use tls/ssl for smtp'],
         ],
         'mailboxfull' => [
             # - 452 4.2.2 The recipient's inbox is out of storage space.
@@ -337,12 +347,8 @@ sub find {
             ['550', '5.7.25', 'does not match the ip address of the hostname'],
         ],
         'securityerror' => [
-            # - 421 4.7.0 TLS required for RCPT domain, closing connection. For more information,
-            #   go to Email encryption in transit. https://support.google.com/mail/answer/6330403
-            #
             # - 454 4.7.0 Too many login attempts, please try again later. For more information, go
             #   to Add Gmail to another email client. https://support.google.com/mail/answer/7126229
-            ['421', '4.7.0', 'tls required for rcpt domain'],
             ['454', '4.7.0', 'too many login attempts'],
 
             # - 503 5.7.0 No identity changes permitted. For more information, go to About SMTP
@@ -371,12 +377,6 @@ sub find {
             #   https://support.google.com/accounts/troubleshooter/2402620
             ['535', '5.7.1', 'username and password not accepted'],
             ['535', '5.7.8', 'username and password not accepted'],
-
-            # - 421 4.7.29 Your email has been rate limited because this message wasn't sent over a
-            #   TLS connection. Gmail requires all bulk email senders to use TLS/SSL for SMTP conn-
-            #   ections.
-            ['421', '4.7.29', 'senders to use tls/ssl for smtp'],
-            ['550', '5.7.29', 'senders to use tls/ssl for smtp'],
         ],
         'spamdetected' => [
             # - 421 4.7.0 This message is suspicious due to the nature of the content or the links

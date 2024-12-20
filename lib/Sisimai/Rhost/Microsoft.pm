@@ -192,11 +192,23 @@ sub find {
             ['5.4.300', 0, 0, 'message expired'],
         ],
         'failedstarttls' => [
+            # Exchange Online ---------------------------------------------------------------------
+            # - DNSSEC checks have passed, yet upon connection, destination mail server doesn't re-
+            #   spond to the STARTTLS command. The destination server responds to the STARTTLS com-
+            #   mand, but the TLS handshake fails.
+            # - This message usually indicates an issue on the destination email server. Check the
+            #   validity of the recipient address. Determine if the destination server is configur-
+            #   ed correctly to receive the messages.
+            ['4.4.317', 0, 0, 'starttls is required to send mail'],
+            ['5.4.317', 0, 0, 'starttls is required to send mail'],
+
             # - DNSSEC checks have passed, yet upon establishing the connection the destination
             #   mail server provides a certificate that is expired.
             # - A valid X.509 certificate that isn't expired must be presented. X.509 certificates
             #   must be renewed after their expiration, commonly annually.
             ['5.7.51',  0, 0, 'restrictdomainstoipaddresses or restrictdomainstocertificate'],
+            ['4.7.321', 0, 0, 'starttls-not-supported: destination mail server must support tls to receive mail'],
+            ['5.7.321', 0, 0, 'starttls-not-supported: destination mail server must support tls to receive mail'],
             ['5.7.322', 0, 0, "certificate-expired: destination mail server's certificate is expired"],
 
             # - Records are DNSSEC authentic, but one or multiple of these scenarios occurred:
@@ -463,19 +475,6 @@ sub find {
             #   method . Verify the remote IP address ranges on any custom Receive connectors.
             ['5.7.3', 0, 0, 'cannot achieve exchange server authentication'],
             ['5.7.3', 0, 0, 'not authorized'],
-
-            # Exchange Online ---------------------------------------------------------------------
-            # - DNSSEC checks have passed, yet upon connection, destination mail server doesn't re-
-            #   spond to the STARTTLS command. The destination server responds to the STARTTLS com-
-            #   mand, but the TLS handshake fails.
-            # - This message usually indicates an issue on the destination email server. Check the
-            #   validity of the recipient address. Determine if the destination server is configur-
-            #   ed correctly to receive the messages.
-            ['4.4.317', 0, 0, 'starttls is required to send mail'],
-            ['5.4.317', 0, 0, 'starttls is required to send mail'],
-
-            ['4.7.321', 0, 0, 'starttls-not-supported: destination mail server must support tls to receive mail'],
-            ['5.7.321', 0, 0, 'starttls-not-supported: destination mail server must support tls to receive mail'],
 
             # - The sending email system didn't authenticate with the receiving email system. The
             #   receiving email system requires authentication before message submission.

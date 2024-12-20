@@ -12,12 +12,12 @@ my $ClassOrder = [
     ],
     [qw/MailboxFull AuthFailure BadReputation Speeding SpamDetected VirusDetected PolicyViolation 
         NoRelaying SystemError NetworkError Suspend ContentError SystemFull NotAccept Expired
-        SecurityError Suppressed MailerError/
+        FailedSTARTTLS SecurityError Suppressed MailerError/
     ],
     [qw/MailboxFull MesgTooBig ExceedLimit Suspend UserUnknown Filtered Rejected HostUnknown
-        SpamDetected Speeding TooManyConn Blocked SpamDetected AuthFailure SecurityError SystemError
-        NetworkError Suspend Expired ContentError HasMoved SystemFull NotAccept MailerError
-        NoRelaying Suppressed SyntaxError OnHold/
+        SpamDetected Speeding TooManyConn Blocked SpamDetected AuthFailure FailedSTARTTLS
+        SecurityError SystemError NetworkError Suspend Expired ContentError HasMoved SystemFull
+        NotAccept MailerError NoRelaying Suppressed SyntaxError OnHold/
     ],
 ];
 
@@ -45,11 +45,10 @@ sub index {
     # All the error reason list Sisimai support
     # @return   [Array] Reason list
     return [qw/
-        AuthFailure BadReputation Blocked ContentError ExceedLimit Expired Filtered HasMoved
-        HostUnknown MailboxFull MailerError MesgTooBig NetworkError NotAccept NotCompliantRFC
-        OnHold Rejected NoRelaying SpamDetected VirusDetected PolicyViolation SecurityError
-        Speeding Suspend RequirePTR SystemError SystemFull TooManyConn Suppressed UserUnknown
-        SyntaxError/
+        AuthFailure BadReputation Blocked ContentError ExceedLimit Expired FailedSTARTTLS Filtered
+        HasMoved HostUnknown MailboxFull MailerError MesgTooBig NetworkError NotAccept NotCompliantRFC
+        OnHold Rejected NoRelaying SpamDetected VirusDetected PolicyViolation SecurityError Speeding
+        Suspend RequirePTR SystemError SystemFull TooManyConn Suppressed UserUnknown SyntaxError/
     ];
 }
 

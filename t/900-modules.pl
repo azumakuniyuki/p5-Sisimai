@@ -61,6 +61,7 @@ sub list {
             Reason/Delivered.pm
             Reason/ExceedLimit.pm
             Reason/Expired.pm
+            Reason/FailedSTARTTLS.pm
             Reason/Feedback.pm
             Reason/Filtered.pm
             Reason/HasMoved.pm

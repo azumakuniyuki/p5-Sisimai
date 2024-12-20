@@ -486,7 +486,7 @@ use constant StandardCode => {
     '4.1.7'  => 'rejected',     # Bad sender's mailbox address syntax
     '4.1.8'  => 'rejected',     # Bad sender's system address
     '4.1.9'  => 'systemerror',  # Message relayed to non-compliant mailer
-    '4.2.1'  => 'suspend',      # Mailbox disabled, not accepting messages
+    '4.2.1'  => 'blocked',      # Mailbox disabled, not accepting messages
     '4.2.2'  => 'mailboxfull',  # Mailbox full
     '4.2.3'  => 'exceedlimit',  # Message length exceeds administrative limit
     '4.2.4'  => 'filtered',     # Mailing list expansion problem
@@ -801,9 +801,11 @@ sub find {
         push @$statuscode, $readbuffer;
     }
     push @$statuscode, $anotherone if length $anotherone;
-
     return '' if scalar @$statuscode == 0;
-    return shift @$statuscode;
+
+    # Select one from picked status codes
+    my $cv = shift @$statuscode; for my $e ( @$statuscode ) { $cv = __PACKAGE__->prefer($cv, $e, "") }
+    return $cv;
 }
 
 sub prefer {
@@ -851,11 +853,16 @@ sub prefer {
 
     return $statuscode if $zeroindex2->{'error'} > 0;       # An SMTP status code is "X.0.0"
     return $codeinmesg if $statuscode eq '4.4.7';           # "4.4.7" is an ambiguous code
+    return $codeinmesg if $statuscode eq '4.7.0';           # "4.7.0" indicates "too many errors"
     return $codeinmesg if index($statuscode, '5.3.') == 0;  # "5.3.Z" is an error of a system
+    return $codeinmesg if index($statuscode, '.5.1')  > 0;  # "X.5.1" indicates an invalid command
+    return $codeinmesg if index($statuscode, '.5.2')  > 0;  # "X.5.2" indicates a syntax error
+    return $codeinmesg if index($statuscode, '.5.4')  > 0;  # "X.5.4" indicates an invalid command arguments
+    return $codeinmesg if index($statuscode, '.5.5')  > 0;  # "X.5.5" indicates a wrong protocol version
 
     if( $statuscode eq '5.1.1' ) {
         # "5.1.1" is a code of "userunknown"
-        return $statuscode if $zeroindex1->{'error'} > 0;
+        return $statuscode if index($codeinmesg, '5.5.') == 0 || $zeroindex1->{'error'} > 0;
         return $codeinmesg;
 
     } elsif( $statuscode eq '5.1.3' ) {

@@ -2,6 +2,7 @@ package Sisimai::Reason::SystemError;
 use v5.26;
 use strict;
 use warnings;
+use Sisimai::String;
 
 sub text  { 'systemerror' }
 sub description { 'Email returned due to system error on the remote host' }
@@ -38,7 +39,11 @@ sub match {
         'timeout waiting for input',
         'transaction failed ',
     ];
+    state $pairs = [
+        ['unable to connect ', 'daemon'],
+    ];
     return 1 if grep { rindex($argv1, $_) > -1 } @$index;
+    return 1 if grep { Sisimai::String->aligned(\$argv1, $_) } @$pairs;
     return 0;
 }
 

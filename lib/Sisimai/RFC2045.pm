@@ -282,6 +282,7 @@ sub makeflat {
     my $iso2022set = qr/charset=["']?(iso-2022-[-a-z0-9]+)['"]?\b/;
     my $multiparts = __PACKAGE__->levelout($argv0, $argv1);
     my $flattenout = '';
+    my $delimiters = ["/delivery-status", "/rfc822", "/feedback-report", "/partial"];
 
     while( my $e = shift @$multiparts ) {
         # Pick only the following parts Sisimai::Lhost will use, and decode each part
@@ -335,10 +336,8 @@ sub makeflat {
             # There is no Content-Transfer-Encoding header in the part
             $bodystring .= $bodyinside;
         }
-
-        if( index($mediatypev, '/delivery-status') > -1 ||
-            index($mediatypev, '/feedback-report') > -1 ||
-            index($mediatypev, '/rfc822')          > -1 ) {
+        
+        if( grep { index($mediatypev, $_) > 0 } @$delimiters ) {
             # Add Content-Type: header of each part (will be used as a delimiter at Sisimai::Lhost) into
             # the body inside when the value of Content-Type: is message/delivery-status, message/rfc822,
             # or text/rfc822-headers

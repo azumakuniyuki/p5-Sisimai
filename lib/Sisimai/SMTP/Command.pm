@@ -3,6 +3,16 @@ use v5.26;
 use strict;
 use warnings;
 
+state $Availables = [
+    "HELO", "EHLO", "MAIL", "RCPT", "DATA", "QUIT", "RSET", "NOOP", "VRFY", "ETRN", "EXPN", "HELP",
+    "AUTH", "STARTTLS", "XFORWARD",
+    "CONN", # CONN is a pseudo SMTP command used only in Sisimai
+];
+state $Detectable = [
+    "HELO", "EHLO", "STARTTLS", "AUTH PLAIN", "AUTH LOGIN", "AUTH CRAM-", "AUTH DIGEST-", "MAIL F",
+    "RCPT", "RCPT T", "DATA", "QUIT", "XFORWARD",
+];
+
 sub test {
     # Check that an SMTP command in the argument is valid or not
     # @param    [String] argv0  An SMTP command
@@ -10,11 +20,9 @@ sub test {
     # @since v5.0.0
     my $class = shift;
     my $argv0 = shift // return undef;
-    my $table = [qw|HELO EHLO MAIL RCPT DATA QUIT RSET NOOP VRFY ETRN EXPN HELP AUTH STARTTLS XFORWARD|];
 
     return undef unless length $argv0 > 3;
-    return 1 if grep { index($argv0, $_) > -1 } @$table;
-    return 1 if index($argv0, 'CONN') > -1; # CONN is a pseudo SMTP command used only in Sisimai
+    return 1 if grep { index($argv0, $_) > -1 } @$Availables;
     return 0;
 }
 
@@ -22,33 +30,40 @@ sub find {
     # Pick an SMTP command from the given string
     # @param    [String] argv0  A transcript text MTA returned
     # @return   [String]        An SMTP command
-    # @return   [undef]         Failed to find an SMTP command or the 1st argument is missing
     # @since v5.0.0
     my $class = shift;
     my $argv0 = shift // return undef;
     return undef unless __PACKAGE__->test($argv0);
 
-    state $detectable = [
-        'HELO', 'EHLO', 'STARTTLS', 'AUTH PLAIN', 'AUTH LOGIN', 'AUTH CRAM-', 'AUTH DIGEST-',
-        'MAIL F', 'RCPT', 'RCPT T', 'DATA', 'QUIT', 'XFORWARD',
-    ];
-    my $stringsize = length $argv0;
+    my $issuedcode = ' '.lc($argv0).' ';
     my $commandmap = { 'STAR' => 'STARTTLS', 'XFOR' => 'XFORWARD' };
     my $commandset = [];
-    my $previouspp = 0;
 
-    for my $e ( @$detectable ) {
+    for my $e ( @$Detectable ) {
         # Find an SMTP command from the given string
-        my $p0 = index($argv0, $e, $previouspp);
-        next if $p0 < 0;
-        last if $p0 + 4 > $stringsize;
-        $previouspp = $p0;
+        my $p0 = index($argv0, $e); next if $p0 < 0;
+        if( index($e, " ") < 0 ) {
+            # For example, "RCPT T" does not appear in an email address or a domain name
+            my $cx = 1; while(1) {
+                # Exclude an SMTP command in the part of an email address, a domain name, such as
+                # DATABASE@EXAMPLE.JP, EMAIL.EXAMPLE.COM, and so on.
+                my $ca = ord(substr($issuedcode, $p0, 1));
+                my $cz = ord(substr($issuedcode, $p0 + length($e) + 1, 1));
 
-        my $cv = substr($argv0, $p0, 4); next if grep { $cv eq $_ } @$commandset;
+                last if $ca > 47 && $ca <  58 || $cz > 47 && $cz <  58; # 0-9
+                last if $ca > 63 && $ca <  91 || $cz > 63 && $cz <  91; # @-Z
+                last if $ca > 96 && $ca < 123 || $cz > 96 && $cz < 123; # `-z
+                $cx = 0; last;
+            }
+            next if $cx == 1;
+        }
+
+        # There is the same command in the "commanset" or nor
+        my $cv = substr($e, 0, 4); next if grep { index($cv, $_) == 0 } @$commandset;
            $cv = $commandmap->{ $cv } if exists $commandmap->{ $cv };
         push @$commandset, $cv;
     }
-    return undef unless scalar @$commandset;
+    return "" unless scalar @$commandset;
     return pop @$commandset;
 }
 

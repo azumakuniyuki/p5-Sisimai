@@ -14,6 +14,7 @@ use Sisimai::SMTP::Command;
 use Sisimai::SMTP::Failure;
 use Sisimai::String;
 use Sisimai::Rhost;
+use Sisimai::LDA;
 use Class::Accessor::Lite ('new' => 0, 'rw' => [
     'action',           # [String] The value of Action: header
     'addresser',        # [Sisimai::Address] From address
@@ -156,11 +157,19 @@ sub rise {
             my $recv = $mesg1->{'header'}->{'received'} || [];
             unless( $piece->{'rhost'} ) {
                 # Try to pick a remote hostname from Received: headers of the bounce message
-                for my $re ( reverse @$recv ) {
-                    # Check the Received: headers backwards and get a remote hostname
-                    my $cv = Sisimai::RFC5322->received($re)->[0];
-                    next unless Sisimai::RFC1123->is_validhostname($cv);
-                    $piece->{'rhost'} = $cv; last;
+                my $ir = Sisimai::RFC1123->find($e->{'diagnosis'});
+                $piece->{'rhost'} = $ir if Sisimai::RFC1123->is_internethost($ir);
+
+                unless( $piece->{'rhost'} ) {
+                    # The remote hostname in the error message did not exist or is not a valid
+                    # internet hostname
+                    for my $re ( reverse @$recv ) {
+                        # Check the Received: headers backwards and get a remote hostname
+                        last if $piece->{'rhost'};
+                        my $cv = Sisimai::RFC5322->received($re)->[0];
+                        next unless Sisimai::RFC1123->is_internethost($cv);
+                        $piece->{'rhost'} = $cv;
+                    }
                 }
             }
             $piece->{'lhost'} = '' if $piece->{'lhost'} eq $piece->{'rhost'};
@@ -170,7 +179,7 @@ sub rise {
                 for my $le ( @$recv ) {
                     # Check the Received: headers forwards and get a local hostname
                     my $cv = Sisimai::RFC5322->received($le)->[0];
-                    next unless Sisimai::RFC1123->is_validhostname($cv);
+                    next unless Sisimai::RFC1123->is_internethost($cv);
                     $piece->{'lhost'} = $cv; last;
                 }
             }
@@ -308,7 +317,7 @@ sub rise {
             my $ar = Sisimai::Address->new({'address' => $piece->{'recipient'}}) || next RISEOF;
             my @ea = (qw|
                 action deliverystatus diagnosticcode diagnostictype feedbacktype lhost listid
-                messageid origin reason replycode rhost smtpagent smtpcommand subject 
+                messageid origin reason replycode rhost smtpagent smtpcommand subject
             |);
 
             $thing = {
@@ -356,7 +365,11 @@ sub rise {
             if( $thing->{'reason'} eq '' || exists $retryindex->{ $thing->{'reason'} } ) {
                 # The value of "reason" is empty or is needed to check with other values again
                 my $re = $thing->{'reason'} || 'undefined';
-                $thing->{'reason'} = Sisimai::Rhost->find($thing) || Sisimai::Reason->find($thing) || $re;
+                my $cr = "Sisimai::Reason";
+                my $or = Sisimai::LDA->find($thing);    if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
+                   $or = Sisimai::Rhost->find($thing);  if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
+                   $or = Sisimai::Reason->find($thing); if( $cr->is_explicit($or) ){ $thing->{'reason'} = $or; last }
+                $thing->{'reason'} = $thing->{'diagnosticcode'} ? "onhold" : $re;
             }
         }
 
@@ -406,8 +419,10 @@ sub rise {
                     $thing->{'action'} = $ox->[2];
                 }
             }
-            $thing->{'action'}   = 'delayed' if $thing->{'reason'} eq 'expired';
-            $thing->{'action'} ||= 'failed'  if $cx->[0] eq '4' || $cx->[0] eq '5';
+            $thing->{'action'}   = 'delivered' if $thing->{'reason'} eq 'delivered';
+            $thing->{'action'} ||= 'delayed'   if $thing->{'reason'} eq 'expired';
+            $thing->{'action'} ||= 'failed'    if $cx->[0] eq '4' || $cx->[0] eq '5';
+            $thing->{'action'} ||= "";
         }
 
         push @$listoffact, bless($thing, __PACKAGE__);

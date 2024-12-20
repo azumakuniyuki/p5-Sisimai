@@ -7,17 +7,17 @@ my $ModulePath = __PACKAGE__->path;
 my $GetRetried = __PACKAGE__->retry;
 my $ClassOrder = [
     [qw/MailboxFull MesgTooBig ExceedLimit Suspend HasMoved NoRelaying AuthFailure UserUnknown
-        Filtered RequirePTR NotCompliantRFC BadReputation Rejected HostUnknown SpamDetected Speeding
-        TooManyConn Blocked/
+        Filtered RequirePTR NotCompliantRFC BadReputation ContentError Rejected HostUnknown
+        SpamDetected Speeding TooManyConn Blocked/
     ],
     [qw/MailboxFull AuthFailure BadReputation Speeding SpamDetected VirusDetected PolicyViolation 
         NoRelaying SystemError NetworkError Suspend ContentError SystemFull NotAccept Expired
-        SecurityError MailerError/
+        SecurityError Suppressed MailerError/
     ],
     [qw/MailboxFull MesgTooBig ExceedLimit Suspend UserUnknown Filtered Rejected HostUnknown
         SpamDetected Speeding TooManyConn Blocked SpamDetected AuthFailure SecurityError SystemError
         NetworkError Suspend Expired ContentError HasMoved SystemFull NotAccept MailerError
-        NoRelaying SyntaxError OnHold/
+        NoRelaying Suppressed SyntaxError OnHold/
     ],
 ];
 
@@ -26,8 +26,19 @@ sub retry {
     # @return   [Hash] Reason list
     return {
         'undefined' => 1, 'onhold' => 1, 'systemerror' => 1, 'securityerror' => 1, 'expired' => 1,
-        'suspend' => 1, 'networkerror' => 1, 'hostunknown' => 1, 'userunknown'=> 1
+        'networkerror' => 1, 'hostunknown' => 1, 'userunknown'=> 1
     };
+}
+
+sub is_explicit {
+    # is_explicit() returns 0 when the argument is empty or is "undefined" or is "onhold"
+    # @param    string argv1  Reason name
+    # @return   bool          false: The reaosn is not explicit
+    my $class = shift;
+    my $argv1 = shift || return 0;
+
+    return 0 if $argv1 eq "undefined" || $argv1 eq "onhold" || $argv1 eq "";
+    return 1;
 }
 
 sub index {
@@ -37,7 +48,8 @@ sub index {
         AuthFailure BadReputation Blocked ContentError ExceedLimit Expired Filtered HasMoved
         HostUnknown MailboxFull MailerError MesgTooBig NetworkError NotAccept NotCompliantRFC
         OnHold Rejected NoRelaying SpamDetected VirusDetected PolicyViolation SecurityError
-        Speeding Suspend RequirePTR SystemError SystemFull TooManyConn UserUnknown SyntaxError/
+        Speeding Suspend RequirePTR SystemError SystemFull TooManyConn Suppressed UserUnknown
+        SyntaxError/
     ];
 }
 

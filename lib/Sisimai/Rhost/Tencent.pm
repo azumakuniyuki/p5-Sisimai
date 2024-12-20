@@ -10,7 +10,7 @@ sub find {
     # @see      https://service.mail.qq.com/detail/122
     # @since v4.25.0
     my $class = shift;
-    my $argvs = shift // return undef;
+    my $argvs = shift // return undef; return "" unless $argvs->{'diagnosticcode'};
 
     state $messagesof = {
         'authfailure' => [

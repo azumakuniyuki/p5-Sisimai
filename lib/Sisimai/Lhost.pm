@@ -22,7 +22,6 @@ sub DELIVERYSTATUS {
         'replycode',   => '',   # SMTP Reply Code
         'diagnosis'    => '',   # The value of Diagnostic-Code header
         'recipient'    => '',   # The value of Final-Recipient header
-        'hardbounce'   => '',   # Hard bounce or not
         'feedbacktype' => '',   # Feedback Type
     };
 }
@@ -41,11 +40,10 @@ sub index {
     # Alphabetical sorted MTA module list
     # @return   [Array] MTA list with order
     return [qw|
-        Activehunter Amavis AmazonSES AmazonWorkMail Aol ApacheJames Barracuda Bigfoot Biglobe Courier
-        Domino DragonFly EZweb EinsUndEins Exchange2003 Exchange2007 Exim FML Facebook GMX GSuite GoogleGroups
-        Gmail IMailServer InterScanMSS KDDI MXLogic MailFoundry MailMarshalSMTP MailRu McAfee MessageLabs
-        MessagingServer Notes Office365 OpenSMTPD Outlook Postfix PowerMTA ReceivingSES SendGrid Sendmail
-        SurfControl V5sendmail Verizon X1 X2 X3 X4 X5 X6 Yahoo Yandex Zoho mFILTER qmail
+        Activehunter AmazonSES ApacheJames Biglobe Courier Domino DragonFly EZweb
+        EinsUndEins Exchange2003 Exchange2007 Exim FML GMX GoogleGroups GoogleWorkspace Gmail
+        IMailServer InterScanMSS KDDI MailFoundry MailMarshalSMTP MessagingServer Notes
+        OpenSMTPD Postfix Sendmail V5sendmail Verizon X1 X2 X3 X6 Zoho mFILTER qmail
     |];
 }
 

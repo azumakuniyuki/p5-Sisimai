@@ -29,6 +29,7 @@ my $ReasonChildren = {
     'SecurityError'   => ['570 5.7.0 Authentication failure'],
     'SpamDetected'    => ['570 5.7.7 Spam Detected'],
     'Speeding'        => ['451 4.7.1 <smtp.example.jp[192.0.2.3]>: Client host rejected: Please try again slower'],
+#   'Suppressed'      => ['There is no sample email which is returned due to being listed in the suppression list'],
     'Suspend'         => ['550 5.0.0 Recipient suspend the service'],
     'SystemError'     => ['500 5.3.5 System config error'],
     'SystemFull'      => ['550 5.0.0 Mail system full'],

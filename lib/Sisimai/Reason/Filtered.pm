@@ -20,6 +20,7 @@ sub match {
         'due to extended inactivity new mail is not currently being accepted for this mailbox',
         'has restricted sms e-mail',    # AT&T
         'is not accepting any mail',
+        "message filtered",
         'message rejected due to user rules',
         'not found recipient account',
         'refused due to recipient preferences', # Facebook

@@ -10,7 +10,7 @@ sub find {
     # @see      https://support.google.com/a/answer/3726730?hl=en
     # @since v4.0.0
     my $class = shift;
-    my $argvs = shift // return undef;
+    my $argvs = shift // return undef; return "" unless $argvs->{'diagnosticcode'};
     return '' unless Sisimai::SMTP::Reply->test($argvs->{'replycode'});
     return '' unless Sisimai::SMTP::Status->test($argvs->{'deliverystatus'});
 

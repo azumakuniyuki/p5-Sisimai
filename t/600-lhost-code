@@ -26,6 +26,15 @@ my $moduletest = sub {
     my $lhostindex = Sisimai::Lhost->index; push @$lhostindex, 'ARF', 'RFC3464', 'RFC3834';
     my $isnotlhost = qr/\A(?:ARF|RFC3464|RFC3834)\z/;
     my $methodlist = ['DELIVERYSTATUS', 'INDICATORS', 'description', 'index', 'path'];
+    my $alternates = {
+        'Exchange2007' => ['Office365'],
+        'Exim'         => ['MailRu', 'MXLogic'],
+        'qmail'        => ['X4', 'Yahoo'],
+        'RFC3464'      => [qw|
+            Aol Amavis AmazonWorkMail Barracuda Bigfoot Facebook GSuite McAfee MessageLabs Outlook
+            PowerMTA ReceivingSES SendGrid SurfControl Yandex X5
+        |],
+    };
     my $skiptonext = {
         'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],
         'private' => [
@@ -46,11 +55,29 @@ my $moduletest = sub {
         $M = sprintf("Sisimai::%s", $E);
 
     } else {
-        # Sisimai::Lhost OR Sisimai::Rhost
-        my $c = [caller()]->[1];
-        my $h = $c =~ /-rhost-/ ? 'rhost' : 'lhost';
-        $M = sprintf("Sisimai::%s::%s", ucfirst $h, $E);
-        $nameprefix = $h.'-';
+        my $calledfrom = [caller()]->[1];
+        my $kindofhost = $calledfrom =~ /-rhost-/ ? 'rhost' : 'lhost';
+        if( grep { $E eq $_ } $alternates->{'RFC3464'}->@* ) {
+            # Removed Lhost moudles (Sisimai::RFC3464 can decode)
+            $M = "Sisimai::RFC3464";
+
+        } elsif( grep { $E eq $_ } $alternates->{'Exchange2007'}->@* ) {
+            # Removed Lhost moudles (Sisimai::Lhost::Exchange2007 can decode)
+            $M = "Sisimai::Lhost::Exchange2007";
+
+        } elsif( grep { $E eq $_ } $alternates->{'Exim'}->@* ) {
+            # Removed Lhost moudles (Sisimai::Lhost::Exim can decode)
+            $M = "Sisimai::Lhost::Exim";
+
+        } elsif( grep { $E eq $_ } $alternates->{'qmail'}->@* ) {
+            # Removed Lhost moudles (Sisimai::Lhost::qmail can decode)
+            $M = "Sisimai::Lhost::qmail";
+
+        } else {
+            # Sisimai::Lhost OR Sisimai::Rhost
+            $M = sprintf("Sisimai::%s::%s", ucfirst $kindofhost, $E);
+        }
+        $nameprefix = $kindofhost.'-';
     }
     my $samplepath = $privateset ? sprintf("set-of-emails/private/%s%s", $nameprefix, lc $E) : 'set-of-emails/maildir/bsd';
 
@@ -398,17 +425,35 @@ my $moduletest = sub {
                     } else {
                         # Sisimai::Lhost
                         if( $E eq 'RFC3464' && $cv !~ /\ARFC3464/ ) {
-                            # Parsed by Sisimai::MDA
+                            # Parsed by Sisimai::LDA
                             ok $cv =~ $cr, sprintf("%s %s", $ct, $cr);
                             is scalar @{ [grep { $cv eq $_ } @$lhostindex] }, 0, sprintf("%s %s", $ct, $cv);
 
-                        } elsif( $E eq 'ARF' ) {
-                            # Parsed by Sisimai::ARF
-                            is $cv, 'Feedback-Loop', sprintf("%s %s", $ct, $cr);
+                        } elsif( grep { $E eq $_ } $alternates->{'RFC3464'}->@* ) {
+                            # Decoded by Sisimai::RFC3464 since v5.2.0
+                            is $cv, 'RFC3464', sprintf("%s %s", $ct, $cr);
+
+                        } elsif( grep { $E eq $_ } $alternates->{'Exchange2007'}->@* ) {
+                            # Decoded by Sisimai::Lhost::Exchange2007 since v5.2.0
+                            is $cv, 'Exchange2007', sprintf("%s %s", $ct, $cr);
+
+                        } elsif( grep { $E eq $_ } $alternates->{'Exim'}->@* ) {
+                            # Decoded by Sisimai::Lhost::Exim since v5.2.0
+                            is $cv, 'Exim', sprintf("%s %s", $ct, $cr);
+
+                        } elsif( grep { $E eq $_ } $alternates->{'qmail'}->@* ) {
+                            # Decoded by Sisimai::Lhost::qmail since v5.2.0
+                            is $cv, 'qmail', sprintf("%s %s", $ct, $cr);
 
                         } else {
                             # Other MTA modules
-                            is $cv, $E, sprintf("%s %s", $ct, $cr);
+                            if( $E eq "AmazonSES" ) {
+                                # lhost-amazonses-* are decoded by Sisimai::RFC3464 except 11-14
+                                like $cv, qr/(?:AmazonSES|RFC3464)/, sprintf("%s %s", $ct, $cr);
+
+                            } else {
+                                is $cv, $E, sprintf("%s %s", $ct, $cr);
+                            }
                         }
                     }
                 }

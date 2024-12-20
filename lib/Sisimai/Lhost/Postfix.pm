@@ -29,6 +29,7 @@ sub inquire {
     return undef if $match == 0;
     return undef if $mhead->{'x-aol-ip'};
 
+    require Sisimai::SMTP::Reply;
     require Sisimai::SMTP::Command;
     state $indicators = __PACKAGE__->INDICATORS;
     state $boundaries = ['Content-Type: message/rfc822', 'Content-Type: text/rfc822-headers'];
@@ -112,7 +113,7 @@ sub inquire {
                 next unless my $o = Sisimai::RFC1894->field($e);
                 $v = $dscontents->[-1];
 
-                if( $o->[-1] eq 'addr' ) {
+                if( $o->[3] eq 'addr' ) {
                     # Final-Recipient: rfc822; kijitora@example.jp
                     # X-Actual-Recipient: rfc822; kijitora@example.co.jp
                     if( $o->[0] eq 'final-recipient' ) {
@@ -129,7 +130,7 @@ sub inquire {
                         # X-Actual-Recipient: rfc822; kijitora@example.co.jp
                         $v->{'alias'} = $o->[2];
                     }
-                } elsif( $o->[-1] eq 'code' ) {
+                } elsif( $o->[3] eq 'code' ) {
                     # Diagnostic-Code: SMTP; 550 5.1.1 <userunknown@example.jp>... User Unknown
                     $v->{'spec'} = $o->[1];
                     $v->{'spec'} = 'SMTP' if uc $v->{'spec'} eq 'X-POSTFIX';
@@ -164,8 +165,7 @@ sub inquire {
                     # Alternative error message and recipient
                     if( index($e, ' (in reply to ') > -1 || index($e, 'command)') > -1 ) {
                         # 5.1.1 <userunknown@example.co.jp>... User Unknown (in reply to RCPT TO
-                        my $q = Sisimai::SMTP::Command->find($e);
-                        push @commandset, $q if $q;
+                        my $cv = Sisimai::SMTP::Command->find($e); push @commandset, $cv if $cv;
                         $anotherset->{'diagnosis'} .= ' '.$e if $anotherset->{'diagnosis'};
 
                     } elsif( Sisimai::String->aligned(\$e, ['<', '@', '>', '(expanded from <', '):']) ) {

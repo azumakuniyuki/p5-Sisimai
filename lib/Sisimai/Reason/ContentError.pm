@@ -35,7 +35,14 @@ sub true {
     # @return   [Integer]               1: rejected due to content error
     #                                   0: is not content error
     # @see      http://www.ietf.org/rfc/rfc2822.txt
-    return undef;
+    my $class = shift;
+    my $argvs = shift // return undef;
+
+    require Sisimai::Reason::SpamDetected;
+    return 1 if $argvs->{'reason'} eq 'contenterror';
+    return 0 if Sisimai::Reason::SpamDetected->true($argvs);
+    return 1 if (Sisimai::SMTP::Status->name($argvs->{'deliverystatus'}) || '') eq 'contenterror';
+    return __PACKAGE__->match(lc $argvs->{'diagnosticcode'});
 }
 
 1;

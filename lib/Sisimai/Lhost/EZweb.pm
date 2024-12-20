@@ -35,39 +35,40 @@ sub inquire {
 
     require Sisimai::SMTP::Command;
     state $indicators = __PACKAGE__->INDICATORS;
-    state $boundaries = ['--------------------------------------------------', 'Content-Type: message/rfc822'];
-    state $markingsof = { 'message' => ['The user(s) ', 'Your message ', 'Each of the following', '<'] };
-    state $refailures = {
+    state $boundaries = ["--------------------------------------------------", "Content-Type: message/rfc822"];
+    state $startingof = { "message" => ['The user(s) ', 'Your message ', 'Each of the following', '<'] };
+    state $messagesof = {
         #'notaccept'  => ['The following recipients did not receive this message:'],
-        'mailboxfull' => ['The user(s) account is temporarily over quota'],
-        'suspend'     => [
-            # http://www.naruhodo-au.kddi.com/qa3429203.html
-            # The recipient may be unpaid user...?
-            'The user(s) account is disabled.',
-            'The user(s) account is temporarily limited.',
-        ],
         'expired' => [
             # Your message was not delivered within 0 days and 1 hours.
             # Remote host is not responding.
             'Your message was not delivered within ',
         ],
-        'onhold' => ['Each of the following recipients was rejected by a remote mail server'],
+        'mailboxfull' => ['The user(s) account is temporarily over quota'],
+        'onhold'  => ['Each of the following recipients was rejected by a remote mail server'],
+        'suspend' => [
+            # http://www.naruhodo-au.kddi.com/qa3429203.html
+            # The recipient may be unpaid user...?
+            'The user(s) account is disabled.',
+            'The user(s) account is temporarily limited.',
+        ],
     };
 
     my $fieldtable = Sisimai::RFC1894->FIELDTABLE;
     my $dscontents = [__PACKAGE__->DELIVERYSTATUS];
     my $emailparts = Sisimai::RFC5322->part($mbody, $boundaries);
-    my $readcursor = 0;     # (Integer) Points the current cursor position
-    my $recipients = 0;     # (Integer) The number of 'Final-Recipient' header
-    my @rxmessages; push @rxmessages, $refailures->{ $_ }->@* for keys %$refailures;
+    my $readcursor = 0;     # Points the current cursor position
+    my $recipients = 0;     # The number of 'Final-Recipient' header
+    my $substrings = [];    # All the values of "messagesof"
     my $v = undef;
+    map { push @$substrings, $messagesof->{ $_ }->@* } keys %$messagesof;
 
     for my $e ( split("\n", $emailparts->[0]) ) {
         # Read error messages and delivery status lines from the head of the email to the previous
         # line of the beginning of the original message.
         unless( $readcursor ) {
             # Beginning of the bounce message or message/delivery-status part
-            $readcursor |= $indicators->{'deliverystatus'} if grep { index($e, $_) > -1 } $markingsof->{'message'}->@*;
+            $readcursor |= $indicators->{'deliverystatus'} if grep { index($e, $_) > -1 } $startingof->{'message'}->@*;
         }
         next unless $readcursor & $indicators->{'deliverystatus'};
         next unless length $e;
@@ -95,7 +96,8 @@ sub inquire {
                 push @$dscontents, __PACKAGE__->DELIVERYSTATUS;
                 $v = $dscontents->[-1];
             }
-            $v->{'recipient'} = Sisimai::Address->s3s4(substr($e, $p1, $p2 - $p1));
+            $v->{'recipient'}  = Sisimai::Address->s3s4(substr($e, $p1, $p2 - $p1));
+            $v->{"diagnosis"} .= " ".$e;
             $recipients++;
 
         } elsif( my $f = Sisimai::RFC1894->match($e) ) {
@@ -107,35 +109,33 @@ sub inquire {
         } else {
             # The line does not begin with a DSN field defined in RFC3464
             next if Sisimai::String->is_8bit(\$e);
-            if( index($e, ' >>> ') > -1 ) {
+            if( index($e, " >>> ") > -1 ) {
                 #    >>> RCPT TO:<******@ezweb.ne.jp>
-                $v->{'command'} = Sisimai::SMTP::Command->find($e) || '';
+                $v->{"command"} = Sisimai::SMTP::Command->find($e);
+                $v->{"diagnosis"} .= " ".$e;
+
+            } elsif( index($e, " <<< ") > -1 ) {
+                # <<< 550 ...
+                $v->{"diagnosis"} .= " ".$e;
 
             } else {
                 # Check error message
-                if( grep { index($e, $_) > -1 } @rxmessages ) {
-                    # Check with regular expressions of each error
-                    $v->{'diagnosis'} .= ' '.$e;
-                } else {
-                    # >>> 550
-                    $v->{'alterrors'} .= ' '.$e;
+                my $isincluded = 0;
+                if( grep { index($e, $_) > -1 } @$substrings ) {
+                    # Try to find that the line contains any error message text
+                    $v->{"diagnosis"} .= ' '.$e;
+                    $isincluded = 1;
                 }
+                $v->{"diagnosis"} .= " ".$e if $isincluded == 0;
             }
         } # End of error message part
     }
     return undef unless $recipients;
 
     for my $e ( @$dscontents ) {
-        if( exists $e->{'alterrors'} && $e->{'alterrors'} ) {
-            # Copy alternative error message
-            $e->{'diagnosis'} ||= $e->{'alterrors'};
-            if( index($e->{'diagnosis'}, '-') == 0 || substr($e->{'diagnosis'}, -2, 2) eq '__' ) {
-                # Override the value of diagnostic code message
-                $e->{'diagnosis'} = $e->{'alterrors'} if $e->{'alterrors'};
-            }
-            delete $e->{'alterrors'};
-        }
+        # Check each value of DeliveryMatter{}, try to detect the bounce reason.
         $e->{'diagnosis'} = Sisimai::String->sweep($e->{'diagnosis'});
+        $e->{"command"} ||= Sisimai::SMTP::Command->find($e->{"diagnosis"}) || "";
 
         if( defined $mhead->{'x-spasign'} && $mhead->{'x-spasign'} eq 'NG' ) {
             # Content-Type: text/plain; ..., X-SPASIGN: NG (spamghetti, au by EZweb)
@@ -143,26 +143,20 @@ sub inquire {
             $e->{'reason'} = 'filtered';
 
         } else {
-            if( $e->{'command'} eq 'RCPT' ) {
-                # set "userunknown" when the remote server rejected after RCPT command.
-                $e->{'reason'} = 'userunknown';
-
-            } else {
-                # SMTP command is not RCPT
-                SESSION: for my $r ( keys %$refailures ) {
-                    # Try to match with each session error message
-                    PATTERN: for my $rr ( $refailures->{ $r }->@* ) {
-                        # Check each error message pattern
-                        next(PATTERN) unless index($e->{'diagnosis'}, $rr) > -1;
-                        $e->{'reason'} = $r;
-                        last(SESSION);
-                    }
+            # There is no X-SPASIGN header or the value of the header is not "NG"
+            FINDREASON: for my $r ( keys %$messagesof ) {
+                # Try to match with each session error message
+                for my $f ( $messagesof->{ $r }->@* ) {
+                    # Check each error message pattern
+                    next unless index($e->{'diagnosis'}, $f) > -1;
+                    $e->{'reason'} = $r;
+                    last FINDREASON;
                 }
             }
         }
         next if $e->{'reason'};
         next if index($e->{'recipient'}, '@ezweb.ne.jp') > 1 || index($e->{'recipient'}, '@au.com') > 1;
-        $e->{'reason'} = 'userunknown';
+        $e->{"reason"} = "userunknown" if index($e->{"diagnosis"}, "<") == 0;
     }
     return { 'ds' => $dscontents, 'rfc822' => $emailparts->[1] };
 }

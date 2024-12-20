@@ -163,14 +163,22 @@ sub find {
 
     for my $e ( @$replycodes ) {
         # Try to find an SMTP Reply Code from the given string
-        my $replyindex = index($esmtperror, $e); next if $replyindex == -1;
-        my $formerchar = ord(substr($esmtperror, $replyindex - 1, 1)) || 0;
-        my $latterchar = ord(substr($esmtperror, $replyindex + 3, 1)) || 0;
+        my $appearance = index($esmtperror, $e); next if $appearance == -1;
+        my $startingat = 1;
+        my $mesglength = length $esmtperror;
 
-        next if $formerchar > 45 && $formerchar < 58;
-        next if $latterchar > 45 && $latterchar < 58;
-        $esmtpreply = $e;
-        last;
+        while( $startingat + 3 < $mesglength ) {
+            # Find all the reply code in the error message
+            my $replyindex = index($esmtperror, $e, $startingat); last if $replyindex == -1;
+            my $formerchar = ord(substr($esmtperror, $replyindex - 1, 1)) || 0;
+            my $latterchar = ord(substr($esmtperror, $replyindex + 3, 1)) || 0;
+
+            if( $formerchar > 45 && $formerchar < 58 ){ $startingat += $replyindex + 3; next }
+            if( $latterchar > 45 && $latterchar < 58 ){ $startingat += $replyindex + 3; next }
+            $esmtpreply = $e;
+            last;
+        }
+        last if $esmtpreply;
     }
     return $esmtpreply;
 }

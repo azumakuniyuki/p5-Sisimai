@@ -174,6 +174,12 @@ sub find {
             #   error messages. https://support.google.com/a/answer/3221692
             ['451', '4.4.2', 'timeout - closing connection'],
         ],
+        "failedstarttls" => [
+            # - 530 5.7.0 Must issue a STARTTLS command first. For more information, go to About
+            #   SMTP error messages and review RFC 3207 specifications.
+            ['530', '5.7.0', 'must issue a starttls command first'],
+            ['454', '5.5.1', 'starttls may not be repeated'],
+        ],
         'mailboxfull' => [
             # - 452 4.2.2 The recipient's inbox is out of storage space.
             #   Please direct the recipient to https://support.google.com/mail/?p=OverQuotaTemp
@@ -431,7 +437,6 @@ sub find {
             ['454', '4.5.0',  'smtp protocol violation'],
             ['525', '5.7.10', 'smtp protocol violation'],
             ['535', '5.5.4',  'optional argument not permitted'],
-            ['454', '5.5.1',  'starttls may not be repeated'],
 
             # - 501 5.5.2 Syntax error, cannot decode response. For more information, go to About
             #   SMTP error messages.
@@ -460,10 +465,6 @@ sub find {
             ['503', '5.5.1', 'no data after bdat'],
             ['504', '5.7.4', 'unrecognized authentication type'],
             ['504', '5.7.4', 'xoauth is no longer supported'],
-
-            # - 530 5.7.0 Must issue a STARTTLS command first. For more information, go to About
-            #   SMTP error messages and review RFC 3207 specifications.
-            ['530', '5.7.0', 'must issue a starttls command first'],
             ['554', '5.7.0', 'too many unauthenticated commands'],
         ],
         'systemerror' => [

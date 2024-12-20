@@ -43,10 +43,12 @@ install-from-local: cpanm
 
 test: user-test author-test
 user-test:
-	$(PROVE) t/
+	# Suppress warning message until v5.5.0
+	$(PROVE) t/ 2> /dev/null
 
 author-test:
-	$(PROVE) xt/
+	# Suppress warning message until v5.5.0
+	$(PROVE) xt/ 2> /dev/null
 
 check:
 	find lib -type f -exec grep -E ' $$' {} /dev/null \;

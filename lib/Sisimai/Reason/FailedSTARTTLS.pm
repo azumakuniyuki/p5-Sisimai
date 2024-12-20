@@ -31,6 +31,7 @@ sub true {
     # @since v5.2.0
     my $class = shift;
     my $argvs = shift // return undef;
+    my $reply = int $argvs->{'replycode'} || 0;
 
     return 1 if $argvs->{"reason"} eq "failedstarttls";
     return 1 if $argvs->{"command"} eq "STARTTLS";

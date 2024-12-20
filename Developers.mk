@@ -45,7 +45,7 @@ private-sample:
 	$(PARSERSCRIPT) $(E)
 	@echo
 	@while true; do \
-		d=`$(PARSERSCRIPT) -Fjson $(E) | jq -M '.[].smtpagent' | head -1 \
+		d=`$(PARSERSCRIPT) -Fjson $(E) | jq -M '.[].decodedby' | head -1 \
 			| tr '[A-Z]' '[a-z]' | tr -d '-' | sed -e 's/"//g' -e 's/^/lhost-/g'`; \
 		if [ -d "$(PRIVATEMAILS)/$$d" ]; then \
 			latestfile=`ls -1 $(PRIVATEMAILS)/$$d/*.$(SAMPLEPREFIX) | tail -1`; \

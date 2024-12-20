@@ -412,10 +412,10 @@ my $moduletest = sub {
                     }
                 }
 
-                SMTPAGENT: {
-                    $cv = $rr->smtpagent;
+                DECODEDBY: {
+                    $cv = $rr->decodedby;
                     $cr = qr/\A[-.0-9A-Za-z]+\z/;
-                    $ct = sprintf("[%s-%02d] ->smtpagent =", $e, $errorindex);
+                    $ct = sprintf("[%s-%02d] ->decodedby =", $e, $errorindex);
 
                     ok length $cv, sprintf("%s %s", $ct, $cv);
                     if( index($nameprefix, 'rhost') == 0 ) {

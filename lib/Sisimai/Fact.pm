@@ -35,7 +35,7 @@ use Class::Accessor::Lite ('new' => 0, 'rw' => [
     'replycode',        # [String] SMTP Reply Code
     'rhost',            # [String] Remote host name/Remote MTA
     'senderdomain',     # [String] The domain part of the "addresser"
-    'smtpagent',        # [String] Module(Engine) name
+    'decodedby',        # [String] Module(Engine) name
     'smtpcommand',      # [String] The last SMTP command
     'subject',          # [String] UTF-8 Subject text
     'timestamp',        # [Sisimai::Time] Date: header in the original message
@@ -91,7 +91,7 @@ sub rise {
             'recipient'      => $e->{'recipient'}    // '',
             'replycode'      => $e->{'replycode'}    // '',
             'rhost'          => $e->{'rhost'}        // '',
-            'smtpagent'      => $e->{'agent'}        // '',
+            'decodedby'      => $e->{'agent'}        // '',
             'smtpcommand'    => $e->{'command'}      // '',
         };
 
@@ -317,7 +317,7 @@ sub rise {
             my $ar = Sisimai::Address->new({'address' => $piece->{'recipient'}}) || next RISEOF;
             my @ea = (qw|
                 action deliverystatus diagnosticcode diagnostictype feedbacktype lhost listid
-                messageid origin reason replycode rhost smtpagent smtpcommand subject
+                messageid origin reason replycode rhost decodedby smtpcommand subject
             |);
 
             $thing = {
@@ -438,7 +438,7 @@ sub damn {
     my $data = undef;
     state $stringdata = [qw|
         action alias catch deliverystatus destination diagnosticcode diagnostictype feedbacktype
-        lhost listid messageid origin reason replycode rhost senderdomain smtpagent smtpcommand
+        lhost listid messageid origin reason replycode rhost senderdomain decodedby smtpcommand
         subject timezoneoffset token
     |];
 
@@ -702,11 +702,12 @@ to get the value from C<Received:> headers.
 C<senderdomain> is the domain part of the sender address. This value is the same as the return value
 from C<host()> method of addresser accessor.
 
-=head2 C<smtpagent> (I<String>)
+=head2 C<decodedby> (I<String>)
 
-C<smtpagent> is a module name to be used for detecting bounce reason. For example, when the value is
-C<Sendmail>, Sisimai used L<Sisimai::Lhost::Sendmail> to get the recipient address and other delivery
-status information from a bounce message.
+C<decodedby> is a module name to be used for decoding a bounce message. For example, when the value
+is C<Sendmail>, Sisimai used L<Sisimai::Lhost::Sendmail> to decode the bounce message, to find the
+recipient address, and collect error messages for deciding a bounce reason.
+Until v5.2.0, this accessor name was C<smtpagent>.
 
 =head2 C<smtpcommand> (I<String>)
 

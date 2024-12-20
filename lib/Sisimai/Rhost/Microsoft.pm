@@ -25,42 +25,9 @@ sub find {
             # - The sending message sent over IPv6 must pass either SPF or DKIM.
             ['4.7.26', 0, 0, 'must pass either spf or dkim validation, this message is not signed'],
 
-            # - Records are DNSSEC authentic, but one or multiple of these scenarios occurred:
-            #   - The destination mail server's certificate doesn't match with what is expected per
-            #     the authentic TLSA record.
-            #   - Authentic TLSA record is misconfigured.
-            #   - Destination domain is being attacked.
-            #   - Any other DANE failure.
-            # - This message usually indicates an issue on the destination email server. Check the
-            #   validity of recipient address and determine if the destination server is configured
-            #   correctly to receive messages. 
-            # - For more information about DANE, see: https://datatracker.ietf.org/doc/html/rfc7671
-            ['4.7.323', 0, 0, 'tlsa-invalid: The domain failed dane validation'],
-            ['5.7.323', 0, 0, 'tlsa-invalid: The domain failed dane validation'],
-
-            # - The destination domain indicated it was DNSSEC-authentic, but Exchange Online was 
-            #   not able to verify it as DNSSEC-authentic.
-            ['4.7.324', 0, 0, 'dnssec-invalid: destination domain returned invalid dnssec records'],
-            ['5.7.324', 0, 0, 'dnssec-invalid: destination domain returned invalid dnssec records'],
-
-            # - This happens when the presented certificate identities (CN and SAN) of a destina-
-            #   tion SMTP target host don't match any of the domains or MX host.
-            # - This message usually indicates an issue on the destination email server. Check the
-            #   validity of recipient address and determine if the destination server is configured
-            #   correctly to receive messages. For more information, see How SMTP DNS-based Authen-
-            #   tication of Named Entities (DANE) works to secure email communications.
-            ['4.7.325', 0, 0, 'certificate-host-mismatch: remote certificate must have a common name or subject alternative name matching the hostname (dane)'],
-            ['5.7.325', 0, 0, 'certificate-host-mismatch: remote certificate must have a common name or subject alternative name matching the hostname (dane)'],
-
             # - The destination email system uses SPF to validate inbound mail, and there's a prob-
             #   lem with your SPF configuration.
             ['5.7.23', 0, 0, 'the message was rejected because of sender policy framework violation'],
-
-            # - DNSSEC checks have passed, yet upon establishing the connection the destination
-            #   mail server provides a certificate that is expired.
-            # - A valid X.509 certificate that isn't expired must be presented. X.509 certificates
-            #   must be renewed after their expiration, commonly annually.
-            ['5.7.322', 0, 0, "certificate-expired: destination mail server's certificate is expired"],
 
             # - Access denied, sending domain [$SenderDomain] does not pass DMARC verification
             # - The sender's domain in the 5322.From address doesn't pass DMARC.
@@ -145,7 +112,6 @@ sub find {
 
             # Previous versions of Exchange Server ------------------------------------------------
             ['5.5.4',  0, 0, 'invalid domain name'],
-            ['5.7.51', 0, 0, 'restrictdomainstoipaddresses or restrictdomainstocertificate'],
 
             # Undocumented error messages ---------------------------------------------------------
             # - 550 5.7.1 Unfortunately, messages from [10.0.2.5] weren't sent. Please contact your
@@ -224,6 +190,41 @@ sub find {
             #   tion server never responded or the sent message generated an NDR error and that NDR
             #   couldn't be delivered to the original sender.
             ['5.4.300', 0, 0, 'message expired'],
+        ],
+        'failedstarttls' => [
+            # - DNSSEC checks have passed, yet upon establishing the connection the destination
+            #   mail server provides a certificate that is expired.
+            # - A valid X.509 certificate that isn't expired must be presented. X.509 certificates
+            #   must be renewed after their expiration, commonly annually.
+            ['5.7.51',  0, 0, 'restrictdomainstoipaddresses or restrictdomainstocertificate'],
+            ['5.7.322', 0, 0, "certificate-expired: destination mail server's certificate is expired"],
+
+            # - Records are DNSSEC authentic, but one or multiple of these scenarios occurred:
+            #   - The destination mail server's certificate doesn't match with what is expected per
+            #     the authentic TLSA record.
+            #   - Authentic TLSA record is misconfigured.
+            #   - Destination domain is being attacked.
+            #   - Any other DANE failure.
+            # - This message usually indicates an issue on the destination email server. Check the
+            #   validity of recipient address and determine if the destination server is configured
+            #   correctly to receive messages. 
+            # - For more information about DANE, see: https://datatracker.ietf.org/doc/html/rfc7671
+            ['4.7.323', 0, 0, 'tlsa-invalid: The domain failed dane validation'],
+            ['5.7.323', 0, 0, 'tlsa-invalid: The domain failed dane validation'],
+
+            # - The destination domain indicated it was DNSSEC-authentic, but Exchange Online was 
+            #   not able to verify it as DNSSEC-authentic.
+            ['4.7.324', 0, 0, 'dnssec-invalid: destination domain returned invalid dnssec records'],
+            ['5.7.324', 0, 0, 'dnssec-invalid: destination domain returned invalid dnssec records'],
+
+            # - This happens when the presented certificate identities (CN and SAN) of a destina-
+            #   tion SMTP target host don't match any of the domains or MX host.
+            # - This message usually indicates an issue on the destination email server. Check the
+            #   validity of recipient address and determine if the destination server is configured
+            #   correctly to receive messages. For more information, see How SMTP DNS-based Authen-
+            #   tication of Named Entities (DANE) works to secure email communications.
+            ['4.7.325', 0, 0, 'certificate-host-mismatch: remote certificate must have a common name or subject alternative name matching the hostname (dane)'],
+            ['5.7.325', 0, 0, 'certificate-host-mismatch: remote certificate must have a common name or subject alternative name matching the hostname (dane)'],
         ],
         'mailboxfull' => [
             # Exchange Server 2019 ----------------------------------------------------------------

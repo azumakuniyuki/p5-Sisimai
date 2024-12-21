@@ -55,11 +55,11 @@ private-sample:
 			$(MKDIR) $(PRIVATEMAILS)/$$d; \
 			next_index=1001; \
 		fi; \
-		hash_value=`md5 -q $(E)`; \
+		hash_value=`md5 -q $(E) | cut -c 1-8`; \
 		if [ -n "`ls -1 $(PRIVATEMAILS)/$$d/ | grep $$hash_value`" ]; then \
 			echo 'Already exists:' `ls -1 $(PRIVATEMAILS)/$$d/*$$hash_value.$(SAMPLEPREFIX)`; \
 		else \
-			printf "[%05d] %s %s\n" $$next_index $$hash_value; \
+			printf "[%04d] %s %s\n" $$next_index $$hash_value; \
 			mv -v $(E) $(PRIVATEMAILS)/$$d/0$${next_index}-$${hash_value}.$(SAMPLEPREFIX); \
 		fi; \
 		break; \

@@ -21,6 +21,15 @@ MAKETEST: {
     is(Sisimai::RFC791->find('a.b.c.d')->[0], undef, '->find(a.b.c.d) returns undef');
     is(Sisimai::RFC791->find(''), undef, '->find("") returns undef');
     is(Sisimai::RFC791->find('3.14')->@*, []->@*, '->find("3.15") returns []');
+
+    my $addr0 = ["123.456.78.9"];
+    my $addr1 = ["192.0.2.22"];
+    for my $e ( @$addr0 ) {
+        is(Sisimai::RFC791->is_ipv4address($e), 0, "->is_ipv4address(".$e.") returns 0");
+    }
+    for my $e ( @$addr1 ) {
+        is(Sisimai::RFC791->is_ipv4address($e), 1, "->is_ipv4address(".$e.") returns 1");
+    }
 }
 
 done_testing;

@@ -3,6 +3,23 @@ use v5.26;
 use strict;
 use warnings;
 
+sub is_ipv4address {
+    # Returns 1 if the argument is an IPv4 address
+    # @param    [String] argv1  IPv4 address like "192.0.2.25"
+    # @return   [Bool]          1: is an IPv4 address
+    # @since v5.2.0
+    my $class = shift;
+    my $argv0 = shift || return 0;    return 0 if length $argv0  < 7;
+    my @octet = split(/[.]/, $argv0); return 0 if scalar @octet != 4;
+
+    for my $e ( @octet ) {
+        # Check each octet is between 0 and 255
+        my $v = int $e;
+        return 0 if $v < 0 || $v > 255;
+    }
+    return 1;
+}
+
 sub find {
     # Find an IPv4 address from the given string
     # @param    [String] argv1  String including an IPv4 address
@@ -65,6 +82,13 @@ Sisimai::RFC791 - IP related class
 C<Sisimai::RFC791> is a class related to IP
 
 =head1 CLASS METHODS
+
+=head2 C<B<is_ipv4address(I<String>)>>
+
+C<is_ipv4address> method returns 1 if the argument is an valid IPv4 address.
+
+    print Sisimai::RFC791->is_ipv4address("192.0.2.25");   # 1
+    print Sisimai::RFC791->is_ipv4address("123.456.78.9"); # 0
 
 =head2 C<B<ipv4(I<String>)>>
 

@@ -3,6 +3,7 @@ use v5.26;
 use strict;
 use warnings;
 use Sisimai::Message;
+use Sisimai::RFC791;
 use Sisimai::RFC1123;
 use Sisimai::RFC1894;
 use Sisimai::RFC5322;
@@ -199,7 +200,7 @@ sub rise {
                     for my $w ( @ee ) {
                         # get a hostname from the string like "127.0.0.1 x109-20.example.com 192.0.2.20"
                         # or "mx.sp.example.jp 192.0.2.135"
-                        next if $w =~ /\A\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\z/; # Skip if it is an IPv4 address
+                        next if Sisimai::RFC791->is_ipv4address($w);
                         $piece->{ $v } = $w; last;
                     }
                     $piece->{ $v } = $ee[0] if index($piece->{ $v }, ' ') > 0;

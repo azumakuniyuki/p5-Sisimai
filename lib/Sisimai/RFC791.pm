@@ -90,9 +90,9 @@ C<is_ipv4address> method returns 1 if the argument is an valid IPv4 address.
     print Sisimai::RFC791->is_ipv4address("192.0.2.25");   # 1
     print Sisimai::RFC791->is_ipv4address("123.456.78.9"); # 0
 
-=head2 C<B<ipv4(I<String>)>>
+=head2 C<B<find(I<String>)>>
 
-C<ipv4> method return all the IPv4 address found in the given string.
+C<find> method return all the IPv4 address found in the given string.
 
     my $v = "connection refused from 192.0.2.1, DNSBL returned 127.0.0.2";
     my $p = Sisimai::RFC791->find($v); # ["192.0.2.1", "127.0.0.2"]

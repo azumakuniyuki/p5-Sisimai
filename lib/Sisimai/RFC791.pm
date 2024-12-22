@@ -14,7 +14,7 @@ sub is_ipv4address {
 
     for my $e ( @octet ) {
         # Check each octet is between 0 and 255
-        return 0 unless $e =~ /\A\d+\z/;
+        return 0 unless $e =~ /\A[0-9]{1,3}\z/;
         my $v = int $e;
         return 0 if $v < 0 || $v > 255;
     }

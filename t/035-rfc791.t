@@ -5,7 +5,7 @@ use Sisimai::RFC791;
 
 my $Package = 'Sisimai::RFC791';
 my $Methods = {
-    'class'  => ['find'],
+    'class'  => ['is_ipv4address', 'find'],
     'object' => [],
 };
 

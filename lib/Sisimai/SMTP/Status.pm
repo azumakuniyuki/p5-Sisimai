@@ -2,7 +2,7 @@ package Sisimai::SMTP::Status;
 use v5.26;
 use strict;
 use warnings;
-use Sisimai::String;
+use Sisimai::RFC791;
 
 # http://www.iana.org/assignments/smtp-enhanced-status-codes/smtp-enhanced-status-codes.xhtml
 # -------------------------------------------------------------------------------------------------
@@ -731,7 +731,7 @@ sub find {
     my $esmtperror = ' '.$argv1.' ';
     my $lookingfor = {};
 
-    for my $e ( Sisimai::String->ipv4($esmtperror)->@* ) {
+    for my $e ( Sisimai::RFC791->find($esmtperror)->@* ) {
         # Rewrite an IPv4 address in the given string(argv1) with '***.***.***.***'
         my $p0 = index($esmtperror, $e); next if $p0 == -1;
         substr($esmtperror, $p0, length $e, '***.***.***.***');

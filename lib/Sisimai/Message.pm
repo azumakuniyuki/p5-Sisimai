@@ -62,7 +62,7 @@ sub rise {
             if( $p1 > -1 ) {
                 # Delete quoted strings, quote symbols(>)
                 $cq = Sisimai::String->sweep(substr($cq, index($cq, ':') + 1,));
-                s/^[>]+[ ]//gm, s/^[>]$//gm for $aftersplit->[2];
+                s/^[>][ ]//gm, s/^[>]$//gm for $aftersplit->[2];
             }
             $thing->{'header'}->{'subject'} = $cq;
         }

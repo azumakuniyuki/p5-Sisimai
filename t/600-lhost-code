@@ -44,6 +44,12 @@ my $moduletest = sub {
             'rfc3464/01024', 'rfc3464/01061', 'rfc3464/01081',
         ],
     };
+    my $feedbackid = [
+        "lhost-amazonses-05", "lhost-amazonses-06", "lhost-amazonses-07", "lhost-amazonses-08", 
+        "arf-14", "lhost-einsundeins-03", "lhost-exchange2007-05", "lhost-exchange2007-06",
+        "lhost-exim-61", "lhost-postfix-64", "rhost-franceptt-04", 
+    ];
+
     my $jsonobject = JSON->new;
     my $emailindex = 0;
     my $nameprefix = '';
@@ -257,6 +263,17 @@ my $moduletest = sub {
                         # Except the value of "reason" is "feedback"
                         ok length $cv, sprintf("%s %s", $ct, $cv);
                         like $cv, $cr, sprintf("%s %s", $ct, $cr);
+                    }
+                }
+
+                FEEDBACKID: {
+                    $cv = $rr->feedbackid;
+                    $cr = qr/\A[\x21-\x7e]+\z/;
+                    $ct = sprintf("[%s-%02d] ->feedbackid =", $e, $errorindex);
+
+                    ok defined $cv, sprintf("%s %s", $ct, $cv);
+                    if( grep { index($_, $cf) > -1 } @$feedbackid ) {
+                        ok length $cv, sprintf("%s %s", $ct, $cv);
                     }
                 }
 

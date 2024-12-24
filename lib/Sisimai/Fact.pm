@@ -27,6 +27,7 @@ use Class::Accessor::Lite ('new' => 0, 'rw' => [
     'destination',      # [String] The domain part of the "recipient"
     'diagnosticcode',   # [String] Diagnostic-Code: Header
     'diagnostictype',   # [String] The 1st part of Diagnostic-Code: Header
+    'feedbackid',       # [String] The value of Feedback-ID: header of the original message
     'feedbacktype',     # [String] Feedback Type
     'hardbounce',       # [Integer] 1 = Hard bounce, 0 = Is not a hard bounce
     'lhost',            # [String] local host name/Local MTA
@@ -331,6 +332,7 @@ sub rise {
             };
             $thing->{ $_ }           ||= $piece->{ $_ }    // '' for @ea;
             $thing->{'catch'}          = $piece->{'catch'} // undef;
+            $thing->{"feedbackid"}     = "";
             $thing->{'hardbounce'}     = int $piece->{'hardbounce'};
             $thing->{'replycode'}    ||= Sisimai::SMTP::Reply->find($piece->{'diagnosticcode'}) || '';
             $thing->{'timestamp'}      = Sisimai::Time->new($piece->{'timestamp'});
@@ -425,6 +427,8 @@ sub rise {
             $thing->{'action'} ||= 'failed'    if $cx->[0] eq '4' || $cx->[0] eq '5';
             $thing->{'action'} ||= "";
         }
+        # Feedback-ID: 1.us-west-2.QHuyeCQrGtIIMGKQfVdUhP9hCQR2LglVOrRamBc+Prk=:AmazonSES
+        $thing->{'feedbackid'} = $rfc822data->{'feedback-id'} || "";
 
         push @$listoffact, bless($thing, __PACKAGE__);
     } # End of for(RISEOF)
@@ -439,8 +443,8 @@ sub damn {
     my $data = undef;
     state $stringdata = [qw|
         action alias catch command decodedby deliverystatus destination diagnosticcode diagnostictype
-        feedbacktype lhost listid messageid origin reason replycode rhost senderdomain subject
-        timezoneoffset token
+        feedbackid feedbacktype lhost listid messageid origin reason replycode rhost senderdomain
+        subject timezoneoffset token
     |];
     eval {
         my $v = {};

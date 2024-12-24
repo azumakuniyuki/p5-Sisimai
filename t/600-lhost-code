@@ -268,7 +268,6 @@ my $moduletest = sub {
 
                 FEEDBACKID: {
                     $cv = $rr->feedbackid;
-                    $cr = qr/\A[\x21-\x7e]+\z/;
                     $ct = sprintf("[%s-%02d] ->feedbackid =", $e, $errorindex);
 
                     ok defined $cv, sprintf("%s %s", $ct, $cv);

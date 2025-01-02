@@ -75,7 +75,8 @@ sub rise {
 
         # 5. Try to sift again
         #    There is a bounce message inside of mutipart/*, try to sift the first message/rfc822
-        #    part as a entire message body again.
+        #    part as a entire message body again. rfc3464/1086-a847b090.eml is the email but the
+        #    results decodd by sisimai are unstable.
         $parseagain++;
         $email =  Sisimai::RFC5322->part(\$aftersplit->[2], $Boundaries, 1)->[1];
         $email =~ s/\A[\r\n\s]+//m;

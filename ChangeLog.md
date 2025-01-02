@@ -9,7 +9,7 @@ v5.1.0p5
 - release: ""
 - version: ""
 - changes:
-  - **Keep compatibility with the Go language version of Sisimai** #547 #558
+  - **Keep compatibility with the Go language version of Sisimai** #547 #558 #567
     - **BREAKING CHANGES AT EXTERNAL USER APIs**
         - Changes in accessors of `Sisimai::Fact` and key names in JSON string
           - `smtpagent` has been renamed to `decodedby` #548

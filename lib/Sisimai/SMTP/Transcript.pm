@@ -2,6 +2,7 @@ package Sisimai::SMTP::Transcript;
 use v5.26;
 use strict;
 use warnings;
+use Sisimai::String;
 use Sisimai::SMTP::Reply;
 use Sisimai::SMTP::Status;
 use Sisimai::SMTP::Command;

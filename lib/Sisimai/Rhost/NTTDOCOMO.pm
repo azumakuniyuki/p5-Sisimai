@@ -17,7 +17,7 @@ sub find {
         'syntaxerror' => ['503 bad sequence of commands', '504 command parameter not implemented'],
     };
     my $statuscode = $argvs->{'deliverystatus'}    || '';
-    my $thecommand = $argvs->{'smtpcommand'}       || '';
+    my $thecommand = $argvs->{'command'}           || '';
     my $issuedcode = lc $argvs->{'diagnosticcode'} || '';
     my $reasontext = '';
 

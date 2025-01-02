@@ -61,6 +61,7 @@ sub list {
             Reason/Delivered.pm
             Reason/ExceedLimit.pm
             Reason/Expired.pm
+            Reason/FailedSTARTTLS.pm
             Reason/Feedback.pm
             Reason/Filtered.pm
             Reason/HasMoved.pm
@@ -89,6 +90,7 @@ sub list {
             Reason/UserUnknown.pm
             Reason/Vacation.pm
             Reason/VirusDetected.pm
+        RFC791.pm
         RFC1123.pm
         RFC1894.pm
         RFC2045.pm

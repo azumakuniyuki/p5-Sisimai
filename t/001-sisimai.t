@@ -145,7 +145,7 @@ MAKETEST: {
         DUMP: {
             my $jsonstring = $Package->dump($Samples->{ $e });
             my $perlobject = undef;
-            my $tobetested = [qw|addresser recipient senderdomain destination reason timestamp token smtpagent origin|];
+            my $tobetested = [qw|addresser recipient senderdomain destination reason timestamp token decodedby origin|];
             ok length $jsonstring;
             utf8::encode $jsonstring if utf8::is_utf8 $jsonstring;
             $perlobject = JSON::decode_json($jsonstring);

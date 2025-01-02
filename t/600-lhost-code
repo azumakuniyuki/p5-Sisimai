@@ -35,15 +35,12 @@ my $moduletest = sub {
             PowerMTA ReceivingSES SendGrid SurfControl Yandex X5
         |],
     };
-    my $skiptonext = {
-        'public'  => ['lhost-postfix-49', 'lhost-postfix-50'],
-        'private' => [
-            'arf/01003', 'arf/01005', 'arf/01009', 'arf/01015',
-            'lhost-exim/01084', 'lhost-mailmarshalsmtp/01001', 
-            'lhost-postfix/01200', 'lhost-postfix/01201',
-            'rfc3464/01024', 'rfc3464/01061', 'rfc3464/01081',
-        ],
-    };
+    my $feedbackid = [
+        "lhost-amazonses-05", "lhost-amazonses-06", "lhost-amazonses-07", "lhost-amazonses-08", 
+        "arf-14", "lhost-einsundeins-03", "lhost-exchange2007-05", "lhost-exchange2007-06",
+        "lhost-exim-61", "lhost-postfix-64", "rhost-franceptt-04", 
+    ];
+
     my $jsonobject = JSON->new;
     my $emailindex = 0;
     my $nameprefix = '';
@@ -142,8 +139,7 @@ my $moduletest = sub {
                     $be = 'public';
                 }
                 $bf =~ s/[.]eml\z//;
-                next if grep { index($bf, $_) == 0 } @{ $skiptonext->{ $be } };
-                warn $bf;
+                printf("\n[%s-00] %s need to be inspected\n", $e, $cf); next;
             }
 
             my $recipients = scalar @$listoffact;
@@ -257,6 +253,16 @@ my $moduletest = sub {
                         # Except the value of "reason" is "feedback"
                         ok length $cv, sprintf("%s %s", $ct, $cv);
                         like $cv, $cr, sprintf("%s %s", $ct, $cr);
+                    }
+                }
+
+                FEEDBACKID: {
+                    $cv = $rr->feedbackid;
+                    $ct = sprintf("[%s-%02d] ->feedbackid =", $e, $errorindex);
+
+                    ok defined $cv, sprintf("%s %s", $ct, $cv);
+                    if( grep { index($_, $cf) > -1 } @$feedbackid ) {
+                        ok length $cv, sprintf("%s %s", $ct, $cv);
                     }
                 }
 
@@ -412,10 +418,10 @@ my $moduletest = sub {
                     }
                 }
 
-                SMTPAGENT: {
-                    $cv = $rr->smtpagent;
+                DECODEDBY: {
+                    $cv = $rr->decodedby;
                     $cr = qr/\A[-.0-9A-Za-z]+\z/;
-                    $ct = sprintf("[%s-%02d] ->smtpagent =", $e, $errorindex);
+                    $ct = sprintf("[%s-%02d] ->decodedby =", $e, $errorindex);
 
                     ok length $cv, sprintf("%s %s", $ct, $cv);
                     if( index($nameprefix, 'rhost') == 0 ) {
@@ -458,10 +464,10 @@ my $moduletest = sub {
                     }
                 }
 
-                SMTPCOMMAND: {
-                    $cv = $rr->smtpcommand;
+                COMMAND: {
+                    $cv = $rr->command;
                     $cr = qr/\A(?:CONN|HELO|EHLO|MAIL|RCPT|DATA|QUIT)\z/;
-                    $ct = sprintf("[%s-%02d] ->smtpcommand =", $e, $errorindex);
+                    $ct = sprintf("[%s-%02d] ->command =", $e, $errorindex);
 
                     ok defined $cv, sprintf("%s %s", $ct, $cv);
                     ok $cv =~ $cr,  sprintf("%s %s", $ct, $cr) if length $cv;

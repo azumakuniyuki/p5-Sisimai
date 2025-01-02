@@ -80,49 +80,6 @@ sub aligned {
     return 0;
 }
 
-sub ipv4 {
-    # Find an IPv4 address from the given string
-    # @param    [String] argv1  String including an IPv4 address
-    # @return   [Array]         List of IPv4 addresses
-    # @since v5.0.0
-    my $class = shift;
-    my $argv0 = shift || return undef; return [] if length $argv0 < 7;
-    my $ipv4a = [];
-
-    for my $e ( '(', ')', '[', ']', ',' ) {
-        # Rewrite: "mx.example.jp[192.0.2.1]" => "mx.example.jp 192.0.2.1"
-        my $p0 = index($argv0, $e); next if $p0 < 0;
-        substr($argv0, $p0, 1, ' ');
-    }
-
-    IP4A: for my $e ( split(' ', $argv0) ) {
-        # Find string including an IPv4 address
-        next if index($e, '.') == -1;   # IPv4 address must include "." character
-
-        my $lx = length $e; next if $lx < 7 || $lx > 17; # 0.0.0.0 = 7, [255.255.255.255] = 17
-        my $cu = 0;     # Cursor for seeking each octet of an IPv4 address
-        my $as = '';    # ASCII Code of each character
-        my $eo = '';    # Buffer of each octet of IPv4 Address
-
-        while( $cu < $lx ) {
-            # Check whether each character is a number or "." or not
-            $as = ord substr($e, $cu++, 1);
-            if( $as < 48 || $as > 57 ) {
-                # The character is not a number(0-9)
-                next IP4A if     $as != 46; # The character is not "."
-                next      if     $eo eq ''; # The current buffer is empty
-                next IP4A if int $eo > 255; # The current buffer is greater than 255
-                $eo = '';
-                next;
-            }
-            $eo .= chr $as;
-            next IP4A if int $eo > 255;
-        }
-        push @$ipv4a, $e;
-    }
-    return $ipv4a;
-}
-
 sub to_plain {
     # Convert given HTML text to plain text
     # @param    [Scalar]  argv1 HTML text(reference to string)
@@ -266,13 +223,6 @@ C<aligned> method checks if each element of the 2nd argument is aligned in the 1
     print Sisimai::String->aligned(\$v, ['rfc822', '<', '@', '>']);  # 1
     print Sisimai::String->aligned(\$v, [' <', '@', 'rfc822']);      # 0
     print Sisimai::String->aligned(\$v, ['example', '@', 'neko']);   # 0
-
-=head2 C<B<ipv4(I<String>)>>
-
-C<ipv4> method return all the IPv4 address found in the given string.
-
-    my $v = "connection refused from 192.0.2.1, DNSBL returned 127.0.0.2";
-    my $p = Sisimai::String->ipv4($v); # ["192.0.2.1", "127.0.0.2"]
 
 =head2 C<B<to_plain(I<Reference to String>, [I<Loose Check>])>>
 

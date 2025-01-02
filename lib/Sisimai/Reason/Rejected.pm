@@ -98,7 +98,7 @@ sub true {
 
     # Check the value of Diagnosic-Code: header with patterns
     my $issuedcode = lc $argvs->{'diagnosticcode'};
-    my $thecommand = $argvs->{'smtpcommand'} || '';
+    my $thecommand = $argvs->{'command'} || '';
     if( $thecommand eq 'MAIL' ) {
         # The session was rejected at 'MAIL FROM' command
         return 1 if __PACKAGE__->match($issuedcode);

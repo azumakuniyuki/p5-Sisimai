@@ -62,7 +62,7 @@ sub rise {
             if( $p1 > -1 ) {
                 # Delete quoted strings, quote symbols(>)
                 $cq = Sisimai::String->sweep(substr($cq, index($cq, ':') + 1,));
-                s/^[>]+[ ]//gm, s/^[>]$//gm for $aftersplit->[2];
+                s/^[>][ ]//gm, s/^[>]$//gm for $aftersplit->[2];
             }
             $thing->{'header'}->{'subject'} = $cq;
         }
@@ -75,7 +75,8 @@ sub rise {
 
         # 5. Try to sift again
         #    There is a bounce message inside of mutipart/*, try to sift the first message/rfc822
-        #    part as a entire message body again.
+        #    part as a entire message body again. rfc3464/1086-a847b090.eml is the email but the
+        #    results decodd by sisimai are unstable.
         $parseagain++;
         $email =  Sisimai::RFC5322->part(\$aftersplit->[2], $Boundaries, 1)->[1];
         $email =~ s/\A[\r\n\s]+//m;
@@ -91,7 +92,7 @@ sub rise {
     return $thing;
 }
 
-sub load { warn ' ***warning: Sisimai::Message->load will be removed at v5.1.1'; return [] }
+sub load { warn ' ***warning: Sisimai::Message->load will be removed at v5.3.0'; return [] }
 sub part {
     # Divide email data up headers and a body part.
     # @param         [String] email  Email data

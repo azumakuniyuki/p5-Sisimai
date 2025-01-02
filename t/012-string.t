@@ -5,7 +5,7 @@ use Sisimai::String;
 
 my $Package = 'Sisimai::String';
 my $Methods = {
-    'class'  => ['token', 'is_8bit', 'sweep', 'aligned', 'ipv4', 'to_plain', 'to_utf8'],
+    'class'  => ['token', 'is_8bit', 'sweep', 'aligned', 'to_plain', 'to_utf8'],
     'object' => [],
 };
 
@@ -40,15 +40,6 @@ MAKETEST: {
     is(Sisimai::String->aligned(\'', ['rfc822']), undef, '->aligned("")');
     is(Sisimai::String->aligned(\$v, undef), undef, '->aligned(undef)');
     is(Sisimai::String->aligned(\$v, []), undef, '->aligned([])');
-
-    is(Sisimai::String->ipv4('host smtp.example.jp 127.0.0.4 SMTP error from remote mail server')->[0], '127.0.0.4', '->ipv4 returns 127.0.0.4');
-    is(Sisimai::String->ipv4('mx.example.jp (192.0.2.2) reason: 550 5.2.0 Mail rejete.')->[0], '192.0.2.2', '->ipv4 returns 192.0.2.2');
-    is(Sisimai::String->ipv4('Client host [192.0.2.49] blocked using cbl.abuseat.org (state 13).')->[0], '192.0.2.49', '->ipv4 returns 192.0.2.49');
-    is(Sisimai::String->ipv4('127.0.0.1')->[0], '127.0.0.1', '->ipv4 returns 127.0.0.1');
-    is(Sisimai::String->ipv4('365.31.7.1')->[0], undef, '->ipv4(365.31.7.1) returns undef');
-    is(Sisimai::String->ipv4('a.b.c.d')->[0], undef, '->ipv4(a.b.c.d) returns undef');
-    is(Sisimai::String->ipv4(''), undef, '->ipv4("") returns undef');
-    is(Sisimai::String->ipv4('3.14')->@*, []->@*, '->ipv4("3.15") returns []');
 
     my $h = '
         <html>

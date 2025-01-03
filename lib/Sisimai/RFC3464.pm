@@ -3,6 +3,7 @@ use v5.26;
 use strict;
 use warnings;
 use Sisimai::Lhost;
+use Sisimai::RFC1123;
 use Sisimai::RFC3464::ThirdParty;
 
 # http://tools.ietf.org/html/rfc3464
@@ -186,8 +187,9 @@ sub inquire {
                     $v->{'diagnosis'} .= " ".$o->[4]." ";
                 }
                 next unless exists $fieldtable->{ $o->[0] };
-                $v->{ $fieldtable->{ $o->[0] } } = $o->[2];
+                next if $o->[3] eq "host" && Sisimai::RFC1123->is_internethost($o->[2]) == 0;
 
+                $v->{ $fieldtable->{ $o->[0] } } = $o->[2];
                 next unless $f == 1;
                 $permessage->{ $fieldtable->{ $o->[0] } } = $o->[2];
             }
@@ -316,7 +318,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2014-2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2014-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

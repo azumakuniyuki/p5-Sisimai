@@ -26,6 +26,7 @@ sub inquire {
     }
     return undef unless $match;
 
+    require Sisimai::RFC1123;
     require Sisimai::SMTP::Command;
     state $indicators = __PACKAGE__->INDICATORS;
     state $boundaries = ['Content-Type: :message/rfc822', 'Content-Type: text/rfc822-headers'];
@@ -98,6 +99,7 @@ sub inquire {
             } else {
                 # Other DSN fields defined in RFC3464
                 next unless exists $fieldtable->{ $o->[0] };
+                next if $o->[3] eq "host" && Sisimai::RFC1123->is_internethost($o->[2]) == 0;
                 $v->{ $fieldtable->{ $o->[0] } } = $o->[2];
 
                 next unless $f == 1;
@@ -194,7 +196,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2014-2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2014-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

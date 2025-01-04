@@ -80,7 +80,7 @@ sub find {
         ],
     };
     my $errorindex = index($argvs->{'diagnosticcode'}, "-");
-    my $errorlabel = substr($argvs->{'diagnosticcode'}, $errorindex - 3, $errorindex + 3);
+    my $errorlabel = substr($argvs->{'diagnosticcode'}, $errorindex - 3, 6);
     my $reasontext = "";
 
     for my $e ( keys %$errorcodes ) {
@@ -122,7 +122,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2024-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

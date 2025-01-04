@@ -8,7 +8,7 @@ my $enginename = 'Facebook';
 my $enginetest = Sisimai::Lhost::Code->makeinquiry;
 my $isexpected = {
     # INDEX => [['D.S.N.', 'replycode', 'REASON', 'hardbounce'], [...]]
-    '03' => [['5.1.1',   '550', 'userunknown',     1]],
+    '03' => [['5.1.1',   '550', 'filtered',        0]],
     '04' => [['5.1.1',   '550', 'userunknown',     1]],
 };
 

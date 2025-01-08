@@ -79,7 +79,7 @@ sub inquire {
             my $p0 = index($e, " ");
             my $p1 = index($e, "<", $p0);
             my $p2 = index($e, ">", $p1);
-            my $cv = Sisimai::Address->s3s4(substr($e, $p1, $p2 - 1));
+            my $cv = Sisimai::Address->s3s4(substr($e, $p1, $p2 - $p1 + 1));
 
             if( $remotehost eq "" ) {
                 # Keep error messages before "While talking to ..." line

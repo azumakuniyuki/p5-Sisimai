@@ -20,6 +20,7 @@ sub match {
         'all mail servers must have a ptr record with a valid reverse dns entry',
         'bad dns ptr resource record',
         'cannot find your hostname',
+        "cannot resolve your address.",
         'client host rejected: cannot find your hostname',  # Yahoo!
         'fix reverse dns for ',
         'ips with missing ptr records',
@@ -114,7 +115,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2024-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

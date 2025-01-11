@@ -44,24 +44,24 @@ sub name {
         for my $e ( keys %$RhostClass ) {
             # Try to match the domain part with each value of RhostClass
             next unless grep { index($_, $domainpart) > -1 } $RhostClass->{ $e }->@*;
-            $rhostclass = __PACKAGE__."::".$e; last FINDRHOST;
+            $rhostclass = $e; last FINDRHOST;
         }
 
         for my $e ( keys %$RhostClass ) {
             # Try to match the remote host with each value of RhostClass
             next unless grep { index($remotehost, $_) > -1 } $RhostClass->{ $e }->@*;
-            $rhostclass = __PACKAGE__."::".$e; last FINDRHOST;
+            $rhostclass = $e; last FINDRHOST;
         }
 
         # Neither the remote host nor the destination did not matched with any value of RhostClass
         for my $e ( keys %$RhostClass ) {
             # Try to match the client host with each value of RhostClass
             next unless grep { index($clienthost, $_) > -1 } $RhostClass->{ $e }->@*;
-            $rhostclass = __PACKAGE__."::".$e; last FINDRHOST;
+            $rhostclass = $e; last FINDRHOST;
         }
         last;
     }
-    return undef unless $rhostclass;
+    return $rhostclass;
 }
 
 sub find {
@@ -72,7 +72,7 @@ sub find {
     my $argvs = shift || return undef;
     my $rhost = __PACKAGE__->name($argvs) || return "";
 
-    (my $modulepath = $rhost) =~ s|::|/|g;
+    $rhost = __PACKAGE__."::".$rhost; (my $modulepath = $rhost) =~ s|::|/|g;
     require $modulepath.'.pm';
     return $rhost->find($argvs);
 }

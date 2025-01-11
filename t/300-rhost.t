@@ -28,7 +28,7 @@ MAKETEST: {
             my $cv = $Package->name($f);
 
             ok length $cv, '->name = '.$cv;
-            ok grep { index($cv, $_) > 1 } @$Classes;
+            ok grep { $cv eq $_ } @$Classes;
         }
     }
 

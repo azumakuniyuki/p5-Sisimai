@@ -595,38 +595,42 @@ use constant StandardCode => {
 
 use constant InternalCode => {
     'temporary' => {
-        'authfailure'    => '4.0.972',
+        'authfailure'    => '4.0.926',
         'badreputation'  => '4.0.975',
         'blocked'        => '4.0.971',
         'contenterror'   => '4.0.960',
-        #'exceedlimit'   => '4.0.923',
+        'exceedlimit'    => '4.0.923',
         'expired'        => '4.0.947',
         'failedstarttls' => '4.0.976',
         'filtered'       => '4.0.924',
         #'hasmoved'      => '4.0.916',
         #'hostunknown'   => '4.0.912',
         'mailboxfull'    => '4.0.922',
-        #'mailererror'   => '4.0.939',
-        #'mesgtoobig'    => '4.0.934',
+        'mailererror'    => '4.0.939',
+        'mesgtoobig'     => '4.0.934',
         'networkerror'   => '4.0.944',
-        #'norelaying'    => '4.0.909',
+        'norelaying'     => '4.0.909',
         'notaccept'      => '4.0.932',
         'notcompliantrfc'=> '4.0.974',
         'onhold'         => '4.0.901',
+        'policyviolation'=> '4.0.972',
         'rejected'       => '4.0.918',
         'requireptr'     => '4.0.973',
         'securityerror'  => '4.0.970',
         'spamdetected'   => '4.0.980',
         'speeding'       => '4.0.946',
-        #'suspend'       => '4.0.921',
+        'suppressed'     => '4.0.903',
+        'suspend'        => '4.0.921',
         'systemerror'    => '4.0.930',
         'systemfull'     => '4.0.931',
+        'syntaxerror'    => '4.0.902',
         'toomanyconn'    => '4.0.945',
         #'userunknown'   => '4.0.911',
         'undefined'      => '4.0.900',
+        'virusdetected'  => '4.0.981',
     },
     'permanent' => {
-        'authfailure'    => '5.0.972',
+        'authfailure'    => '5.0.926',
         'badreputation'  => '5.0.975',
         'blocked'        => '5.0.971',
         'contenterror'   => '5.0.960',
@@ -650,6 +654,7 @@ use constant InternalCode => {
         'securityerror'  => '5.0.970',
         'spamdetected'   => '5.0.980',
         'speeding'       => '5.0.946',
+        'suppressed'     => '5.0.903',
         'suspend'        => '5.0.921',
         'systemerror'    => '5.0.930',
         'systemfull'     => '5.0.931',
@@ -657,7 +662,7 @@ use constant InternalCode => {
         'toomanyconn'    => '5.0.945',
         'userunknown'    => '5.0.911',
         'undefined'      => '5.0.900',
-        'virusdetected'  => '5.0.971',
+        'virusdetected'  => '5.0.981',
     },
 };
 
@@ -940,7 +945,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2015-2018,2020-2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2015-2018,2020-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

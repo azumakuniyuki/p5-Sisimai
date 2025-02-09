@@ -7,7 +7,7 @@ use Sisimai::Reason;
 use Module::Load;
 
 my $Package = 'Sisimai::Rhost';
-my $Methods = { 'class' => ['find'], 'object' => [] };
+my $Methods = { 'class' => ['name', 'find'], 'object' => [] };
 my $Classes = [qw|
     Aol Apple Cox Facebook FrancePTT GSuite GoDaddy Google IUA KDDI MessageLabs Microsoft Mimecast
     NTTDOCOMO Outlook Spectrum Tencent YahooInc
@@ -25,9 +25,10 @@ MAKETEST: {
 
         while( my $f = shift @$v ) {
             isa_ok $f, 'Sisimai::Fact';
-            ok length $f->rhost, '->rhost = '.$f->rhost;
-            ok length $f->reason, '->reason = '.$f->reason;
-            ok length $f->destination, '->destination = '.$f->destination;
+            my $cv = $Package->name($f);
+
+            ok length $cv, '->name = '.$cv;
+            ok grep { $cv eq $_ } @$Classes;
         }
     }
 

@@ -24,19 +24,17 @@ state $RhostClass = {
     "YahooInc"    => [".yahoodns.net"],
 };
 
-sub find {
-    # Detect the bounce reason from certain remote hosts
+sub name {
+    # Detect the rhost class name
     # @param    [Sisimai::Fact] argvs   Decoded email object
-    # @return   [String]                The value of bounce reason
+    # @return   [String]                rhost class name
     my $class = shift;
-    my $argvs = shift || return undef;
-    return undef unless length $argvs->{'diagnosticcode'};
+    my $argvs = shift || return "";
 
-    my $rhostclass = '';
-    my $clienthost = lc $argvs->{'lhost'}       || '';
-    my $remotehost = lc $argvs->{'rhost'}       || '';
-    my $domainpart = lc $argvs->{'destination'} || '';
-    return undef unless length $remotehost.$domainpart;
+    my $rhostclass = "";
+    my $clienthost = lc $argvs->{"lhost"}       || "";
+    my $remotehost = lc $argvs->{"rhost"}       || "";
+    my $domainpart = lc $argvs->{"destination"} || "";
 
     FINDRHOST: while( $rhostclass eq "" ) {
         # Try to match the hostname patterns with the following order:
@@ -46,28 +44,37 @@ sub find {
         for my $e ( keys %$RhostClass ) {
             # Try to match the domain part with each value of RhostClass
             next unless grep { index($_, $domainpart) > -1 } $RhostClass->{ $e }->@*;
-            $rhostclass = __PACKAGE__.'::'.$e; last FINDRHOST;
+            $rhostclass = $e; last FINDRHOST;
         }
 
         for my $e ( keys %$RhostClass ) {
             # Try to match the remote host with each value of RhostClass
             next unless grep { index($remotehost, $_) > -1 } $RhostClass->{ $e }->@*;
-            $rhostclass = __PACKAGE__.'::'.$e; last FINDRHOST;
+            $rhostclass = $e; last FINDRHOST;
         }
 
         # Neither the remote host nor the destination did not matched with any value of RhostClass
         for my $e ( keys %$RhostClass ) {
             # Try to match the client host with each value of RhostClass
             next unless grep { index($clienthost, $_) > -1 } $RhostClass->{ $e }->@*;
-            $rhostclass = __PACKAGE__."::".$e; last FINDRHOST;
+            $rhostclass = $e; last FINDRHOST;
         }
         last;
     }
-    return undef unless $rhostclass;
+    return $rhostclass;
+}
 
-    (my $modulepath = $rhostclass) =~ s|::|/|g;
+sub find {
+    # Detect the bounce reason from certain remote hosts
+    # @param    [Sisimai::Fact] argvs   Decoded email object
+    # @return   [String]                The value of bounce reason
+    my $class = shift;
+    my $argvs = shift || return undef;
+    my $rhost = __PACKAGE__->name($argvs) || return "";
+
+    $rhost = __PACKAGE__."::".$rhost; (my $modulepath = $rhost) =~ s|::|/|g;
     require $modulepath.'.pm';
-    return $rhostclass->find($argvs);
+    return $rhost->find($argvs);
 }
 
 1;
@@ -91,6 +98,10 @@ This class is called only C<Sisimai::Fact> class.
 
 =head1 CLASS METHODS
 
+=head2 C<B<name(I<Sisimai::Fact Object>)>>
+
+C<name()> method returns the rhost class name.
+
 =head2 C<B<find(I<Sisimai::Fact Object>)>>
 
 C<find()> method detects the bounce reason.
@@ -101,7 +112,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2014-2020,2022-2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2014-2020,2022-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

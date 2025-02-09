@@ -52,7 +52,6 @@ sub true {
     # @see http://www.ietf.org/rfc/rfc2822.txt
     my $class = shift;
     my $argvs = shift // return undef;
-    return undef unless $argvs->{'deliverystatus'};
 
     return 1 if $argvs->{'reason'} eq 'suspend';
     return 1 if length $argvs->{'replycode'} && $argvs->{'replycode'} == 525;
@@ -104,7 +103,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2014-2021,2023,2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2014-2021,2023-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

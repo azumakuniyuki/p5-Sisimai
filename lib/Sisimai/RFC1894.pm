@@ -21,7 +21,7 @@ sub FIELDTABLE {
         'original-recipient'=> 'alias',
         'received-from-mta' => 'lhost',
         'remote-mta'        => 'rhost',
-        'reporting-mta'     => 'rhost',
+        'reporting-mta'     => 'lhost',
         'status'            => 'status',
         'x-actual-recipient'=> 'alias',
     };
@@ -263,7 +263,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2018-2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2018-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

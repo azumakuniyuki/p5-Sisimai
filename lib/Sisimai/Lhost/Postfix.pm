@@ -29,6 +29,7 @@ sub inquire {
     return undef if $match == 0;
     return undef if $mhead->{'x-aol-ip'};
 
+    require Sisimai::RFC1123;
     require Sisimai::SMTP::Reply;
     require Sisimai::SMTP::Command;
     state $indicators = __PACKAGE__->INDICATORS;
@@ -139,6 +140,7 @@ sub inquire {
                 } else {
                     # Other DSN fields defined in RFC3464
                     next unless exists $fieldtable->{ $o->[0] };
+                    next if $o->[3] eq "host" && Sisimai::RFC1123->is_internethost($o->[2]) == 0;
                     $v->{ $fieldtable->{ $o->[0] } } = $o->[2];
 
                     next unless $f == 1;
@@ -322,7 +324,7 @@ azumakuniyuki
 
 =head1 COPYRIGHT
 
-Copyright (C) 2014-2024 azumakuniyuki, All rights reserved.
+Copyright (C) 2014-2025 azumakuniyuki, All rights reserved.
 
 =head1 LICENSE
 

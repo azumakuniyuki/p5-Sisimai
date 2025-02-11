@@ -10,7 +10,7 @@ my $isexpected = {
     # INDEX => [['D.S.N.', 'replycode', 'REASON', 'hardbounce'], [...]]
     '01' => [['5.1.1',   '550', 'userunknown',     1]],
     '02' => [['5.1.1',   '550', 'userunknown',     1]],
-    '03' => [['5.7.0',   '554', 'spamdetected',    0]],
+    '03' => [['5.7.0',   '554', 'notcompliantrfc', 0]],
 };
 
 $enginetest->($enginename, $isexpected);

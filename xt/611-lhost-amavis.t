@@ -11,7 +11,7 @@ my $isexpected = {
     # INDEX => [['D.S.N.', 'replycode', 'REASON', 'hardbounce'], [...]]
     '1001'  => [['5.1.1',   '550', 'userunknown',     1]],
     '1002'  => [['5.1.1',   '550', 'userunknown',     1]],
-    '1003'  => [['5.7.0',   '554', 'spamdetected',    0]],
+    '1003'  => [['5.7.0',   '554', 'notcompliantrfc', 0]],
 };
 
 plan 'skip_all', sprintf("%s not found", $samplepath) unless -d $samplepath;

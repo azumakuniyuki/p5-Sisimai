@@ -1,7 +1,7 @@
 ![](https://libsisimai.org/static/images/logo/sisimai-x01.png)
 [![License](https://img.shields.io/badge/license-BSD%202--Clause-orange.svg)](https://github.com/sisimai/p5-sisimai/blob/master/LICENSE)
 [![Perl](https://img.shields.io/badge/perl-v5.26--v5.40-blue.svg)](https://www.perl.org)
-[![CPAN](https://img.shields.io/badge/cpan-v5.1.0-blue.svg)](https://metacpan.org/pod/Sisimai)
+[![CPAN](https://img.shields.io/badge/cpan-v5.2.0-blue.svg)](https://metacpan.org/pod/Sisimai)
 [![codecov](https://codecov.io/github/sisimai/p5-sisimai/branch/5-stable/graph/badge.svg?token=8kvF4rWPM3)](https://codecov.io/github/sisimai/p5-sisimai)
 
 > [!IMPORTANT]
@@ -136,14 +136,14 @@ $ cd ./p5-sisimai
 $ make install-from-local
 ./cpanm --sudo . || ( make cpm && ./cpm install --sudo -v . )
 --> Working on .
-Configuring Sisimai-v5.1.0 ... OK
-Building and testing Sisimai-v5.1.0 ... Password: <sudo password here>
+Configuring Sisimai-v5.2.0 ... OK
+Building and testing Sisimai-v5.2.0 ... Password: <sudo password here>
 OK
-Successfully installed Sisimai-v5.1.0
+Successfully installed Sisimai-v5.2.0
 1 distribution installed
 
 $ perl -MSisimai -lE 'print Sisimai->version'
-5.1.0
+5.2.0
 ```
 
 Usage
@@ -353,14 +353,14 @@ Sisimai 5.0.0から**Perl 5.26.0以上**が必要になります。
 
 | 機能                                                 | Sisimai 4          | Sisimai 5           |
 |------------------------------------------------------|--------------------|---------------------|
-| 動作環境(Perl)                                       | 5.10 - 5.38        | **5.26** - 5.38     |
+| 動作環境(Perl)                                       | 5.10 -             | **5.26** -          |
 | 元メールファイルを操作可能なコールバック機能         | なし               | あり[^3]            |
-| 解析エンジン(MTA/ESPモジュール)の数                  | 68                 | 73                  |
-| 検出可能なバウンス理由の数                           | 29                 | 34                  |
+| 解析エンジン(MTA/ESPモジュール)の数                  | 68                 | 58                  |
+| 検出可能なバウンス理由の数                           | 29                 | 36                  |
 | 依存もジュール数(Perlのコアモジュールを除く)         | 2 モジュール       | 2 モジュール        |
-| ソースコードの行数                                   | 10,800 行          | 11,800 行           |
-| テスト件数(t/とxt/ディレクトリ)                      | 270,000 件         | 335,000 件          |
-| 1秒間に解析できるバウンスメール数[^4]                | 541 通             | 660 通              |
+| ソースコードの行数                                   | 10,800 行          | 9,900 行            |
+| テスト件数(t/とxt/ディレクトリ)                      | 270,000 件         | 319,000 件          |
+| 1秒間に解析できるバウンスメール数[^4]                | 340 通             | 450 通              |
 | ライセンス                                           | 2条項BSD           | 2条項BSD            |
 | 開発会社による商用サポート                           | 提供中             | 提供中              |
 
@@ -413,6 +413,8 @@ Sisimai 5では新たに5個のバウンス理由が増えました。検出可�
 | PTRレコードが未設定または無効なPTRレコード           | `Blocked`          | `RequirePTR`        |
 | RFCに準拠していないメール[^7]                        | `SecurityError`    | `NotCompliantRFC`   |
 | 単位時間の流量制限・送信速度が速すぎる               | `SecurityError`    | `Speeding`          |
+| STARTTLS関連のエラー (added at v5.2.0)               | `SecurityError`    | `FailedSTARTTLS`    |
+| 宛先がサプレッションリストに一致 (added at v5.2.0)   | `OnHold`           | `Suppressed`        |
 
 [^7]: RFC5322など
 
@@ -436,12 +438,12 @@ Related sites
 ---------------------------------------------------------------------------------------------------
 * __@libsisimai__ | [Sisimai on Twitter (@libsisimai)](https://twitter.com/libsisimai)
 * __LIBSISIMAI.ORG__ | [SISIMAI | MAIL ANALYZING INTERFACE | DECODING BOUNCES, BETTER AND FASTER.](https://libsisimai.org/)
-* __Sisimai Blog__ | [blog.libsisimai.org](http://blog.libsisimai.org/)
 * __Facebook Page__ | [facebook.com/libsisimai](https://www.facebook.com/libsisimai/)
 * __GitHub__ | [github.com/sisimai/p5-sisimai](https://github.com/sisimai/p5-sisimai)
 * __CPAN__ | [Sisimai - Mail Analyzing Interface for bounce mails. - metacpan.org](https://metacpan.org/pod/Sisimai)
 * __CPAN Testers Reports__ | [CPAN Testers Reports: Reports for Sisimai](http://cpantesters.org/distro/S/Sisimai.html)
 * __Ruby verson__ | [Ruby version of Sisimai](https://github.com/sisimai/rb-sisimai)
+* __Go verson__ | [Go version of Sisimai](https://github.com/sisimai/go-sisimai)
 * __Fixtures__ | [set-of-emails - Sample emails for "make test"](https://github.com/sisimai/set-of-emails)
 
 See also
@@ -459,7 +461,7 @@ Author
 
 Copyright
 ===================================================================================================
-Copyright (C) 2014-2024 azumakuniyuki, All Rights Reserved.
+Copyright (C) 2014-2025 azumakuniyuki, All Rights Reserved.
 
 License
 ===================================================================================================

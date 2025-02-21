@@ -1,7 +1,7 @@
 ![](https://libsisimai.org/static/images/logo/sisimai-x01.png)
 [![License](https://img.shields.io/badge/license-BSD%202--Clause-orange.svg)](https://github.com/sisimai/p5-sisimai/blob/master/LICENSE)
 [![Perl](https://img.shields.io/badge/perl-v5.26--v5.40-blue.svg)](https://www.perl.org)
-[![CPAN](https://img.shields.io/badge/cpan-v5.1.0-blue.svg)](https://metacpan.org/pod/Sisimai)
+[![CPAN](https://img.shields.io/badge/cpan-v5.2.0-blue.svg)](https://metacpan.org/pod/Sisimai)
 [![codecov](https://codecov.io/github/sisimai/p5-sisimai/branch/5-stable/graph/badge.svg?token=8kvF4rWPM3)](https://codecov.io/github/sisimai/p5-sisimai)
 
 > [!IMPORTANT]
@@ -140,14 +140,14 @@ $ cd ./p5-sisimai
 $ make install-from-local
 ./cpanm --sudo . || ( make cpm && ./cpm install --sudo -v . )
 --> Working on .
-Configuring Sisimai-v5.1.0 ... OK
-Building and testing Sisimai-v5.1.0 ... Password: <sudo password here>
+Configuring Sisimai-v5.2.0 ... OK
+Building and testing Sisimai-v5.2.0 ... Password: <sudo password here>
 OK
-Successfully installed Sisimai-v5.1.0
+Successfully installed Sisimai-v5.2.0
 1 distribution installed
 
 $ perl -MSisimai -lE 'print Sisimai->version'
-5.1.0
+5.2.0
 ```
 
 Usage
@@ -359,14 +359,14 @@ Beginning with v5.0.0, Sisimai requires **Perl 5.26.0 or later.**
 
 | Features                                             | Sisimai 4          | Sisimai 5           |
 |------------------------------------------------------|--------------------|---------------------|
-| System requirements (Perl)                           | 5.10 - 5.38        | **5.26** - 5.38     |
+| System requirements (Perl)                           | 5.10 -             | **5.26** -          |
 | Callback feature for the original email file         | N/A                | Available[^3]       |
-| The number of MTA/ESP modules                        | 68                 | 73                  |
-| The number of detectable bounce reasons              | 29                 | 34                  |
+| The number of MTA/ESP modules                        | 68                 | 58                  |
+| The number of detectable bounce reasons              | 29                 | 36                  |
 | Dependencies (Except core modules of Perl)           | 2 modules          | 2 modules           |
-| Source lines of code                                 | 10,800 lines       | 11,800 lines        |
-| The number of tests in t/, xt/ directory             | 270,000 tests      | 335,000 tests       | 
-| The number of bounce emails decoded per second[^4]   | 541 emails         | 660 emails          |
+| Source lines of code                                 | 10,800 lines       | 9,900 lines         |
+| The number of tests in t/, xt/ directory             | 270,000 tests      | 319,000 tests       | 
+| The number of bounce emails decoded per second[^4]   | 340 emails         | 450 emails          |
 | License                                              | 2 Clause BSD       | 2 Caluse BSD        |
 | Commercial support                                   | Available          | Available           |
 
@@ -420,6 +420,8 @@ detect is available at [LIBSISIMAI.ORG/EN/REASON](https://libsisimai.org/en/reas
 | missing PTR/having invalid PTR                       | `Blocked`          | `RequirePTR`        |
 | non-compliance with RFC[^7]                          | `SecurityError`    | `NotCompliantRFC`   |
 | exceeding a rate limit or sending too fast           | `SecurityError`    | `Speeding`          |
+| STARTTLS-related errors (added at v5.2.0)            | `SecurityError`    | `FailedSTARTTLS`    |
+| Recipient in the suppression list (added at v5.2.0)  | `OnHold`           | `Suppressed`        |
 
 [^7]: RFC5322 and related RFCs
 
@@ -444,12 +446,12 @@ Related sites
 ---------------------------------------------------------------------------------------------------
 * __@libsisimai__ | [Sisimai on Twitter (@libsisimai)](https://twitter.com/libsisimai)
 * __LIBSISIMAI.ORG__ | [SISIMAI | MAIL ANALYZING INTERFACE | DECODING BOUNCES, BETTER AND FASTER.](https://libsisimai.org/)
-* __Sisimai Blog__ | [blog.libsisimai.org](http://blog.libsisimai.org/)
 * __Facebook Page__ | [facebook.com/libsisimai](https://www.facebook.com/libsisimai/)
 * __GitHub__ | [github.com/sisimai/p5-sisimai](https://github.com/sisimai/p5-sisimai)
 * __CPAN__ | [Sisimai - Mail Analyzing Interface for bounce mails. - metacpan.org](https://metacpan.org/pod/Sisimai)
 * __CPAN Testers Reports__ | [CPAN Testers Reports: Reports for Sisimai](http://cpantesters.org/distro/S/Sisimai.html)
 * __Ruby verson__ | [Ruby version of Sisimai](https://github.com/sisimai/rb-sisimai)
+* __Go verson__ | [Go version of Sisimai](https://github.com/sisimai/go-sisimai)
 * __Fixtures__ | [set-of-emails - Sample emails for "make test"](https://github.com/sisimai/set-of-emails)
 
 See also
@@ -467,7 +469,7 @@ Author
 
 Copyright
 ===================================================================================================
-Copyright (C) 2014-2024 azumakuniyuki, All Rights Reserved.
+Copyright (C) 2014-2025 azumakuniyuki, All Rights Reserved.
 
 License
 ===================================================================================================

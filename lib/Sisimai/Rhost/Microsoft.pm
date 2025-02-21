@@ -295,7 +295,7 @@ sub find {
             ['5.4.6', 0, 0, 'hop count exceeded - possible mail loop'],
 
             # Exchange Online ---------------------------------------------------------------------
-	        # - Microsoft 365 or Office 365 is trying to send a message to an email server outside
+            # - Microsoft 365 or Office 365 is trying to send a message to an email server outside
             #   of Microsoft 365 or Office 365, but attempts to connect to it are failing due to a
             #   network connection issue at the external server's location.
             # - This error almost always indicates an issue with the receiving server or network
@@ -511,7 +511,7 @@ sub find {
         ],
         'speeding' => [
             # Exchange Online ---------------------------------------------------------------------
-	        # - The recipient mailbox's ability to accept messages is being throttled because it's
+            # - The recipient mailbox's ability to accept messages is being throttled because it's
             #   receiving too many messages too quickly. This is done so a single recipient's mail
             #   processing doesn't unfairly impact other recipients sharing the same mailbox data-
             #   base.
@@ -670,6 +670,12 @@ sub find {
             #   ed by Microsoft 365 or Office 365, the sending server must break up the number of
             #   envelope recipients into smaller chunks (chunking) and resend the message.
             ['4.5.3', 0, 0, 'too many recipients'],
+
+            # - 451 4.7.652 The mail server [192.0.2.251] has exceeded the maximum number of
+            #   connections. (S3115) [Name=Protocol Filter Agent][AGT=PFA][MxId=11BA9B3FA168ABBF]
+            #   [BN3PEPF0000B370.namprd21.prod.outlook.com 2025-02-20T14:30:32.425Z 08DD4D9FD5AFF45C]
+            #   (in reply to MAIL FROM command))
+            ["4.7.652", "", "", "has exceeded the maximum number of connections"],
 
             # Previous versions of Exchange Server ------------------------------------------------
             ['5.2.122', 0, 0, 'the recipient has exceeded their limit for'],

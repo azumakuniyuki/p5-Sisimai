@@ -365,7 +365,7 @@ Beginning with v5.0.0, Sisimai requires **Perl 5.26.0 or later.**
 | The number of detectable bounce reasons              | 29                 | 36                  |
 | Dependencies (Except core modules of Perl)           | 2 modules          | 2 modules           |
 | Source lines of code                                 | 10,800 lines       | 9,900 lines         |
-| The number of tests in t/, xt/ directory             | 270,000 tests      | 319,000 tests       | 
+| The number of tests in t/, xt/ directory             | 270,000 tests      | 320,000 tests       | 
 | The number of bounce emails decoded per second[^4]   | 340 emails         | 450 emails          |
 | License                                              | 2 Clause BSD       | 2 Caluse BSD        |
 | Commercial support                                   | Available          | Available           |

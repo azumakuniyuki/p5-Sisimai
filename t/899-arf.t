@@ -27,9 +27,9 @@ my $isexpected = {
     '19' => [['', '', 'feedback', 0, 'auth-failure']],
     '20' => [['', '', 'feedback', 0, 'auth-failure']],
     '21' => [['', '', 'feedback', 0, 'abuse'       ]],
-#   '22' => [['', '', 'feedback', 0, 'abuse'       ]],
-#   '23' => [['', '', 'feedback', 0, 'abuse'       ]],
-#   '24' => [['', '', 'feedback', 0, 'abuse'       ]],
+    '22' => [['', '', 'feedback', 0, 'abuse'       ]],
+    '23' => [['', '', 'feedback', 0, 'abuse'       ]],
+    '24' => [['', '', 'feedback', 0, 'abuse'       ]],
     '25' => [['', '', 'feedback', 0, 'abuse'       ]],
     '26' => [['', '', 'feedback', 0, 'opt-out'     ]],
 };

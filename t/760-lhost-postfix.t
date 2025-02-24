@@ -77,7 +77,7 @@ my $isexpected = {
     '75' => [['4.3.0',   '451', 'systemerror',     0]],
     '76' => [['5.0.0',   '550', 'userunknown',     1]],
     '77' => [['5.0.0',   '554', 'norelaying',      0]],
-    '78' => [['5.0.0',   '554', 'contenterror',    0]],
+    '78' => [['5.0.0',   '554', 'notcompliantrfc', 0]],
 };
 
 $enginetest->($enginename, $isexpected);

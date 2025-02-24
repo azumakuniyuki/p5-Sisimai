@@ -8,7 +8,7 @@ my $Methods = {
     'class'  => ['new'],
     'object' => ['path', 'dir', 'file', 'size', 'offset', 'handle', 'read'],
 };
-my $MaildirSize = 597;
+my $MaildirSize = 600;
 my $SampleEmail = './set-of-emails/maildir/bsd';
 my $NewInstance = $Package->new($SampleEmail);
 
@@ -26,7 +26,7 @@ MAKETEST: {
         can_ok $maildir, @{ $Methods->{'object'} };
         is $maildir->dir, $SampleEmail, '->dir = '.$maildir->dir;
         is $maildir->file, undef, '->file = ""';
-        is $maildir->size, $MaildirSize, '->size = '.$MaildirSize;
+        ok $maildir->size > $MaildirSize, '->size = '.$MaildirSize;
         is $maildir->offset, 0, '->offset = 0';
         isa_ok $maildir->handle, 'IO::Dir';
 

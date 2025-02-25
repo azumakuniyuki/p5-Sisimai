@@ -4,10 +4,10 @@ RELEASE NOTES for Perl version of Sisimai
 - download: "https://metacpan.org/pod/Sisimai"
 - document: "https://libsisimai.org/"
 
-v5.1.0p6
+v5.2.0
 ---------------------------------------------------------------------------------------------------
-- release: ""
-- version: ""
+- release: "Tue, 25 Feb 2025 11:05:09 +0900 (JST)"
+- version: "5.2.0"
 - changes:
   - **Keep compatibility with the Go language version of Sisimai** #547 #558 #567
     - **BREAKING CHANGES AT EXTERNAL USER APIs**

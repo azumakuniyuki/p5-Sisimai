@@ -4,6 +4,113 @@ RELEASE NOTES for Perl version of Sisimai
 - download: "https://metacpan.org/pod/Sisimai"
 - document: "https://libsisimai.org/"
 
+v5.2.0
+---------------------------------------------------------------------------------------------------
+- release: "Tue, 25 Feb 2025 11:05:09 +0900 (JST)"
+- version: "5.2.0"
+- changes:
+  - **Keep compatibility with the Go language version of Sisimai** #547 #558 #567
+    - **BREAKING CHANGES AT EXTERNAL USER APIs**
+        - Changes in accessors of `Sisimai::Fact` and key names in JSON string
+          - `smtpagent` has been renamed to `decodedby` #548
+          - `smtpcommand` has been renamed to `command` #548
+          - Removed accessors/keys are still available until v5.5.0
+          - New accessor and key `feedbackid`, it is a field for the `Feedback-ID:` header of the
+            original message #568
+        - New bounce reason `Sisimai::Reason::Suppressed`
+        - New bounce reason `Sisimai::Reason::FailedSTARTTLS` #562
+    - **THERE ARE SOME BREAKING CHANGES AT INTERNAL APIs**
+    - `Sisimai::SMTP::Error` has been renamed to `Sisimai::SMTP::Failure` and the following methods
+      implemented: #542
+      - `is_temporary()`
+      - `is_hardbounce()`
+      - `is_softbounce()`
+      - `soft_or_hard()` has been removed
+    - Changes in `Sisimai::Rhost` 
+      - `get()` method has been renamed to `find()`
+      - Fix bug in code to check the domain part of an email address as a remote hostname
+      - Add a new error message pattern: `hosted tenant which has no mail-enabled subscriptions'`
+        in `Sisimai::Rhost::Microsoft`
+      - Implement `name()` method
+      - Bug fix in `Sisimai::Rhost::Facebook`
+    - Remove `hardbounce` accessor from `Sisimai::Lhost` #555
+    - Implement `Sisimai::RFC3464::ThirdParty`
+    - Remove the following MTA modules from `Sisimai::Lhost` #557
+      - `Sisimai::RFC3464` can decode a bounce mail returned from services/MTAs below #551
+        - Amavis
+        - AmazonWorkMail
+        - Aol
+        - Barracuda
+        - Bigfoot
+        - Facebook #545
+        - McAfee
+        - MessageLabs
+        - Outlook
+        - PowerMTA
+          - Some codes for checking heaaders have been moved to `Sisimai::RFC3464::ThirdParty`
+        - ReceivingSES
+        - SendGrid
+        - SurfControl
+        - X5
+        - Yandex
+      - `Sisimai::Lhost::Exim` can decode a bounce mail returned from services/MTAs below
+        - MailRu
+        - MXLogic
+      - `Sisimai::Lhost::qmail` can decode a bounce mail returned from services/MTAs below
+        - X4
+        - Yahoo
+      - `Sisimai::Lhost::Exchange2007` can decode a bounce mail returned from Office365 #553
+    - `Sisimai::Lhost::GSuite` has been renamed to `Sisimai::Lhost::GoogleWorkspace`
+    - `Sisimai::Lhost::AmazonSES` decodes only JSON formatted bounce mail notified from Amazon SNS
+      - The bounce mail from Amazon SES which have no JSON string is decoded by `Sisimai::RFC3464`
+    - Each error code table of the following MTA modules (removed at issue #557) have been moved to 
+      `Sisimai::Rhost::*` #559
+      - Aol
+      - Facebook
+      - GSuite
+      - MessageLabs
+      - Outlook
+    - `Sisimai::MDA` has been renamed to `Sisimai::LDA`
+    - `Sisimai::RFC791` for the IPv4 address implemented #560
+      - `Sisimai::String->ipv4` has been moved/renamed to `Sisimai::RFC791->find`
+      - Implement `Sisimai::RFC791->is_ipv4address`
+    - `Sisimai::RFC1123->is_validhostname()` has been renamed to `is_internethost()`
+    - Implement `Sisimai::RFC1123->find()`
+    - #552 `Sisimai::RFC1894->field()` method detect a comment string (returns an array which have
+      5 elements: ["field-name", "value-type", "value", "field-group", "comment"])
+    - `Reporting-MTA` indicates `lhost` in `Sisimai::RFC1894` (bug fix)
+  - Code improvement and bug fix at `Sisimai::Lhost::Exim`
+    - Remove needless condition for getting error messages
+    - Rewrite code for getting an SMTP reply code and a delivery status code
+  - Warn if `Sisimai::Message->load` was called #537 #538
+  - Remove unused method `Sisimai::Order->default` #539
+  - Fix bug in `Sisimai::Message->tidy()` method #540
+  - Code improvement in `Sisimai::RFC5322` and `Sisimai::ARF`
+  - Fix the minimum and the maximum SMTP Reply code: 221 and 557 in `Sisimai::SMTP::Reply`
+  - The first argument need not to be a reference at `Sisimai::SMTP::Transcript->rise()`
+  - Fix typo in `Sisimai::RFC1894` (X-Actual-Recipient)
+  - Fix bug in `Sisimai::Message->tidy()`: `;` is missing when the value of `Diagnostic-Code` field
+    has multiple lines, And large scale code improvements.
+  - Fix bug in `Sisimai::Reason::VirusDetected->true()`; fix `HELO` with `EHLO`
+  - Add a new error message pattern in the followings:
+    - `Sisimai::Reason::BadReputation`
+    - `Sisimai::Reason::Blocked`
+    - `Sisimai::Reason::Filtered`
+    - `Sisimai::Reason::MailboxFull`
+    - `Sisimai::Reason::MesgTooBig`
+    - `Sisimai::Reason::RequirePTR`
+    - `Sisimai::Reason::SpamDetected`
+    - `Sisimai::Reason::SystemError`
+  - Remove regular expressions from error message patterns at the following classes: #543
+    - `Sisimai::Reason::Blocked`
+    - `Sisimai::Reason::MailerError`
+    - `Sisimai::Reason::SpamDetected`
+  - Fix typo in `Sisimai::Rhost::YahooInc` Thanks to @bohwaz #546
+  - Bug fix: Unstable matching for getting an `Sisimai::Rhost::*` module name when the bounce mail
+    sent from Microsoft to Aol (Random key sort order of the Hash)
+  - Add `sv-SE` in `Sisimai::Lhost::Exchange2007`
+  - Large scale code improvement in `Sisimai::Lhost::V5sendmail`
+
 v5.1.0
 ---------------------------------------------------------------------------------------------------
 - release: "Mon,  1 Jul 2024 12:02:22 +0900 (JST)"

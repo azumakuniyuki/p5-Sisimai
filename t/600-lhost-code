@@ -69,6 +69,7 @@ my $moduletest = sub {
 
         if( $privateset ) {
             # Private sample
+            $e->{'n'} = int $e->{'n'};
             $samplefile = [glob(sprintf("./%s/%s-*.eml", $samplepath, $e->{'n'}))]->[0];
 
         } else {

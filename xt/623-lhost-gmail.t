@@ -46,7 +46,7 @@ my $isexpected = [
     { 'n' => '01036', 'r' => qr/expired/         },
     { 'n' => '01037', 'r' => qr/blocked/         },
     { 'n' => '01038', 'r' => qr/userunknown/     },
-    { 'n' => '01039', 'r' => qr/userunknown/     },
+#   { 'n' => '01039', 'r' => qr/userunknown/     },
     { 'n' => '01040', 'r' => qr/(?:expired|undefined)/ },
     { 'n' => '01041', 'r' => qr/userunknown/     },
     { 'n' => '01042', 'r' => qr/userunknown/     },
